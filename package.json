@@ -11,7 +11,8 @@
     "shots": "node scripts/pr-screenshots.ts .pr-shots.json",
     "test": "bun test ./tests/unit --dots --pass-with-no-tests",
     "test:related": "bun scripts/test-related.ts",
-    "shots:publish": "bash scripts/publish-pr-shots.sh .pr-shots"
+    "shots:publish": "bash scripts/publish-pr-shots.sh .pr-shots",
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "next": "16.3.6",

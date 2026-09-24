@@ -30,7 +30,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Typecheck
-        run: bunx tsc --noEmit        # Astro: bunx astro check
+        run: bun run typecheck        # next typegen + tsc (Next 16 genera LayoutProps en .next/). Astro: bunx astro check
 
       - name: Lint
         run: bun run lint

@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -43,3 +44,15 @@ next-env.d.ts
 # capturas para PR (web-agent-kit)
 .pr-shots/
 .pr-shots.json
+
+# estado local de context/ (web-agent-kit, D020): se lee en la carpeta principal, no va al repo
+context/CURRENT_PHASE.md
+context/CONTENT_CHECKLIST.md
+context/PAGE_INVENTORY.md
+context/SECTION_INVENTORY.md
+context/COMPONENTS_INVENTORY.md
+context/PHASE_LOG/
+context/plans/
+
+# respaldo local de lo anterior (para restaurarlo tras mergear el PR que lo dejó de trackear)
+.local/

@@ -8,7 +8,7 @@ corrige**, no solo se reporta.
 ## Alcance
 
 - Cada página en cada breakpoint del proyecto: 320 · 360 · 390 · 768 · 1024 · 1440 · 1920
-  {{· 2560 · 3840}}.
+  · 2560 (la app es una columna centrada en escritorio: verificar que no se estire).
 - Mobile en horizontal y pantallas de altura corta.
 - Zoom al 200% y al 400%.
 - Coherencia de tokens: cero valores mágicos, espaciados de la escala, radios consistentes.

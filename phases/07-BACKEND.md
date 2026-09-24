@@ -23,14 +23,34 @@ frontend · fases 01-06 cerradas
 
 ## Unidades de trabajo
 
-1. Modelo de datos y conexión
-2. Auth: registro y login
-3. Auth: sesión, protección de rutas, cierre
-4. Auth: recuperación de contraseña
-5. {{Dominio del proyecto: productos, pedidos, reservas…}}
-6. Pagos: checkout
-7. Pagos: webhooks y confirmación
-8. Formularios de contacto / envío de correo
+En Melao esta fase se parte en dos (D001). Todo contrato nuevo se documenta en `docs/spec/`
+en el mismo PR (D003, D005).
+
+**07a — Fundación (en paralelo al diseño, sin UI):**
+
+1. Spike del motor de audio en Android de gama media + iPhone (ver `plans/pendientes.md`)
+2. Proyecto Supabase, esquema y migraciones, RLS de todas las tablas, tipos generados
+3. Core de dominio en `supabase/functions/_shared/core/`: rejilla de beats, frases
+   disponibles, generador de combinaciones, línea de tiempo del coach, envoltura de FSRS —
+   con tests (`bun test`) y vectores en `docs/spec/vectors/`
+4. Edge Functions: `plan-session`, `review-steps`, `activate-subscription`
+5. Seed con contenido placeholder realista (un estilo, pasos, posiciones, 2 canciones)
+
+**07b — Integración (tras la fase 06):**
+
+6. Auth: registro, login (email + Google), sesión, protección de rutas en el servidor, cierre
+7. Auth: recuperación de contraseña
+8. Onboarding y preferencias (estilo, rol, tema, coach)
+9. Curso: camino, lección, progreso
+10. Práctica: configurador, sesión (reproductor web), calificación
+11. Catálogo de pasos, favoritos, progreso
+12. Suscripción placeholder: planes, checkout, activación, control de acceso
+13. Panel admin: estilos, pasos, canciones (analizador de ritmo), cursos, usuarios
+
+**v2 — Consultoría:** hilos y mensajes en tiempo real, subida de videos del alumno,
+corrección con marcas de tiempo.
+
+(Pagos reales y webhooks: fuera de la v1 — ver `plans/pendientes.md`.)
 
 ## Criterio de cierre
 

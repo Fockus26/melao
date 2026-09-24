@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# capturas para PR (web-agent-kit)
+.pr-shots/
+.pr-shots.json

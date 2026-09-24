@@ -1,0 +1,56 @@
+# CI de referencia del kit. Copiar a .github/workflows/ci.yml y ajustar los comandos
+# del framework (typecheck) y las variables de relleno que el build necesite.
+#
+# Corre SIEMPRE la suite completa: la selección de tests por grafo
+# (`bun run test:related`) es para el bucle local del agente, no sustituye a esto.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      # Valores de relleno si el build crea clientes al importar (Supabase, etc.).
+      # Nunca secretos reales aquí: los reales van en Settings → Secrets.
+      NEXT_PUBLIC_EXAMPLE_URL: https://placeholder.example.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bunx tsc --noEmit        # Astro: bunx astro check
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Unit tests
+        run: bun test --dots
+
+      - name: Build
+        run: bun run build
+
+  # e2e opcional: primero lo afectado (feedback rápido), después todo.
+  # e2e:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with: { fetch-depth: 0 }          # --only-changed necesita la historia
+  #     - uses: oven-sh/setup-bun@v2
+  #     - run: bun install --frozen-lockfile
+  #     - run: bunx playwright install --with-deps chromium
+  #     - run: bun run build
+  #     - run: bunx playwright test --only-changed=origin/$GITHUB_BASE_REF
+  #       if: github.event_name == 'pull_request'
+  #     - run: bunx playwright test

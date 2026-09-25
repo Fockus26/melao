@@ -1,10 +1,12 @@
 # Melao · Handoff de diseño
 
-Dirección: **Salón editorial, variante Gala**. Logo: **C1 · Modulada**.
-Lienzo con todas las pantallas: https://claude.ai/artifact/7WuxhQ5GhY3u1p9VgfmjNv (páginas
-*Marca y sistema · Público · App del alumno · Estados · Admin · Consultoría*). Cada mesa tiene
-arriba un selector **Claro / Oscuro**; las de *Gala ajustada* son prototipos con interacción real
-(hover, transiciones, cuenta en vivo).
+Dirección: **Salón editorial, variante Gala**, con el escenario de práctica en layout **Compás**.
+Logo: **C1 · Modulada**.
+Lienzo con todas las pantallas (solo el diseño final, sin variantes):
+https://claude.ai/artifact/7WuxhQ5GhY3u1p9VgfmjNv (páginas *Marca y sistema · Público · App del
+alumno · Estados · Admin · Consultoría*). Cada mesa tiene arriba un selector **Claro / Oscuro**. En
+*App del alumno*, las mesas marcadas "interactivo" (curso, video del paso, sesión) son prototipos
+con interacción real: hover, transiciones y cuenta en vivo.
 
 Los tokens legibles por máquina están en `design/tokens.json` (W3C Design Tokens). Los nombres
 de esta sección son idénticos a los de ese archivo.

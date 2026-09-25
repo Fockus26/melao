@@ -25,7 +25,7 @@ error con reintento · sin conexión · sin suscripción activa (lleva a Planes)
 | Entrar | Email, contraseña, "¿Olvidaste tu contraseña?", Google, enlace a registro | error de credenciales, enviando |
 | Registro | Nombre, email, contraseña (requisitos visibles), Google, aceptar términos | email en uso, contraseña débil |
 | Recuperar / Restablecer | Email → aviso de correo enviado · nueva contraseña | enlace vencido |
-| Bienvenida | 1 Estilo(s) → 2 Rol por estilo (líder/seguidor) → 3 Nivel (desde cero / ya sé pasos) | — |
+| Bienvenida | 1 Estilo(s) → 2 Rol (líder/seguidor, uno para todos) → 3 Nivel (desde cero / ya sé pasos) | — |
 
 ## App
 | Pantalla | Bloques en orden | Estados propios |
@@ -40,7 +40,8 @@ error con reintento · sin conexión · sin suscripción activa (lleva a Planes)
 | Pasos (catálogo) | Búsqueda · Filtros (categoría, estado) · Lista por categoría: nombre, dificultad, estado (no lo sé · aprendiendo · me lo sé), favorito, próximo repaso | sin resultados |
 | Paso (detalle) | Video (selector de rol si aplica) · Descripción por tiempos · Entrada → salida · Duración · Estado y favorito · Variaciones · Prerequisitos · Historial | paso libre (sin selector de rol) |
 | Progreso | Más difíciles · Repasos próximos 7 días · Lecciones completadas · Sesiones recientes | sin datos aún |
-| Perfil | Cuenta · Rol por estilo · Coach (volumen, cuenta hablada, calibrar latencia) · Tema · Suscripción · Cerrar sesión | — |
+| Perfil | Cuenta · Rol · Estilo por defecto · Coach (volumen, cuenta hablada, calibrar latencia) · Tema · Suscripción · Cerrar sesión | — |
+| Calibrar audífonos | Antes de empezar → tocar a oído con 12 clics (4 de práctica) → resultado en ms → probar / guardar · ajuste fino ±10 ms (−300 a +300) | toques irregulares (desvío > 40 ms); sin audífonos Bluetooth (altavoz: no hace falta) |
 
 ## Admin (solo `admin`, tablet y escritorio)
 | Pantalla | Bloques |

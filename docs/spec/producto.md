@@ -10,7 +10,7 @@
 | Cuenta hablada | Los tiempos que el coach dice en voz alta. Salsa: 1 2 3 · 5 6 7 · (4 y 8 en silencio). Merengue: 1–8 |
 | Paso / figura | Movimiento con nombre (p. ej. "Enchufla"), de duración entera en frases |
 | Posición | Cómo queda la pareja al empezar o terminar un paso (p. ej. abierta, cerrada). La define el admin por estilo |
-| Rol | Líder o seguidor. El alumno elige uno por estilo |
+| Rol | Líder o seguidor. El alumno elige uno para todos los estilos (D023); en cada paso puede ver el video del otro rol |
 | Paso libre | Paso sin pareja; un solo video, sin rol |
 | Coach | La voz que cuenta los tiempos y anuncia el paso siguiente |
 | Sesión | Una práctica sobre una canción: plan de pasos + línea de tiempo |
@@ -20,7 +20,7 @@
 
 ### 1. Cuenta y suscripción
 - Registro e inicio de sesión: email + contraseña, y Google. (Apple se suma antes de iOS.)
-- Onboarding: estilo(s) → rol por estilo → nivel ("desde cero" o "ya sé pasos", que lleva al
+- Onboarding: estilo(s) → rol (uno para todos) → nivel ("desde cero" o "ya sé pasos", que lleva al
   catálogo para marcarlos).
 - Planes: **Básico** (~$20 USD/mes, PENDIENTE) y **Consultoría** (PENDIENTE). Sin pasarela
   en la v1: el checkout muestra el precio y activa la suscripción por $0 en el servidor.
@@ -59,8 +59,8 @@
 - Repasos de los próximos 7 días. Lecciones completadas. Sesiones recientes.
 
 ### 6. Perfil
-- Cuenta · rol por estilo · coach (volumen de voz, cuenta hablada sí/no, calibración de
-  latencia) · tema (sistema/claro/oscuro) · suscripción · cerrar sesión.
+- Cuenta · rol · estilo con el que abre la app · coach (volumen de voz, cuenta hablada sí/no,
+  calibración de latencia de audífonos Bluetooth, guardada por dispositivo de audio) · tema (sistema/claro/oscuro) · suscripción · cerrar sesión.
 
 ### 7. Panel admin (solo `admin`)
 - Estilos: cuenta hablada, anticipación del anuncio, bandas de BPM por dificultad,

@@ -24,3 +24,11 @@ ahorra batería en OLED y separa "practicar" de "navegar".
 **Por qué:** `#8C8C8C` fallaba sobre sunken claro (2.93). `#858585` = 3.69 / 3.48 / 3.22;
 `#6E6E6E` = 3.79 / 3.55 / 3.27.
 **Estado:** Pendiente
+
+## D024 — Contraste sin excepciones en el tema claro
+**Decisión:** text-muted #6B6B6B → #686868, gold-700 #8A6A1F → #80621C (gold-800 queda como alias
+del mismo valor) y success #1E7A46 → #1C7644. Con esto todo token de texto pasa 4.5:1 en bg,
+surface, sunken, gold-tint y hover. El tema oscuro no cambia.
+**Por qué:** los valores anteriores fallaban sobre gold-tint o sunken (4.21–4.46) y obligaban a
+recordar reglas de uso. Actualiza D002 en lo que toca a gold-700/800.
+**Estado:** Pendiente

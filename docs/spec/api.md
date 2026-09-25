@@ -18,7 +18,7 @@
 
 | Grupo | Tablas |
 |---|---|
-| Usuarios | `profiles` (app_role `student\|teacher\|admin`, tema, ajustes del coach) · `user_style_prefs` (rol por estilo) |
+| Usuarios | `profiles` (app_role `student\|teacher\|admin`, rol de baile `leader\|follower`, estilo por defecto, tema, ajustes del coach) · `audio_latency` (latencia medida por dispositivo de audio) |
 | Estilos y pasos | `dance_styles` · `positions` · `steps` · `step_prerequisites` · `step_videos` (rol `leader\|follower\|both`) |
 | Canciones | `songs` (audio, duración, bpm, `beat_grid`, `dance_start`/`dance_end`, dificultad, licencia) · `song_styles` |
 | Curso | `courses` · `course_units` · `lessons` · `lesson_steps` · `lesson_progress` |

@@ -86,3 +86,10 @@ anticipación del anuncio, las bandas de BPM por dificultad y si tiene roles. Ag
 venezolana, lineal (On1/On2), bachata o timba es configuración + contenido.
 **Por qué:** César anticipó que se agregarán estilos; el motor no debe cambiar por eso.
 **Estado:** Pendiente
+
+## D023 — Un rol de baile por alumno
+**Decisión:** el alumno elige líder o seguidor una vez y aplica a todos los estilos; además
+elige el estilo con el que abre la app. Reemplaza "rol por estilo". En cada paso puede ver el
+video del otro rol con el selector.
+**Por qué:** indicación de César (2026-09-25): quien lidera en salsa lidera también en merengue.
+**Estado:** Pendiente

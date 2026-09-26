@@ -18,7 +18,7 @@ clips los adelantaría; se mide en la prueba 5 de `docs/spike/audio.md`.
 Web Audio); `ctx.suspend()` como pausa (no sirve para el estado `interrupted` de iOS ni para
 reanudar desde una posición arbitraria); lookahead de 100 ms (cualquier freno del hilo
 principal > 100 ms deja clips tarde).
-**Estado:** Pendiente de resultados en teléfonos (D032)
+**Estado:** Validado en Android (D032); iOS pendiente
 
 ## D031 — Audio del spike: pista sintética de 4 min y archivo local; clips sintéticos
 **Decisión:** el spike no trae audio en el repo. Pista **sintética** generada en el navegador
@@ -33,3 +33,24 @@ prueba de memoria. Renderizar la pista entera de una vez dejaba ~2000 nodos vivo
 y tardaba > 60 s en escritorio; por frases, ~0.2 s.
 **Alternativa descartada:** canción real en el repo (sin licencia); síntesis de voz (D014).
 **Estado:** Implementado (solo para el spike)
+
+## D032 — La web aguanta el reproductor en Android; la calibración de latencia no toca los clips
+**Decisión:** (1) el reproductor web de la v1 va con Web Audio y el planificador de D030: en
+Android pasa los cuatro criterios (deriva ≈ 0 ms en 4 min y tras 3 pausas, sin recarga con
+una canción real de 5 min / 116 MB, Wake Lock estable, sigue sonando con la pantalla
+bloqueada). (2) `latencyOffsetMs` se aplica **solo a la UI y a los toques**, nunca a los
+clips: la canción y la voz salen por el mismo motor y ya van juntas. Cambia
+`docs/spec/motor-de-ritmo.md` §6 (antes: `tProgramado = tMs − latencyOffsetMs`). (3) Sin
+calibrar se usa la latencia que reporta la plataforma; con Bluetooth se ofrece calibrar.
+**Por qué:** resultados del 2026-09-26 en `docs/spike/audio.md`. Con altavoz el navegador
+conoce su latencia (calibración 37–51 ms vs. 48 ms reportados). Con Bluetooth la subestima
+(~336 ms medidos vs. ~152 ms reportados). Al restar 344 ms a los clips, César oyó la cuenta
+"en tiempo pero desfasada de la música por un tiempo": 344 ms ≈ un tiempo a 180 BPM, la
+cuenta caía un tiempo antes.
+**Alternativa descartada:** restar la latencia a los clips (adelanta la voz respecto de la
+canción); confiar siempre en la latencia reportada (falla con Bluetooth); adelantar la app
+nativa por riesgo de audio (en Android no hace falta).
+**Límites:** probado en un solo Android de ≥ 8 GB de RAM. **iOS/Safari sin probar** (César no
+tiene iPhone): lista i1–i9 en `docs/spike/audio.md`; bloquea la salida en iOS, no el resto de
+07a. Falta un Android de gama media real (≤ 4 GB).
+**Estado:** Aprobado para Android · iOS pendiente

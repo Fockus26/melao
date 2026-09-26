@@ -64,6 +64,9 @@ defecto, **no** la aplica a los clips (interruptor "Aplicar el offset a los clip
 fórmula `tProgramado = tMs − latencyOffsetMs` de `docs/spec/motor-de-ritmo.md` §6 debe pasar
 a aplicarse solo a la UI (se decide en D032 con los resultados).
 
+**Resultado (2026-09-26, Android):** confirmado. Con 344 ms aplicados, la cuenta cayó un tiempo
+antes de la música. §6 del spec ya dice que el offset va solo a la UI y a los toques (D032).
+
 ## Cómo llegar desde el teléfono (HTTPS)
 
 Wake Lock exige contexto seguro (HTTPS). Dos vías:
@@ -114,74 +117,64 @@ Si algo falla (pantalla en blanco, error rojo, la página se recarga), anótalo 
 
 ## Resultados
 
-### Android — modelo: ______ · Android __ · Chrome __ · vía: (a) / (b)
+### Android — 2026-09-26 · Android 10 · Chrome 153 · ≥ 8 GB RAM, 8 núcleos · vía (b) producción
+
+Modelo exacto: por anotar (el user agent reducido de Chrome no lo da). `deviceMemory` topa en
+8, así que el equipo tiene **8 GB o más**: no es gama media estricta (ver pendientes).
+Salida 48 kHz. Pruebas 1–6 hechas por César; la 8 (210 BPM) quedó sin hacer (opcional).
 
 | Criterio | ¿Pasa? | Dato |
 |---|---|---|
-| A · deriva tras 4 min (prueba 1) | | `drift.total.maxAbsDriftMs` = · late/skipped = |
-| A · deriva tras reanudar (prueba 2) | | `drift.sinceResume.maxAbsDriftMs` = · al oído: |
-| B · sin recarga por memoria (1 y 6) | | `memory.bufferBytes` = · `prepareMs` = |
-| C · Wake Lock 4 min (prueba 1) | | `wakeLock.status` = |
-| D · reanuda tras bloqueo (prueba 3) | | ¿siguió sonando bloqueado? · `ctxState` tras volver = |
-| Latencia altavoz (prueba 4) | — | `meanMs` ± `sdMs` = · `meanOutputMs` = · reportada = |
-| Latencia Bluetooth (prueba 5) | — | `meanMs` ± `sdMs` = · `meanOutputMs` = · reportada = · offset en clips: se adelantan sí/no |
+| A · deriva tras 4 min (prueba 1) | ✅ | 490 clips, 0 tarde, 0 omitidos · deriva máx. ≈ 0 ms (ruido de coma flotante) · margen mínimo 176 ms |
+| A · deriva tras reanudar (prueba 2) | ✅ | 3 reanudaciones · deriva 0 ms · margen mínimo 169 ms |
+| B · sin recarga por memoria (1 y 6) | ✅ | sintética 84.7 MB en 141–167 ms · canción real m4a 5.0 MB / 301 s → **115.7 MB** PCM en **2714 ms** · `recovered` vacío en todas |
+| C · Wake Lock 4 min (prueba 1) | ✅ | activo de *Iniciar* a "fin de la pista"; se libera al ocultar la pestaña y se vuelve a pedir al volver (prueba 3) |
+| D · reanuda tras bloqueo (prueba 3) | ✅ | **el audio siguió sonando bloqueado y en segundo plano**; el contexto nunca salió de `running`; 146 clips, 0 tarde (el bucle no se frenó en segundo plano) |
+| Reloj audio vs. pared | ✅ | ≤ 47 ppm en todas salvo un pico de 1263 ppm en la prueba 5, al arrancar con Bluetooth (transitorio; el tramo quedó en −25 ppm) |
+| Latencia altavoz (prueba 4) | — | calibración 51 ± 35 y 37 ± 68 ms · `meanOutputMs` −4 y −18 ms · reportada `outputLatency` 48 ms (+ base 5) → **el navegador conoce la latencia del altavoz** |
+| Latencia Bluetooth (prueba 5) | — | calibración **328 ± 53 y 344 ± 44 ms** · `meanOutputMs` 176 y 191 ms · reportada 152 ms → **el navegador subestima el Bluetooth en ~180 ms: hay que calibrar** |
+| Offset aplicado a los clips (prueba 5) | ❌ no aplicar | con 344 ms aplicados a los clips "el tono sonaba justo en el tiempo pero desfasado de la música por un tiempo": 344 ms ≈ **un tiempo entero** a 180 BPM (333 ms) → la cuenta cae en la rejilla pero un tiempo antes. Confirma que pista y clips comparten la latencia (D032) |
 
-Observaciones:
+Observaciones de César:
+- Prueba 3: "el audio siguió sonando".
+- Prueba 5: "cuando activé el offset el bombo sonaba justo en el tiempo, pero se sentía algo
+  desfasado de la música por un tiempo".
+- Prueba 6: "Tú con él" (Frankie Ruiz), m4a 128 kbps, BPM aproximado 188, primer "1" en 1750 ms.
 
-<details><summary>JSON de las pruebas</summary>
+Lecturas para el reproductor:
+- La desviación de los toques (35–68 ms) es error humano, no del motor: la calibración
+  necesita **promediar** (≥ 16 toques, descartar los primeros 2–3 y los atípicos) y dar un
+  aviso si la desviación supera ~60 ms.
+- Decodificar una canción real de 5 min tarda ~2.7 s en este equipo: el reproductor necesita
+  un estado de carga ("Preparando la canción…") y no puede decodificar al tocar *Iniciar*.
+- 116 MB por canción a 48 kHz: hay que tener **una sola canción decodificada a la vez** y
+  soltar el buffer al salir de la sesión.
 
-```json
-// prueba 1
+### iPhone / iOS — pendiente (sin dispositivo)
 
-// prueba 2
+César no tiene iPhone. Todo lo específico de iOS se prueba después y **bloquea la salida en
+iOS** (web en Safari y, más adelante, la app en Swift), no el resto de 07a. Qué hay que
+probar, con el mismo protocolo y la misma página:
 
-// prueba 3
-
-// prueba 4
-
-// prueba 5
-
-// prueba 6
-
-// prueba 8
-```
-
-</details>
-
-### iPhone — modelo: ______ · iOS __ · Safari · vía: (a) / (b)
-
-| Criterio | ¿Pasa? | Dato |
+| # | Qué | Por qué en iOS en particular |
 |---|---|---|
-| A · deriva tras 4 min (prueba 1) | | `drift.total.maxAbsDriftMs` = · late/skipped = |
-| A · deriva tras reanudar (prueba 2) | | `drift.sinceResume.maxAbsDriftMs` = · al oído: |
-| B · sin recarga por memoria (1 y 6) | | `memory.bufferBytes` = · `prepareMs` = |
-| C · Wake Lock 4 min (prueba 1) | | `wakeLock.status` = (Wake Lock existe desde iOS 16.4) |
-| D · reanuda tras bloqueo (prueba 3) | | ¿`interrupted`? · ¿Reanudar funcionó? |
-| Latencia altavoz (prueba 4) | — | `meanMs` ± `sdMs` = · `meanOutputMs` = · reportada = |
-| Latencia Bluetooth (prueba 5) | — | `meanMs` ± `sdMs` = · `meanOutputMs` = · reportada = · offset en clips: se adelantan sí/no |
-| Interruptor de silencio (prueba 7) | — | con silencio: se oye sí/no · sin silencio: |
+| i1 | Pruebas 1–6 y 8 completas en Safari | Safari tiene su propio motor de audio y límites de memoria por pestaña más bajos |
+| i2 | Memoria: canción real de 5–6 min (~116 MB PCM) sin que Safari recargue la pestaña | iOS mata pestañas por memoria antes que Android; es el riesgo B |
+| i3 | Bloqueo y segundo plano: ¿el contexto pasa a `interrupted`? ¿*Reanudar* lo recupera sin desfase? ¿el audio sigue sonando bloqueado? | En iOS el audio web suele pararse al bloquear; condiciona si la sesión debe pausarse sola |
+| i4 | Interruptor de silencio (prueba 7): ¿Web Audio suena con el interruptor en silencio? | Si no suena, la sesión necesita un aviso ("quita el modo silencio") |
+| i5 | Wake Lock (existe desde iOS 16.4): ¿mantiene la pantalla los 4 min? | Versiones anteriores no lo tienen: haría falta un plan B |
+| i6 | Latencia con AirPods y otro Bluetooth: `meanMs`, `meanOutputMs`, `outputLatency` reportada | Saber si Safari reporta bien la latencia o hay que calibrar siempre, como en Android |
+| i7 | Llamada entrante o alarma durante la sesión: ¿se reanuda? | Interrupción de audio del sistema, típica de iOS |
+| i8 | Como app instalada en la pantalla de inicio (PWA) | Cambian el ciclo de vida y el Wake Lock |
+| i9 | Repetir i1–i7 en la app nativa (AVAudioEngine) cuando exista | D005: las nativas reimplementan el reproductor con el mismo contrato |
 
-Observaciones:
+Quedan anotados también en `context/plans/pendientes.md` (local).
 
-<details><summary>JSON de las pruebas</summary>
+### Pendiente en Android
 
-```json
-// prueba 1
-
-// prueba 2
-
-// prueba 3
-
-// prueba 4
-
-// prueba 5
-
-// prueba 6
-
-// prueba 8
-```
-
-</details>
+- Modelo exacto del equipo probado.
+- Repetir 1, 3 y 6 en un Android de **gama media real** (4 GB de RAM o menos): este tenía ≥ 8 GB.
+- Prueba 8 (210 BPM), opcional: con márgenes de 154–176 ms a 180 BPM no se espera problema.
 
 ## Humo en escritorio (hecho al construir la página)
 

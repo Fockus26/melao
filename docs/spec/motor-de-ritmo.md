@@ -64,12 +64,28 @@ Reglas:
 
 - Programar los clips contra el **reloj de audio** (Web Audio `AudioContext.currentTime`;
   en nativo, el reloj del motor de audio), nunca con temporizadores de UI.
-- Tolerancia: cada clip suena a ±20 ms de su `tMs` corregido.
-- Aplicar la calibración del usuario: `tProgramado = tMs − latencyOffsetMs`.
+- Canción y clips en **el mismo** motor de audio (un `AudioContext`; en nativo, un solo
+  motor): comparten la latencia de salida. Los clips se programan en su `tMs` **sin
+  restar latencia**; tolerancia: cada clip suena a ±20 ms de su `tMs` respecto de la canción.
+- La calibración del usuario (`latencyOffsetMs`, guardada por dispositivo de salida) se
+  aplica **solo a lo que no sale por el audio**: la UI marca cada evento cuando la posición
+  del reloj llega a `tMs + latencyOffsetMs`, y los toques del usuario se comparan contra
+  `tMs + latencyOffsetMs`. Nunca se resta a los clips: con Bluetooth (~340 ms) la cuenta se
+  adelantaría un tiempo entero (D032).
+- Sin calibración, `latencyOffsetMs` = la latencia que reporta la plataforma
+  (`outputLatency + baseLatency` en web). En altavoz basta; con Bluetooth el navegador la
+  subestima (~150 ms reportados vs. ~340 ms reales en Android): el reproductor ofrece
+  calibrar al detectar audífonos o si el usuario lo pide desde el Perfil.
+- Calibrar: ≥ 16 toques sobre la pista sola, descartando los 2 primeros y los atípicos;
+  si la desviación supera ~60 ms, se pide repetir.
 - Pausa, reanudar y salir sin desfasar la cuenta.
 - La UI (número grande, paso actual, siguiente, fila de tiempos) se actualiza con el mismo
   reloj; el tiempo activo se marca con color **y** subrayado.
-- Pantalla encendida durante la sesión (Wake Lock o equivalente).
+- Pantalla encendida durante la sesión (Wake Lock o equivalente); se vuelve a pedir al
+  regresar a la app.
+- Una sola canción decodificada a la vez (una canción de 5 min ocupa ~116 MB en PCM a
+  48 kHz) y se libera al salir de la sesión. Decodificar tarda segundos (~2.7 s para 5 min
+  en Android): la canción se prepara antes de *Iniciar*, con estado de carga visible.
 - Ajustes del perfil que filtran eventos: cuenta hablada sí/no, volumen de la voz.
 
 ## 7. Clips de voz

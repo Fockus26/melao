@@ -12,6 +12,7 @@
     "test": "bun test ./tests/unit --dots --pass-with-no-tests",
     "test:related": "bun scripts/test-related.ts",
     "shots:publish": "bash scripts/publish-pr-shots.sh .pr-shots",
+    "tokens": "bun scripts/tokens.ts",
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {

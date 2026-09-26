@@ -37,7 +37,10 @@
 | D029 | Producto | Precios: Básico US$20/mes, Consultoría US$40/mes; límites de Consultoría se definen en v2 | `decisions/04-producto.md` | Aprobado |
 | D030 | Audio | Planificador two clocks: lookahead 200 ms, bucle 25 ms, un solo AudioContext; offset de latencia solo a la UI por defecto | `decisions/06-audio.md` | Pendiente (teléfonos) |
 | D031 | Audio | Spike con pista sintética de 4 min (OfflineAudioContext por frases) o archivo local; clips sintéticos | `decisions/06-audio.md` | Implementado (spike) |
+| D033 | Arquitectura | Tokens: generador propio `scripts/tokens.ts` → `app/tokens.css` (@theme de Tailwind v4), no Style Dictionary | `decisions/07-tokens.md` | Implementado |
+| D034 | Arquitectura | Tema sin flash: clase `.dark` + script inline en `<head>`, preferencia en localStorage; sin next-themes | `decisions/07-tokens.md` | Implementado |
+| D035 | Tipografía | Utilidades `type-<rol>` (rol completo) y `text-<rol>` (solo tamaño); cifras tabulares en numeric-* y stage-* | `decisions/07-tokens.md` | Implementado |
 
 <!-- ID secuencial, nunca se reutiliza; una decisión que cambia se marca "Obsoleta → D0NN"
      y se añade la nueva. Si hay unidades en paralelo, el orquestador reserva un rango de IDs
-     por unidad para que no choquen. Próximo ID libre: D030. -->
+     por unidad para que no choquen. Próximo ID libre: D036 (D032 reservado a los resultados del spike). -->

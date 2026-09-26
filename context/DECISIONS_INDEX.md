@@ -33,7 +33,9 @@
 | D025 | Proceso | Versión con Changesets; PR de versión lo abre la Action y lo mergea César; pool de worktrees | `decisions/03-arquitectura.md` | Implementado |
 | D026 | Diseño | Dirección Salón editorial · Gala; escenario en layout Compás; logo C1 Modulada; planes B | `decisions/05-diseno.md` | Aprobado |
 | D027 | Diseño | El título del curso es el selector de estilo (abre sheet); segmentado en Practicar | `decisions/05-diseno.md` | Aprobado |
+| D028 | Diseño | Progreso fuera de la barra: se abre desde Inicio y Perfil; ítem 6 del lateral (≥ 1024) | `decisions/05-diseno.md` | Aprobado |
+| D029 | Producto | Precios: Básico US$20/mes, Consultoría US$40/mes; límites de Consultoría se definen en v2 | `decisions/04-producto.md` | Aprobado |
 
 <!-- ID secuencial, nunca se reutiliza; una decisión que cambia se marca "Obsoleta → D0NN"
      y se añade la nueva. Si hay unidades en paralelo, el orquestador reserva un rango de IDs
-     por unidad para que no choquen. Próximo ID libre: D028. -->
+     por unidad para que no choquen. Próximo ID libre: D030. -->

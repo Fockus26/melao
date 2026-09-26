@@ -5,8 +5,9 @@ pantalla. El diseño visual de cada una está en `design/HANDOFF.md`; las rutas 
 paréntesis son solo referencia.
 
 **Navegación de la app:** barra inferior con 5 destinos — Inicio · Curso · Practicar · Pasos ·
-Perfil (en pantallas ≥ 1024 px, navegación lateral). La sesión de práctica y la lección ocupan
-la pantalla completa, sin barra.
+Perfil (en pantallas ≥ 1024 px, navegación lateral). **Progreso** no ocupa un destino de la
+barra: se abre desde Inicio ("Ver progreso") y desde Perfil; en la navegación lateral (≥ 1024 px)
+es el ítem 6 (D028). La sesión de práctica y la lección ocupan la pantalla completa, sin barra.
 
 **Estados comunes a toda pantalla con datos:** cargando (esqueleto por bloque) · vacío ·
 error con reintento · sin conexión · sin suscripción activa (lleva a Planes).

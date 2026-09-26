@@ -17,3 +17,11 @@ estilo". En Practicar, segmentado mientras haya 2 estilos. No se implementa como
 **Por qué:** corrección explícita de César ("más elegante"). La alternativa aprobable son pestañas
 con indicador deslizante.
 **Estado:** Aprobado — se implementa en la fase 05
+
+## D028 — Progreso fuera de la barra inferior
+**Decisión:** Progreso no es un destino de la barra (se mantienen 5: Inicio · Curso · Practicar ·
+Pasos · Perfil). Se abre desde Inicio ("Ver progreso") y desde Perfil; en la navegación lateral
+(≥ 1024 px) es el ítem 6.
+**Por qué:** recomendación del handoff (§9.3), aprobada por César el 2026-09-26. Seis destinos en
+la barra bajan cada uno a menos de 64 px de ancho a 360 px.
+**Estado:** Aprobado — se implementa en la fase 02 (AppShell)

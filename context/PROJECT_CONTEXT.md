@@ -23,8 +23,8 @@ backend (D003, D005). El contrato multiplataforma vive en `docs/spec/`.
   combinaciones + repaso espaciado (estilo Anki). Plan superior con consultoría personalizada.
 - **Qué debe lograr:** que el alumno practique con regularidad y pague la mensualidad.
 - **Acción principal:** completar una práctica con el coach (lección o práctica libre).
-- **Modelo:** suscripción mensual. Básico ~$20 USD/mes (**PENDIENTE confirmar**), Consultoría
-  (**PENDIENTE precio**). Sin pasarela en la v1: el pago es un placeholder que activa por $0.
+- **Modelo:** suscripción mensual. Básico US$20/mes, Consultoría US$40/mes (D029; qué incluye
+  cada plan: PENDIENTE). Sin pasarela en la v1: el pago es un placeholder que activa por $0.
 - **Profesor y admin:** César (único). El rol `teacher` existe en el modelo para el futuro.
 
 ## Público objetivo

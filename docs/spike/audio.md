@@ -1,0 +1,193 @@
+# Spike de audio (07a·1) — protocolo de prueba en teléfonos
+
+Página: **`/spike/audio`** (herramienta interna, `noindex`, sin enlaces). Código: `lib/audio/`
+(motor, sin React) y `app/spike/audio/` (la página). Decisiones: D030 (planificador) y D031
+(fuente de audio del spike) en `context/decisions/06-audio.md`.
+
+Pregunta que responde: **¿la web aguanta el reproductor del coach en un Android de gama media
+y en un iPhone?** Memoria de una canción decodificada (~85 MB en PCM), deriva entre canción y
+clips, latencia con Bluetooth, Wake Lock y reanudar tras bloqueo. De esto depende el diseño
+del reproductor (fase 07a) y si hace falta nativo antes de lo previsto.
+
+## Criterios de aprobado
+
+| # | Criterio | Dónde se lee |
+|---|---|---|
+| A | Deriva ≤ 20 ms tras 4 min **y** tras pausar/reanudar; 0 clips tarde u omitidos | `drift.total`, `drift.sinceResume` + oído (el tono del "1" cae encima del bombo) |
+| B | Sin recarga por memoria al preparar ni al sonar | no aparece el aviso amarillo "Al volver a cargar…"; `recovered` vacío |
+| C | Wake Lock mantiene la pantalla encendida los 4 min | pantalla no se apaga; `wakeLock.status` = activo |
+| D | Se reanuda tras bloqueo sin desfase | Reanudar funciona; `drift.sinceResume` ≤ 20 ms |
+
+## Qué hay en la página
+
+1. **Audio.** *Pista sintética*: 4 min estéreo a 44.1 kHz generados en el teléfono (percusión,
+   clave 3-2, bombo fuerte en el 1 y suave en el 5): ~81 MiB decodificados. *Archivo del
+   teléfono*: una canción tuya; no se sube a ningún lado. Con archivo tecleas el BPM y el
+   instante del primer "1" en ms (no hay detector).
+2. **Práctica.** Cuenta de salsa (1 2 3 · 5 6 7) con tonos distintos por número y un
+   "anuncio" de dos notas brillantes en el 5–6 cuando cambia el paso. Número grande y fila de
+   tiempos leídos del reloj de audio. Iniciar · Pausar · Reanudar · Salir.
+3. **Calibración.** Suena solo la pista; tocas el botón grande en cada bombo (el 1 y el 5 de
+   cada frase, o sea cada 4 tiempos): 16 toques. Da el desfase medio y su desviación, y lo
+   deja como `latencyOffsetMs`.
+4. **Mediciones** en vivo y **Copiar resultados** (JSON). Si el portapapeles falla, el JSON
+   aparece en un cuadro de texto para copiarlo a mano.
+
+### Cómo leer las mediciones
+
+- **Deriva** (`drift`): para cada clip, diferencia entre el instante en que se programó y la
+  posición de la pista en ese instante (las dos en el reloj de audio). Es 0 salvo que el
+  bucle llegue tarde (`late`; si pasa de 50 ms, el clip se omite: `skipped`) o que reanudar
+  calcule mal la posición. **No mide lo que sale por el altavoz**: para eso está el oído (el
+  tono del "1" tiene que sonar pegado al bombo, sin "flam").
+- **Margen mínimo del lookahead**: la menor anticipación con que se programó un clip. Cerca
+  de 0 = el bucle apenas llega (p. ej. el teléfono lo frena en segundo plano).
+- **Reloj audio − pared**: cuánto se separan el reloj de audio y el del sistema en el tramo
+  actual (sin pausas). Informativo; > 100 ppm sostenido desalinearía la UI, no el audio.
+- **Latencia**: `baseLatency` / `outputLatency` que reporta el navegador, y la calibración:
+  - `meanMs`: desfase del toque con el reloj de programación = latencia real de salida +
+    tu anticipación. **Es la cifra que importa.**
+  - `meanOutputMs`: el mismo desfase usando `getOutputTimestamp()`. Si el navegador compensa
+    bien su latencia, queda cerca de 0 (solo tu error). Con Bluetooth, si queda lejos de 0,
+    el navegador no conoce la latencia real y hay que calibrar siempre.
+- **Buffer decodificado**: bytes del `AudioBuffer`. El heap JS casi no cambia: el PCM vive
+  fuera del heap; el riesgo es que el sistema mate la pestaña, y eso lo detecta la marca en
+  `sessionStorage` (aviso amarillo al recargar).
+
+### Sobre `latencyOffsetMs` y los clips
+
+La pista y los clips salen por el **mismo** `AudioContext`: la latencia de salida los retrasa
+a los dos por igual, así que entre ellos no hay desfase aunque el Bluetooth sume 200 ms. Por
+eso la página usa la calibración para **pintar** la cuenta a tiempo con lo que se oye y, por
+defecto, **no** la aplica a los clips (interruptor "Aplicar el offset a los clips"). La prueba
+5 lo comprueba de oído: si con el interruptor encendido los tonos se adelantan al bombo, la
+fórmula `tProgramado = tMs − latencyOffsetMs` de `docs/spec/motor-de-ritmo.md` §6 debe pasar
+a aplicarse solo a la UI (se decide en D032 con los resultados).
+
+## Cómo llegar desde el teléfono (HTTPS)
+
+Wake Lock exige contexto seguro (HTTPS). Dos vías:
+
+**(b) Recomendada — preview de Vercel del PR.** HTTPS real, sin avisos de certificado, y
+funciona igual en Android e iPhone (Safari es el más estricto con certificados propios).
+Requiere conectar el repo a Vercel (acción manual de César, una vez): cada PR trae su URL
+de preview; se abre `<url-del-preview>/spike/audio`.
+
+**(a) Inmediata — servidor de desarrollo en la LAN.** PC y teléfono en la misma Wi-Fi:
+
+```bash
+ipconfig                                   # IPv4 del PC, p. ej. 192.168.1.20
+bun run dev -- --experimental-https -H 192.168.1.20 -p 4301
+```
+
+- En el teléfono: `https://192.168.1.20:4301/spike/audio`.
+- `--experimental-https` crea un certificado local con mkcert: el teléfono no lo conoce y
+  muestra un aviso ("La conexión no es privada" / "Este sitio no es seguro") → *Avanzado* →
+  *Continuar* (Android) o *Mostrar detalles* → *visitar este sitio web* (iPhone).
+- `-H` con la **IP del PC**, no `0.0.0.0`: Next 16 bloquea los recursos de desarrollo pedidos
+  desde otro host salvo el del arranque (`allowedDevOrigins`); con `0.0.0.0` la página carga
+  sin JavaScript.
+- Windows puede pedir permiso de firewall para Node la primera vez: acepta en red privada.
+- En la página, `env.isSecureContext` del JSON debe ser `true`. Si Wake Lock da error con
+  el certificado local, usa la vía (b).
+
+## Protocolo (repetir en cada teléfono)
+
+Antes de empezar: batería > 30 %, sin ahorro de energía, volumen medio, brillo automático
+apagado, la página abierta en el navegador por defecto (Chrome en Android, Safari en
+iPhone). **Tras cada prueba**: *Copiar resultados* y pegar el JSON en la tabla del teléfono.
+
+| # | Prueba | Duración | Pasos |
+|---|---|---|---|
+| 1 | Memoria + deriva larga + Wake Lock | ~5 min | Pista sintética, BPM **180** → *Preparar audio* (anota si tarda) → *Iniciar* → **no tocar nada** hasta "Terminó la pista". Mira que la pantalla no se apague. Copiar. |
+| 2 | Pausa y reanudar | ~3 min | *Iniciar* → a los ~30 s *Pausar* 10 s → *Reanudar*; repetir 3 veces. Escucha tras cada reanudar: el tono del 1 pegado al bombo. *Salir* → Copiar. |
+| 3 | Bloqueo y segundo plano | ~3 min | *Iniciar* → a los 30 s bloquea el teléfono (botón de encendido) 20 s → desbloquea. Anota si el audio siguió sonando bloqueado. Si dice "Interrumpido", *Reanudar*. Luego sal a la pantalla de inicio 20 s y vuelve; igual. 30 s más → *Salir* → Copiar. |
+| 4 | Latencia con altavoz | ~2 min | Salida "altavoz" → *Calibrar con altavoz* → 16 toques en cada bombo. Repite una vez más (2 corridas). *Iniciar* 30 s: ¿el número grande cambia a la vez que suena el bombo? *Salir* → Copiar. |
+| 5 | Latencia con Bluetooth | ~4 min | Conecta audífonos Bluetooth y **recarga la página** (la latencia se lee al crear el audio). *Preparar audio* → salida "bluetooth" → *Calibrar* ×2. *Iniciar* 30 s con "Aplicar el offset a los clips" **apagado**: ¿tonos pegados al bombo? *Salir*, enciende el interruptor, *Iniciar* 30 s: ¿los tonos se adelantan? *Salir* → Copiar. |
+| 6 | Canción real (memoria) | ~3 min | Recarga. *Archivo del teléfono* → elige una canción de 4–6 min (mp3/m4a) → BPM aproximado y primer "1" en ms (si no lo sabes, 0) → *Preparar audio*: anota el tiempo de preparación y el tamaño. *Iniciar* 1 min → *Salir* → Copiar. Si la pestaña se recarga sola, aparece el aviso amarillo: cópialo también. |
+| 7 | Solo iPhone: interruptor de silencio | ~1 min | Con el interruptor en **silencio**, *Iniciar*: ¿se oye? Luego sin silencio. Anota los dos. |
+| 8 | Extremos de BPM (opcional) | ~2 min | Recarga, pista sintética a **210** BPM → 1 min → Copiar. A 210 un tiempo dura 286 ms: es el caso más apretado del lookahead. |
+
+Si algo falla (pantalla en blanco, error rojo, la página se recarga), anótalo en
+"Observaciones" con el paso exacto; el JSON de la siguiente carga trae el rastro en
+`recovered`.
+
+## Resultados
+
+### Android — modelo: ______ · Android __ · Chrome __ · vía: (a) / (b)
+
+| Criterio | ¿Pasa? | Dato |
+|---|---|---|
+| A · deriva tras 4 min (prueba 1) | | `drift.total.maxAbsDriftMs` = · late/skipped = |
+| A · deriva tras reanudar (prueba 2) | | `drift.sinceResume.maxAbsDriftMs` = · al oído: |
+| B · sin recarga por memoria (1 y 6) | | `memory.bufferBytes` = · `prepareMs` = |
+| C · Wake Lock 4 min (prueba 1) | | `wakeLock.status` = |
+| D · reanuda tras bloqueo (prueba 3) | | ¿siguió sonando bloqueado? · `ctxState` tras volver = |
+| Latencia altavoz (prueba 4) | — | `meanMs` ± `sdMs` = · `meanOutputMs` = · reportada = |
+| Latencia Bluetooth (prueba 5) | — | `meanMs` ± `sdMs` = · `meanOutputMs` = · reportada = · offset en clips: se adelantan sí/no |
+
+Observaciones:
+
+<details><summary>JSON de las pruebas</summary>
+
+```json
+// prueba 1
+
+// prueba 2
+
+// prueba 3
+
+// prueba 4
+
+// prueba 5
+
+// prueba 6
+
+// prueba 8
+```
+
+</details>
+
+### iPhone — modelo: ______ · iOS __ · Safari · vía: (a) / (b)
+
+| Criterio | ¿Pasa? | Dato |
+|---|---|---|
+| A · deriva tras 4 min (prueba 1) | | `drift.total.maxAbsDriftMs` = · late/skipped = |
+| A · deriva tras reanudar (prueba 2) | | `drift.sinceResume.maxAbsDriftMs` = · al oído: |
+| B · sin recarga por memoria (1 y 6) | | `memory.bufferBytes` = · `prepareMs` = |
+| C · Wake Lock 4 min (prueba 1) | | `wakeLock.status` = (Wake Lock existe desde iOS 16.4) |
+| D · reanuda tras bloqueo (prueba 3) | | ¿`interrupted`? · ¿Reanudar funcionó? |
+| Latencia altavoz (prueba 4) | — | `meanMs` ± `sdMs` = · `meanOutputMs` = · reportada = |
+| Latencia Bluetooth (prueba 5) | — | `meanMs` ± `sdMs` = · `meanOutputMs` = · reportada = · offset en clips: se adelantan sí/no |
+| Interruptor de silencio (prueba 7) | — | con silencio: se oye sí/no · sin silencio: |
+
+Observaciones:
+
+<details><summary>JSON de las pruebas</summary>
+
+```json
+// prueba 1
+
+// prueba 2
+
+// prueba 3
+
+// prueba 4
+
+// prueba 5
+
+// prueba 6
+
+// prueba 8
+```
+
+</details>
+
+## Humo en escritorio (hecho al construir la página)
+
+Chromium de Playwright, sin salida de audio real (2026-09-26): pista sintética preparada en
+~0.2 s (80.7 MiB); 557 eventos a 180 BPM; iniciar → pausar → reanudar sin clips tarde ni
+omitidos, deriva 0.00 ms total y tras reanudar, margen mínimo del lookahead 108–180 ms; la
+cuenta avanza 7-8-1-2-… y se congela en pausa; calibración con 16 toques simulados; JSON
+válido; archivo WAV local decodificado; consola sin errores. Nada de esto sustituye la prueba
+en teléfonos.

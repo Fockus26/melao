@@ -35,6 +35,9 @@
 | D027 | Diseño | El título del curso es el selector de estilo (abre sheet); segmentado en Practicar | `decisions/05-diseno.md` | Aprobado |
 | D028 | Diseño | Progreso fuera de la barra: se abre desde Inicio y Perfil; ítem 6 del lateral (≥ 1024) | `decisions/05-diseno.md` | Aprobado |
 | D029 | Producto | Precios: Básico US$20/mes, Consultoría US$40/mes; límites de Consultoría se definen en v2 | `decisions/04-producto.md` | Aprobado |
+| D033 | Arquitectura | Tokens: generador propio `scripts/tokens.ts` → `app/tokens.css` (@theme de Tailwind v4), no Style Dictionary | `decisions/07-tokens.md` | Implementado |
+| D034 | Arquitectura | Tema sin flash: clase `.dark` + script inline en `<head>`, preferencia en localStorage; sin next-themes | `decisions/07-tokens.md` | Implementado |
+| D035 | Tipografía | Utilidades `type-<rol>` (rol completo) y `text-<rol>` (solo tamaño); cifras tabulares en numeric-* y stage-* | `decisions/07-tokens.md` | Implementado |
 
 <!-- ID secuencial, nunca se reutiliza; una decisión que cambia se marca "Obsoleta → D0NN"
      y se añade la nueva. Si hay unidades en paralelo, el orquestador reserva un rango de IDs

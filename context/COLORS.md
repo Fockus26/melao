@@ -4,6 +4,7 @@
 > y `design/tokens.json` (`color.light`, `color.dark`, `color.stage`). Si el handoff cambia, se
 > actualiza aquí y se registra la decisión. Ratios con la fórmula de WCAG 2.1.
 > "tint" = `gold-tint`, "hover" = `hover`.
+> **Implementado (fase 01):** ver "En código" al final.
 
 ## Light / Dark (`color.light` · `color.dark`)
 
@@ -60,3 +61,23 @@
   superficies). Es fácil "unificar" al 500 y romper AA.
 - El escenario **no** usa los tokens del tema: no se implementa como `dark:`.
 - Detalle en `decisions/01-colores.md`.
+
+## En código (fase 01)
+
+- Generado: `app/tokens.css` desde `design/tokens.json` con `bun run tokens` (D033). No se edita
+  a mano; `tests/unit/tokens.test.ts` falla si diverge del JSON.
+- Variables: `--color-<token>` con el nombre exacto del JSON (`--color-surface-sunken`,
+  `--color-gold-700`…). El claro va en `@theme` (`:root`); `.dark` sobrescribe los mismos
+  nombres. Escenario: `--color-stage-<token>`, fuera de `.dark` (igual en los dos temas).
+- Utilidades Tailwind: `bg-surface`, `text-text-secondary`, `border-border-input`,
+  `bg-stage-bg`, `text-stage-next`… La paleta de Tailwind está vaciada (`--color-*: initial`):
+  `bg-zinc-50` y similares no existen.
+- Tema: clase `.dark` en `<html>`, aplicada antes del primer pintado (D034, `lib/theme.ts`);
+  `dark:` = `.dark` ancestro. El escenario nunca usa `dark:`.
+- Alias para shadcn (D006): `--background`, `--foreground`, `--card`, `--popover`, `--primary`,
+  `--secondary`, `--muted`, `--accent`, `--destructive`, `--border` (= divider), `--input`
+  (= border-input), `--ring` (= focus-ring), `--radius` (= radius-md). Mapa en
+  `lib/tokens/css.ts` (`SHADCN_ALIASES`).
+- Contraste: `lib/tokens/contrast.ts` (`CONTRAST_PAIRS`) declara los 134 pares del handoff
+  (texto 4.5:1, gráficos/bordes/foco 3:1) y los tests los exigen. Todos pasan tal cual; ningún
+  tono se ajustó. Referencia visual con ratios calculados: `/tokens` (noindex).

@@ -61,6 +61,11 @@
 ### 6. Perfil
 - Cuenta · rol · estilo con el que abre la app · coach (volumen de voz, cuenta hablada sí/no,
   calibración de latencia de audífonos Bluetooth, guardada por dispositivo de audio) · tema (sistema/claro/oscuro) · suscripción · cerrar sesión.
+- **Tema (D034):** por defecto "sistema", que sigue el ajuste claro/oscuro del dispositivo y
+  cambia en vivo si el usuario lo cambia. La preferencia se guarda en el dispositivo y se aplica
+  antes de mostrar la primera pantalla: nunca se ve un destello del otro tema al abrir. La
+  práctica va siempre en escenario (negro), con cualquier tema (D007). Si además se sincroniza
+  con la cuenta (`profiles`, tema) se decide al construir Perfil (07b).
 
 ### 7. Panel admin (solo `admin`)
 - Estilos: cuenta hablada, anticipación del anuncio, bandas de BPM por dificultad,

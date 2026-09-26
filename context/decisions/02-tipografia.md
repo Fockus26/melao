@@ -8,4 +8,4 @@ serif en la cuenta del escenario se lee peor a distancia; Geist ya viene integra
 `next/font` y trae cifras tabulares, así los números no "bailan" al cambiar.
 **Alternativa descartada:** serif en todo (dirección A) — pierde legibilidad en controles y
 números; sans en todo (dirección B) — se ve como una app genérica de fitness.
-**Estado:** Pendiente (Claude Design puede sustituir las familias justificando la elección)
+**Estado:** Aprobado en el handoff (Fraunces 400/500 + cursiva; Geist 400/500/600) — se implementa en la fase 01

@@ -55,7 +55,7 @@ un juego infantil con mascota.
 
 ## Restricciones de marca
 
-- **Logo:** no hay. Dirección de César: "una M elegante en negro". Claude Design propone 3.
+- **Logo:** C1 · Modulada (D026): baldosa negra con la M, sin dorado en la marca; SVG y variantes por exportar del lienzo (`design/HANDOFF.md` §5).
 - **Colores:** blanco domina, dorado acento, negro acompañante (ver `COLORS.md`).
 - **Tipografía:** ninguna obligatoria (ver `TYPOGRAPHY.md`).
 - **Otras:** la pantalla de práctica siempre en modo escenario (negro), legible a 2 m.
@@ -69,7 +69,8 @@ un juego infantil con mascota.
 - Linter / formato: Biome
 - Gestor de paquetes: **bun**
 - Documentación: **Context7** antes de usar la API de cualquier librería
-- Base de datos: Supabase Postgres (RLS en toda tabla) · migraciones con Supabase CLI
+- Base de datos: Supabase Postgres (RLS en toda tabla) · migraciones con Supabase CLI ·
+  proyecto `melao` (ref `myombgpqvzoaweudfvdv`, us-east-2), creado el 2026-09-26
 - Autenticación: Supabase Auth — email + contraseña y Google (Apple se suma antes de iOS)
 - Lógica de dominio: Edge Functions de Supabase (TypeScript); core puro en
   `supabase/functions/_shared/core/`

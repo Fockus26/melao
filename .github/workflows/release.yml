@@ -1,0 +1,45 @@
+# PR de versión con Changesets. Copiar a .github/workflows/release.yml.
+#
+# Los PRs de trabajo no tocan `version` ni CHANGELOG.md: cada uno con cambio visible trae un
+# `.changeset/<desc>.md`. Al llegar a main, esta Action abre (o actualiza) un único PR
+# "chore(release): versión" que junta esos changesets, sube `version` y escribe el CHANGELOG.
+# César lo mergea cuando quiere publicar; ningún agente lo edita ni lo mergea.
+#
+# Una vez por repo, en GitHub: Settings › Actions › General › "Allow GitHub Actions to
+# create and approve pull requests". Sin eso la Action falla al abrir el PR.
+#
+# Un PR abierto con GITHUB_TOKEN no dispara el CI: si `main` exige checks, ese PR no los
+# tendrá (César lo mergea saltándose la protección, o se cambia el token por uno de una
+# GitHub App). Solo cambia `package.json` y `CHANGELOG.md`.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  version-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      # Sin `publish-script`: las apps no se publican en npm, solo se versionan.
+      # `--bun`: Changesets 3 pide Node ≥ 22.11; así corre con el runtime de bun.
+      - uses: changesets/action@v2
+        with:
+          version-script: bunx --bun changeset version
+          pr-title: "chore(release): versión"
+          commit-message: "chore(release): versión"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -30,6 +30,7 @@
 | D022 | Producto | Estilos de baile como configuración (cuenta, anticipación, bandas BPM, roles) | `decisions/04-producto.md` | Pendiente |
 | D023 | Producto | Un rol de baile por alumno para todos los estilos + estilo por defecto | `decisions/04-producto.md` | Pendiente |
 | D024 | Colores | Contraste sin excepciones: text-muted #686868, gold-700 #80621C (gold-800 = alias), success #1C7644 | `decisions/01-colores.md` | Aprobado (handoff) |
+| D025 | Proceso | Versión con Changesets; PR de versión lo abre la Action y lo mergea César; pool de worktrees | `decisions/03-arquitectura.md` | Implementado |
 | D026 | Diseño | Dirección Salón editorial · Gala; escenario en layout Compás; logo C1 Modulada; planes B | `decisions/05-diseno.md` | Aprobado |
 | D027 | Diseño | El título del curso es el selector de estilo (abre sheet); segmentado en Practicar | `decisions/05-diseno.md` | Aprobado |
 

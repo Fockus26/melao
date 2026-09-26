@@ -24,8 +24,10 @@
   catálogo para marcarlos).
 - Planes: **Básico** (US$20/mes) y **Consultoría** (US$40/mes, D029). Sin pasarela
   en la v1: el checkout muestra el precio y activa la suscripción por $0 en el servidor.
-- Sin suscripción activa, el contenido (videos, canciones, práctica) no es accesible.
-  ¿Prueba gratis o primera lección gratis? PENDIENTE.
+- Sin suscripción activa (D036), el alumno con cuenta ve la **vitrina**: nombres de pasos, el
+  camino del curso y el catálogo de canciones, con candado. Videos, audio, práctica y repaso
+  no son accesibles; la pantalla "sin suscripción" lleva a Planes. Sin prueba gratis en la v1
+  (se puede sumar después sin cambiar el esquema).
 
 ### 2. Curso (camino tipo Duolingo)
 - Un curso por estilo, dividido en unidades; cada unidad tiene lecciones numeradas.

@@ -40,7 +40,9 @@
 | D033 | Arquitectura | Tokens: generador propio `scripts/tokens.ts` → `app/tokens.css` (@theme de Tailwind v4), no Style Dictionary | `decisions/07-tokens.md` | Implementado |
 | D034 | Arquitectura | Tema sin flash: clase `.dark` + script inline en `<head>`, preferencia en localStorage; sin next-themes | `decisions/07-tokens.md` | Implementado |
 | D035 | Tipografía | Utilidades `type-<rol>` (rol completo) y `text-<rol>` (solo tamaño); cifras tabulares en numeric-* y stage-* | `decisions/07-tokens.md` | Implementado |
+| D036 | Producto | Sin suscripción: vitrina con candado; sin prueba gratis en v1; acceso = has_active_subscription() | `decisions/04-producto.md` | Aprobado |
+| D037 | Arquitectura | Migraciones probadas con PGlite + stub de Supabase en bun test; César las aplica con db push | `decisions/03-arquitectura.md` | Implementado |
 
 <!-- ID secuencial, nunca se reutiliza; una decisión que cambia se marca "Obsoleta → D0NN"
      y se añade la nueva. Si hay unidades en paralelo, el orquestador reserva un rango de IDs
-     por unidad para que no choquen. Próximo ID libre: D036 (D032 reservado a los resultados del spike). -->
+     por unidad para que no choquen. Próximo ID libre: D038 (D032 reservado a los resultados del spike). -->

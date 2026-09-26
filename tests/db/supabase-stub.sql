@@ -1,0 +1,44 @@
+-- Stub mínimo de Supabase para correr las migraciones en PGlite (D037).
+-- Replica solo lo que las migraciones usan: roles de la API, esquema auth con
+-- auth.users y auth.uid()/auth.jwt(), y los permisos por defecto del esquema public.
+-- No es Supabase: Auth, Storage y PostgREST quedan fuera.
+
+create role anon nologin noinherit;
+create role authenticated nologin noinherit;
+create role service_role nologin noinherit bypassrls;
+
+create schema auth;
+
+create table auth.users (
+  id uuid primary key default gen_random_uuid(),
+  email text unique,
+  raw_user_meta_data jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+-- Igual que en Supabase: el sub y los claims del JWT llegan como settings de la sesión.
+create function auth.uid() returns uuid
+language sql stable
+as $$
+  select coalesce(
+    nullif(current_setting('request.jwt.claim.sub', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
+  )::uuid
+$$;
+
+create function auth.jwt() returns jsonb
+language sql stable
+as $$
+  select coalesce(nullif(current_setting('request.jwt.claims', true), ''), '{}')::jsonb
+$$;
+
+grant usage on schema auth to anon, authenticated, service_role;
+grant execute on function auth.uid(), auth.jwt() to anon, authenticated, service_role;
+
+-- Permisos por defecto de Supabase sobre public para anon y authenticated (las migraciones
+-- revocan lo que no corresponde). service_role queda sin defaults a propósito: así los tests
+-- prueban que cada migración le concede lo suyo (auto_expose_new_tables = false).
+grant usage on schema public to anon, authenticated, service_role;
+alter default privileges in schema public grant all on tables to anon, authenticated;
+alter default privileges in schema public grant all on functions to anon, authenticated;
+alter default privileges in schema public grant all on sequences to anon, authenticated;

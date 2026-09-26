@@ -20,14 +20,14 @@ import {
 } from "@/lib/audio/engine";
 
 const BTN =
-  "min-h-12 rounded-md border-2 border-white px-4 py-2 font-semibold text-white disabled:border-neutral-600 disabled:text-neutral-400 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300";
+  "min-h-12 rounded-md border-2 border-stage-count px-4 py-2 font-semibold text-stage-count disabled:border-stage-control-border disabled:text-stage-label focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stage-warning";
 const BTN_PRIMARY =
-  "min-h-12 rounded-md border-2 border-white bg-white px-4 py-2 font-semibold text-black disabled:border-neutral-600 disabled:bg-neutral-800 disabled:text-neutral-400 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300";
+  "min-h-12 rounded-md border-2 border-stage-count bg-stage-button px-4 py-2 font-semibold text-stage-on-button disabled:border-stage-control-border disabled:bg-stage-panel disabled:text-stage-label focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stage-warning";
 const INPUT =
-  "min-h-12 w-full rounded-md border-2 border-neutral-400 bg-black px-3 text-white focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300";
+  "min-h-12 w-full rounded-md border-2 border-stage-control-border bg-stage-bg px-3 text-stage-count focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stage-warning";
 const CHECK =
-  "size-5 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300";
-const SECTION = "space-y-3 border-t border-neutral-700 pt-5";
+  "size-5 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stage-warning";
+const SECTION = "space-y-3 border-t border-stage-track pt-5";
 
 const STATE_TEXT: Record<EngineSnapshot["state"], string> = {
   idle: "Sin audio. Prepara una pista.",
@@ -51,8 +51,8 @@ function ms(v: number | null | undefined, digits = 1): string {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between gap-4 border-b border-neutral-800 py-1">
-      <dt className="text-neutral-300">{label}</dt>
+    <div className="flex justify-between gap-4 border-b border-stage-track py-1">
+      <dt className="text-stage-secondary">{label}</dt>
       <dd className="text-right font-mono">{value}</dd>
     </div>
   );
@@ -134,10 +134,10 @@ export function SpikeAudio() {
   const d = s.drift;
 
   return (
-    <main className="mx-auto min-h-dvh max-w-2xl space-y-5 bg-black px-4 py-6 text-white">
+    <main className="mx-auto min-h-dvh max-w-2xl space-y-5 bg-stage-bg px-4 py-6 text-stage-count">
       <header className="space-y-1">
-        <h1 className="text-2xl font-bold">Spike de audio · motor de ritmo</h1>
-        <p className="text-neutral-300">
+        <h1 className="type-h2 font-bold">Spike de audio · motor de ritmo</h1>
+        <p className="text-stage-secondary">
           Herramienta interna para medir el reproductor en teléfonos. Protocolo
           en <code>docs/spike/audio.md</code>.
         </p>
@@ -146,7 +146,7 @@ export function SpikeAudio() {
       {s.recovered.length > 0 && (
         <div
           role="alert"
-          className="space-y-1 rounded-md border-2 border-yellow-300 p-3"
+          className="space-y-1 rounded-md border-2 border-stage-warning p-3"
         >
           <p className="font-semibold">Al volver a cargar se detectó:</p>
           <ul className="list-disc pl-5">
@@ -164,7 +164,7 @@ export function SpikeAudio() {
 
       {/* 1 · Fuente */}
       <section className={SECTION} aria-labelledby="h-fuente">
-        <h2 id="h-fuente" className="text-xl font-bold">
+        <h2 id="h-fuente" className="type-h3 font-bold">
           1 · Audio
         </h2>
         <fieldset className="space-y-2" disabled={active}>
@@ -206,7 +206,7 @@ export function SpikeAudio() {
               onChange={(e) => setBpm(Number(e.target.value))}
             />
             {!bpmValid && (
-              <span id="bpm-error" className="block text-yellow-300">
+              <span id="bpm-error" className="block text-stage-warning">
                 Escribe un BPM entre 100 y 210.
               </span>
             )}
@@ -232,7 +232,7 @@ export function SpikeAudio() {
             <input
               type="file"
               accept="audio/*"
-              className="block min-h-12 w-full text-white file:mr-3 file:min-h-12 file:rounded-md file:border-2 file:border-white file:bg-black file:px-4 file:text-white"
+              className="block min-h-12 w-full text-stage-count file:mr-3 file:min-h-12 file:rounded-md file:border-2 file:border-stage-count file:bg-stage-bg file:px-4 file:text-stage-count"
               disabled={active}
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             />
@@ -255,15 +255,15 @@ export function SpikeAudio() {
 
       {/* 2 · Práctica */}
       <section className={SECTION} aria-labelledby="h-practica">
-        <h2 id="h-practica" className="text-xl font-bold">
+        <h2 id="h-practica" className="type-h3 font-bold">
           2 · Práctica
         </h2>
         <div className="flex items-center gap-6">
-          <p className="w-28 text-center font-mono text-8xl font-bold tabular-nums">
+          <p className="w-28 text-center type-stage-count tabular-nums">
             <span className="sr-only">Tiempo </span>
             {view.beatInPhrase ?? "–"}
           </p>
-          <p className="text-lg">
+          <p className="type-stage-current">
             Paso: <span className="font-semibold">{view.step ?? "—"}</span>
           </p>
         </div>
@@ -274,10 +274,10 @@ export function SpikeAudio() {
               <li
                 key={n}
                 aria-current={on ? "true" : undefined}
-                className={`rounded py-2 text-center font-mono text-lg ${
+                className={`rounded-sm py-2 text-center type-stage-beat ${
                   on
-                    ? "bg-white font-bold text-black underline decoration-4 underline-offset-4"
-                    : "border border-neutral-600 text-neutral-200"
+                    ? "bg-stage-button font-bold text-stage-on-button underline decoration-4 underline-offset-4"
+                    : "border border-stage-control-border text-stage-secondary"
                 }`}
               >
                 {n}
@@ -323,10 +323,10 @@ export function SpikeAudio() {
 
       {/* 3 · Calibración */}
       <section className={SECTION} aria-labelledby="h-calibracion">
-        <h2 id="h-calibracion" className="text-xl font-bold">
+        <h2 id="h-calibracion" className="type-h3 font-bold">
           3 · Calibración de latencia
         </h2>
-        <p className="text-neutral-300">
+        <p className="text-stage-secondary">
           Suena solo la pista. Toca el botón grande en cada golpe fuerte de
           bombo (el 1 y el 5): 16 toques.
         </p>
@@ -355,7 +355,7 @@ export function SpikeAudio() {
         </button>
         <button
           type="button"
-          className="min-h-32 w-full rounded-md border-2 border-white text-2xl font-bold text-white disabled:border-neutral-600 disabled:text-neutral-400 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300"
+          className="min-h-32 w-full rounded-md border-2 border-stage-count type-h2 font-bold text-stage-count disabled:border-stage-control-border disabled:text-stage-label focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stage-warning"
           disabled={s.state !== "calibrating"}
           onPointerDown={onTap}
           onKeyDown={onTapKey}
@@ -365,7 +365,7 @@ export function SpikeAudio() {
             : "Toca aquí (activo al calibrar)"}
         </button>
         {s.calibrations.length > 0 && (
-          <ul className="space-y-1 font-mono text-sm">
+          <ul className="space-y-1 font-mono type-small">
             {s.calibrations.map((c, i) => (
               <li key={`${c.label}-${i}`}>
                 {c.label}: {ms(c.meanMs)} ± {ms(c.sdMs)} · salida{" "}
@@ -401,10 +401,10 @@ export function SpikeAudio() {
 
       {/* 4 · Mediciones */}
       <section className={SECTION} aria-labelledby="h-mediciones">
-        <h2 id="h-mediciones" className="text-xl font-bold">
+        <h2 id="h-mediciones" className="type-h3 font-bold">
           4 · Mediciones
         </h2>
-        <dl className="text-sm">
+        <dl className="type-small">
           <Row label="Contexto de audio" value={s.ctxState ?? "—"} />
           <Row
             label="Posición"
@@ -460,8 +460,8 @@ export function SpikeAudio() {
           />
         </dl>
 
-        <details className="rounded-md border border-neutral-700 p-3">
-          <summary className="min-h-12 cursor-pointer content-center font-semibold focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300">
+        <details className="rounded-md border border-stage-track p-3">
+          <summary className="min-h-12 cursor-pointer content-center font-semibold focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stage-warning">
             Ajustes del planificador
           </summary>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -502,11 +502,11 @@ export function SpikeAudio() {
           </div>
         </details>
 
-        <details className="rounded-md border border-neutral-700 p-3">
-          <summary className="min-h-12 cursor-pointer content-center font-semibold focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300">
+        <details className="rounded-md border border-stage-track p-3">
+          <summary className="min-h-12 cursor-pointer content-center font-semibold focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-stage-warning">
             Registro ({s.log.length})
           </summary>
-          <ol className="mt-2 max-h-72 space-y-1 overflow-y-auto font-mono text-xs">
+          <ol className="mt-2 max-h-72 space-y-1 overflow-y-auto font-mono type-caption">
             {s.log
               .slice(-40)
               .reverse()
@@ -533,7 +533,7 @@ export function SpikeAudio() {
             <textarea
               readOnly
               rows={8}
-              className="w-full rounded-md border-2 border-neutral-400 bg-black p-2 font-mono text-xs text-white focus-visible:outline-4 focus-visible:outline-yellow-300"
+              className="w-full rounded-md border-2 border-stage-control-border bg-stage-bg p-2 font-mono type-caption text-stage-count focus-visible:outline-4 focus-visible:outline-stage-warning"
               value={resultsText}
               onFocus={(e) => e.currentTarget.select()}
             />

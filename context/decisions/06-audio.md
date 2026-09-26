@@ -50,7 +50,7 @@ cuenta caía un tiempo antes.
 **Alternativa descartada:** restar la latencia a los clips (adelanta la voz respecto de la
 canción); confiar siempre en la latencia reportada (falla con Bluetooth); adelantar la app
 nativa por riesgo de audio (en Android no hace falta).
-**Límites:** probado en un solo Android de ≥ 8 GB de RAM. **iOS/Safari sin probar** (César no
+**Límites:** probado en un solo Android (POCO X6 Pro, ≥ 8 GB de RAM). **iOS/Safari sin probar** (César no
 tiene iPhone): lista i1–i9 en `docs/spike/audio.md`; bloquea la salida en iOS, no el resto de
-07a. Falta un Android de gama media real (≤ 4 GB).
+07a. Falta un Android de gama media real (≤ 4 GB): pospuesto, no bloquea.
 **Estado:** Aprobado para Android · iOS pendiente

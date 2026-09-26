@@ -117,10 +117,11 @@ Si algo falla (pantalla en blanco, error rojo, la página se recarga), anótalo 
 
 ## Resultados
 
-### Android — 2026-09-26 · Android 10 · Chrome 153 · ≥ 8 GB RAM, 8 núcleos · vía (b) producción
+### Android — 2026-09-26 · POCO X6 Pro · Chrome 153 · ≥ 8 GB RAM, 8 núcleos · vía (b) producción
 
-Modelo exacto: por anotar (el user agent reducido de Chrome no lo da). `deviceMemory` topa en
-8, así que el equipo tiene **8 GB o más**: no es gama media estricta (ver pendientes).
+Equipo: **POCO X6 Pro** (Dimensity 8300-Ultra; gama media-alta de 2024). El "Android 10" del user
+agent es el valor congelado de Chrome, no la versión real (HyperOS, Android 14+). `deviceMemory` topa en
+8: el equipo tiene **8 GB o más**, no es gama media estricta (ver pendientes).
 Salida 48 kHz. Pruebas 1–6 hechas por César; la 8 (210 BPM) quedó sin hacer (opcional).
 
 | Criterio | ¿Pasa? | Dato |
@@ -172,8 +173,9 @@ Quedan anotados también en `context/plans/pendientes.md` (local).
 
 ### Pendiente en Android
 
-- Modelo exacto del equipo probado.
-- Repetir 1, 3 y 6 en un Android de **gama media real** (4 GB de RAM o menos): este tenía ≥ 8 GB.
+- Repetir 1, 3 y 6 en un Android de **gama media real** (4 GB de RAM o menos): el POCO X6 Pro
+  tiene ≥ 8 GB. **Pospuesto:** César no tiene otro equipo ahora; se sigue con este resultado
+  y se repite cuando haya uno (antes de abrir la app al público).
 - Prueba 8 (210 BPM), opcional: con márgenes de 154–176 ms a 180 BPM no se espera problema.
 
 ## Humo en escritorio (hecho al construir la página)

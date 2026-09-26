@@ -30,7 +30,8 @@
 | D022 | Producto | Estilos de baile como configuración (cuenta, anticipación, bandas BPM, roles) | `decisions/04-producto.md` | Pendiente |
 | D023 | Producto | Un rol de baile por alumno para todos los estilos + estilo por defecto | `decisions/04-producto.md` | Pendiente |
 | D024 | Colores | Contraste sin excepciones: text-muted #686868, gold-700 #80621C (gold-800 = alias), success #1C7644 | `decisions/01-colores.md` | Pendiente |
+| D025 | Proceso | Versión con Changesets; PR de versión lo abre la Action y lo mergea César; pool de worktrees | `decisions/03-arquitectura.md` | Implementado |
 
 <!-- ID secuencial, nunca se reutiliza; una decisión que cambia se marca "Obsoleta → D0NN"
      y se añade la nueva. Si hay unidades en paralelo, el orquestador reserva un rango de IDs
-     por unidad para que no choquen. Próximo ID libre: D025. -->
+     por unidad para que no choquen. Próximo ID libre: D026. -->

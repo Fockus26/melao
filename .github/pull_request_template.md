@@ -33,7 +33,7 @@
 ## Checklist
 
 - [ ] Typecheck, lint, tests (suite completa) y build en verde
-- [ ] Cambio visible → versión en `package.json` + entrada arriba de `CHANGELOG.md`
+- [ ] Cambio visible → `.changeset/<desc>.md` (sin tocar `version` ni `CHANGELOG.md`)
 - [ ] UI: WCAG 2.1 AA (teclado, foco visible, 4.5:1, ningún estado solo por color, sin scroll horizontal a 320 px)
 - [ ] Sin valores mágicos: solo tokens
 - [ ] Copy nuevo marcado como provisional si no es final

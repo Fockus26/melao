@@ -1,7 +1,7 @@
 # Typography — Melao
 
 > **Estado: final, reconciliado con el handoff (2026-09-26).** Fuente: `design/HANDOFF.md` §1.3 y
-> `design/tokens.json` (`typography`).
+> `design/tokens.json` (`typography`). **Implementado (fase 01):** ver "En código" al final.
 
 ## Familias
 
@@ -42,3 +42,21 @@
 - Todo tamaño fuera de esta tabla es una decisión nueva (`decisions/02-tipografia.md`).
 - Serif solo en titulares; nunca en botones, controles, cifras ni cuenta (D008).
 - Nada por debajo de 12 px.
+
+## En código (fase 01)
+
+- Fuentes: `app/fonts.ts` con `next/font/google`, `display: 'swap'`, subconjunto `latin` (cubre
+  el español). Fraunces variable con eje `opsz`, normal + cursiva → `--font-fraunces`; Geist
+  variable → `--font-geist`. Geist Mono no se carga (ningún token la usa).
+- Familias en Tailwind: `font-serif` (Fraunces, Georgia, serif) y `font-sans` (Geist,
+  system-ui, sans-serif; es la del `body`).
+- **Por rol, usar `type-<rol>`** (D035): `type-display`, `type-h1`, `type-eyebrow`,
+  `type-numeric-lg`, `type-stage-count`… fija familia, tamaño, interlineado, peso, tracking,
+  mayúsculas y cifras tabulares. `text-<rol>` existe (solo tamaño + interlineado + peso +
+  tracking) para cambiar tamaño por breakpoint (`md:text-h1`).
+- `tabular-nums` automático en `numeric-*` y `stage-*`; en cualquier otra cifra que cambie,
+  la utilidad `tabular-nums`.
+- La escala de Tailwind está vaciada (`--text-*: initial`): `text-sm`, `text-lg`… no existen.
+- `stage-beat` activo (600) y los tamaños alternativos de la tabla (hero 40/46, stage-next
+  30/36, BPM admin 36/40…) no son roles propios: se resuelven en el componente con
+  `font-semibold` / `text-<rol>` más cercano cuando se construya.

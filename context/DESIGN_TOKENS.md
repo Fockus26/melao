@@ -3,6 +3,7 @@
 > **Estado: final, reconciliado con el handoff (2026-09-26).** Fuente única:
 > `design/tokens.json` (W3C Design Tokens; genera el CSS hoy y los temas Compose/SwiftUI después,
 > D018). Este archivo es el resumen legible; si difiere de `tokens.json`, manda `tokens.json`.
+> **Implementado (fase 01):** ver "En código" al final.
 
 ## Espaciado (`spacing`)
 
@@ -62,3 +63,18 @@ base 0 · nav 10 · popover 20 · scrim 40 · sheet 50 · dialog 60 · toast 70.
 
 Objetivo táctil mínimo 48 px (chips de 40 visibles con zona táctil de 48 por pseudo-elemento).
 Breakpoints: ver `DESIGN_RULES.md`.
+
+## En código (fase 01)
+
+Todo sale de `app/tokens.css`, generado por `bun run tokens` (D033). Referencia visual: `/tokens`.
+
+| Grupo | Variable | Utilidad |
+|---|---|---|
+| Espaciado | `--spacing: 4px` + `--spacing-<n>` | `p-4`, `gap-6`, `mt-30`… (n × 4 px) |
+| Radios | `--radius-<none\|sm\|md\|lg\|pill>` | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-pill` (los de Tailwind vaciados) |
+| Sombras | `--shadow-<sheet\|modal\|drag>` | `shadow-sheet`, `shadow-modal`, `shadow-drag` (los de Tailwind vaciados) |
+| Duración | `--duration-<press\|hover\|move\|enter\|pulse>` | `duration-press`, `duration-hover`… (`transition-duration`) |
+| Curva | `--ease-<standard\|exit\|linear>` | `ease-standard`, `ease-exit`, `ease-linear` |
+| z-index | `--z-<base\|nav\|popover\|scrim\|sheet\|dialog\|toast>` | `z-nav`, `z-dialog`… |
+
+Foco global: `outline 2px var(--color-focus-ring)` con 2 px de separación (`app/globals.css`).

@@ -93,3 +93,10 @@ elige el estilo con el que abre la app. Reemplaza "rol por estilo". En cada paso
 video del otro rol con el selector.
 **Por qué:** indicación de César (2026-09-25): quien lidera en salsa lidera también en merengue.
 **Estado:** Pendiente
+
+## D029 — Precios: Básico US$20/mes, Consultoría US$40/mes
+**Decisión:** los planes se muestran con esos precios; el checkout sigue activando por $0 hasta
+integrar la pasarela (D015). Qué incluye cada plan y los límites de la Consultoría (tiempo de
+respuesta, videos por mes) se definen al entrar a la fase de consultoría (v2).
+**Por qué:** indicación de César (2026-09-26).
+**Estado:** Aprobado

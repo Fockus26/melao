@@ -307,7 +307,7 @@ secciones de la landing: 80 px (móvil) / 128 px (escritorio).
   los 1200 px. Columna 1: eyebrow, h2 40/44, filete, 1 párrafo, nota de USD. Columnas 2 y 3: card
   Básico (botón outline) y Consultoría (borde gold-600, pill "Con profesor", botón primary); padding
   32, precio 56 tabular, alto mínimo 460, 3 filas de 48 con check. Móvil: todo apilado, padding 24,
-  precio 40, sin alto mínimo. Precio de Consultoría en blanco ("US$[—]").
+  precio 40, sin alto mínimo. Precio de Consultoría: US$40 (D029).
 - **Preguntas**: 1 / 2 col (título a la izquierda). `details/summary` de 64 px con chevron que gira
   180° abierto. Primera abierta.
 - **Footer**: padding 40 / 48, borde superior. Logo 24, enlaces legales (quiet sin subrayado hasta
@@ -628,10 +628,10 @@ La cuenta la programa el reloj de audio (±20 ms), nunca un timer de UI; la UI s
 
 ## 9. Preguntas abiertas
 
-1. **Precio de Consultoría**: sigue en blanco ("US$[—]"). Básico US$20 por confirmar.
+1. ~~**Precio de Consultoría**~~ — resuelta 2026-09-26: Consultoría US$40/mes, Básico US$20/mes (D029).
 2. **Nombres y copy definitivos** (titulares, FAQ, descripciones por tiempo). Todo es placeholder;
    las longitudes ya están probadas.
-3. **¿Dónde vive Progreso en la navegación?** No está entre los 5 destinos. *Recomendación*: acceso
+3. ~~**¿Dónde vive Progreso en la navegación?**~~ — resuelta 2026-09-26 con la recomendación (D028). No está entre los 5 destinos. *Recomendación*: acceso
    desde Inicio ("Ver progreso") y desde Perfil; en escritorio, como ítem 6 del lateral si César lo
    aprueba.
 4. **Imagen de Open Graph y pósteres de video**: pendientes de material real.

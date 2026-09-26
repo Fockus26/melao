@@ -22,7 +22,7 @@
 - Registro e inicio de sesión: email + contraseña, y Google. (Apple se suma antes de iOS.)
 - Onboarding: estilo(s) → rol (uno para todos) → nivel ("desde cero" o "ya sé pasos", que lleva al
   catálogo para marcarlos).
-- Planes: **Básico** (~$20 USD/mes, PENDIENTE) y **Consultoría** (PENDIENTE). Sin pasarela
+- Planes: **Básico** (US$20/mes) y **Consultoría** (US$40/mes, D029). Sin pasarela
   en la v1: el checkout muestra el precio y activa la suscripción por $0 en el servidor.
 - Sin suscripción activa, el contenido (videos, canciones, práctica) no es accesible.
   ¿Prueba gratis o primera lección gratis? PENDIENTE.

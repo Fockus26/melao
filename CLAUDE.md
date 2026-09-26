@@ -86,6 +86,8 @@ algo que se revisa en dos minutos. Una unidad = una rama = un PR.
 
 - **Modo `pr`:** en tu rama puedes commitear y empujar sin pedir permiso — la aprobación de
   César es la revisión del PR. **Nunca** push a `main`, nunca `gh pr merge`, nunca auto-merge.
+- **Versión:** nadie toca `version` ni `CHANGELOG.md`. Cambio visible → `.changeset/<desc>.md`
+  (`git-flow` §2.1.3). El PR `chore(release): versión` lo abre la Action y lo mergea César.
 - Nada destructivo: ni `reset --hard`, ni `push --force`, ni reescribir historia, ni borrar ramas.
 
 ### Qué va al repo y qué es local
@@ -94,8 +96,9 @@ En git: `context/PROJECT_CONTEXT.md`, `DESIGN_RULES.md`, `COLORS.md`, `DESIGN_TO
 `TYPOGRAPHY.md`, `DECISIONS_INDEX.md`, `decisions/`, `docs/spec/`, `design/`.
 Local (gitignored): `context/CURRENT_PHASE.md`, `CONTENT_CHECKLIST.md`, `PAGE_INVENTORY.md`,
 `SECTION_INVENTORY.md`, `COMPONENTS_INVENTORY.md`, `PHASE_LOG/`, `plans/`, `.env*`.
-Un worktree nuevo **no** los tiene: se leen en la carpeta principal
-(`C:\Users\Admin\Documents\Work\melao`). Un subagente en worktree puede no tener permiso de
+Los slots del pool de worktrees (`orchestrate`, `..\melao-wt\wtN`) traen los `.env*`
+copiados, pero **no** `context/` local: se lee en la carpeta principal
+(`C:\Users\Admin\Documents\Work\melao`). Un subagente en un slot puede no tener permiso de
 escritura ahí: entonces los devuelve en su informe y el orquestador los copia.
 
 ### Puertas de calidad

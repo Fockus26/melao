@@ -1,81 +1,64 @@
 # Design Tokens — Melao
 
-> Fuente única de verdad para valores reutilizables que no son ni color ni tipografía. Todo
-> componente consume estos tokens, nunca valores sueltos.
->
-> **Estado: propuesta del kickoff.** Al llegar el handoff, los valores finales viven en
-> `design/tokens.json` (formato W3C Design Tokens, generado con Style Dictionary: CSS hoy,
-> Compose y SwiftUI después) y esta tabla se sincroniza con él.
+> **Estado: final, reconciliado con el handoff (2026-09-26).** Fuente única:
+> `design/tokens.json` (W3C Design Tokens; genera el CSS hoy y los temas Compose/SwiftUI después,
+> D018). Este archivo es el resumen legible; si difiere de `tokens.json`, manda `tokens.json`.
 
-## Espaciado
+## Espaciado (`spacing`)
 
-Unidad base: **4px** (escala de Tailwind).
+Base 4 px, igual que la escala de Tailwind: tokens `0 1 2 3 4 5 6 7 8 10 12 14 16 20 24 30 32`
+= n × 4 px. Valores en uso: 4, 8, 12, 16, 20, 24, 28, 32, 40, 48, 64, 80, 120, 128.
+(6 y 14 aparecen en el lienzo solo como gap de chips y listas: se redondean a 4/8 y 12/16.)
 
-| Token | Valor |
-|---|---|
-| spacing.1 | 4px |
-| spacing.2 | 8px |
-| spacing.3 | 12px |
-| spacing.4 | 16px |
-| spacing.5 | 20px |
-| spacing.6 | 24px |
-| spacing.8 | 32px |
-| spacing.10 | 40px |
-| spacing.12 | 48px |
-| spacing.16 | 64px |
-| spacing.24 | 96px |
+Ritmo vertical: 32 entre secciones de app · 24 entre bloques de formulario · 16 entre campos ·
+80/128 entre secciones de landing.
 
-Padding lateral de pantalla: 16px en mobile (valores por breakpoint en el handoff).
-
-## Radios de borde
+## Radios (`radius`)
 
 | Token | Valor | Uso |
 |---|---|---|
-| radius.sm | 8px | inputs, chips |
-| radius.md | 12px | cards, botones, marco de video |
-| radius.lg | 20px | sheets, modales |
-| radius.full | 9999px | segmentados, pills, nodos del camino |
+| `sm` | 8px | inputs, chips, etiquetas sobre video |
+| `md` | 12px | cards, botones, marco de video, banners, filas activas |
+| `lg` | 20px | sheets y diálogos |
+| `pill` | 999px | segmentados, nodos, switch, pills |
 
-## Sombras
-
-Sin sombras decorativas: la jerarquía se hace con superficies y bordes finos.
+## Sombras (`shadow`) — solo en elevación, nunca en cards
 
 | Token | Valor | Uso |
 |---|---|---|
-| shadow.none | none | todo lo que está en el flujo |
-| shadow.overlay | `0 8px 24px rgb(17 17 17 / 0.12), 0 2px 6px rgb(17 17 17 / 0.08)` | sheets, popovers, modales (solo claro) |
-| shadow.overlay-dark | none + borde `divider` | en oscuro la elevación es por superficie |
+| `sheet` | `0 -12px 32px rgba(0,0,0,.18)` | sheet inferior |
+| `modal` | `0 16px 40px rgba(0,0,0,.22)` | diálogo |
+| `drag` | `0 8px 24px rgba(0,0,0,.18)` | fila arrastrada (constructor) |
 
-## Objetivos táctiles
-
-| Token | Valor |
-|---|---|
-| touch.min | 48px |
-
-## Breakpoints
-
-Ver `DESIGN_RULES.md` — deben coincidir exactamente, este archivo no los redefine.
-
-## Transiciones / animación
+## Movimiento (`motion`)
 
 | Token | Valor |
 |---|---|
-| duration.fast | 150ms |
-| duration.normal | 250ms |
-| duration.slow | 400ms (transiciones de pantalla) |
-| easing.default | `cubic-bezier(0.2, 0, 0, 1)` |
-| easing.exit | `cubic-bezier(0.4, 0, 1, 1)` |
+| `duration-press` | 120ms |
+| `duration-hover` | 160ms |
+| `duration-move` | 240ms |
+| `duration-enter` | 320ms |
+| `duration-pulse` | 1600ms |
+| `ease-standard` | `cubic-bezier(.2,0,0,1)` |
+| `ease-exit` | `cubic-bezier(.4,0,1,1)` |
+| `ease-linear` | `linear` |
 
-Bajo `prefers-reduced-motion: reduce`: transiciones de pantalla y micro-animaciones a 0ms;
-la cuenta del escenario cambia sin animación en cualquier caso (no se anima un número que
-cambia ~3 veces por segundo).
+Qué anima y qué se apaga con `prefers-reduced-motion`: `design/HANDOFF.md` §6. La cuenta del
+escenario cambia sin transición siempre.
 
-## Z-index
+## Z-index (`zIndex`)
 
-| Token | Valor | Uso |
-|---|---|---|
-| z.base | 0 | contenido |
-| z.nav | 10 | barra inferior / navegación lateral |
-| z.sticky | 20 | cabeceras pegajosas |
-| z.overlay | 40 | sheets y modales (con su fondo) |
-| z.toast | 50 | avisos |
+base 0 · nav 10 · popover 20 · scrim 40 · sheet 50 · dialog 60 · toast 70.
+
+## Layout (del handoff §4)
+
+| Contexto | Contenedor | Padding lateral | Navegación |
+|---|---|---|---|
+| App 360–767 | 100 % | 20 (24 en flujos) | barra inferior 80 |
+| App 768–1023 | columna máx. 640 | 32 | barra inferior 80 |
+| App ≥ 1024 | lateral 248 + columna máx. 800 | 48 | lateral |
+| Landing | contenido máx. 1200 | 24 · 64 (1024) · 120 (1440) | header 72 |
+| Admin ≥ 1024 | nav 232 (≥ 1280) o riel 72 + ancho completo | 40 · 28 | lateral |
+
+Objetivo táctil mínimo 48 px (chips de 40 visibles con zona táctil de 48 por pseudo-elemento).
+Breakpoints: ver `DESIGN_RULES.md`.

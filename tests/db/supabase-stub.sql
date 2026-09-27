@@ -42,3 +42,26 @@ grant usage on schema public to anon, authenticated, service_role;
 alter default privileges in schema public grant all on tables to anon, authenticated;
 alter default privileges in schema public grant all on functions to anon, authenticated;
 alter default privileges in schema public grant all on sequences to anon, authenticated;
+
+-- Storage: solo las tablas y permisos que usan las políticas de las migraciones.
+create schema storage;
+grant usage on schema storage to anon, authenticated, service_role;
+
+create table storage.buckets (
+  id text primary key,
+  name text not null unique,
+  public boolean not null default false
+);
+
+create table storage.objects (
+  id uuid primary key default gen_random_uuid(),
+  bucket_id text references storage.buckets (id),
+  name text not null,
+  owner uuid,
+  created_at timestamptz not null default now(),
+  unique (bucket_id, name)
+);
+
+alter table storage.objects enable row level security;
+grant select, insert, update, delete on storage.objects to anon, authenticated, service_role;
+grant select on storage.buckets to anon, authenticated, service_role;

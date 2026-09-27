@@ -52,6 +52,47 @@ Nadie escribe `subscriptions` desde un cliente: solo Edge Functions con la clave
   llamar para decidir si muestran el candado.
 - Planes iniciales: `basico` (2000, US$20/mes) y `consultoria` (4000, US$40/mes, con consultoría).
 
+### Contenido (`20260927120000_contenido.sql`)
+
+Acceso común a todas estas tablas:
+
+| | Anónimo | Alumno (con o sin suscripción) | Admin |
+|---|---|---|---|
+| Filas | — | L de lo **visible** (la vitrina, D036) | L de todo, C, E, B |
+
+"Visible" = publicado y dentro de un estilo publicado; en canciones, además, licencia no
+vencida; en el curso, curso y estilo publicados.
+
+| Tabla | Campos |
+|---|---|
+| `dance_styles` | `slug` · `name` · `beats_per_phrase` · `spoken_beats` · `call_beat` · `call_span_beats` · `lead_in_phrases` (motor-de-ritmo §1) · `has_roles` · `difficulty_bpm_bands` (tope de BPM por nivel, ascendente; PENDIENTE) · `start_position_id` · `published` · `sort_order` |
+| `positions` | `style_id` · `slug` · `name` |
+| `steps` | `style_id` · `slug` (nombra el clip `step.<slug>`) · `name` · `description` · `beat_notes` (`[{beat, note}]`) · `category` (`base\|vuelta\|entrada\|salida\|figura\|variacion\|libre`) · `difficulty` (1–5) · `start_position_id` · `end_position_id` · `phrases` · `can_start` · `can_end` · `repeatable` · `variation_of` · `voice_clip_path` · `published` · `sort_order` |
+| `step_prerequisites` | `step_id` · `requires_step_id` |
+| `step_videos` | `step_id` · `role` (`leader\|follower\|both`; un paso libre usa `both`) · `video_path` · `poster_path` · `duration_ms` · `aspect` (`16:9\|4:5\|9:16`) |
+| `songs` | `title` · `artist` · `audio_path` · `duration_ms` · `bpm` (informativo) · `beat_grid` (`[{beat, tMs}]`, motor-de-ritmo §2) · `dance_end_ms` · `difficulty_override` · licencia: `license_source`, `license_notes`, `license_document_path`, `license_expires_at` · `published` |
+| `song_styles` | `song_id` · `style_id` |
+| `courses` | `style_id` (uno por estilo) · `title` · `description` · `published` |
+| `course_units` | `course_id` · `position` · `title` |
+| `lessons` | `unit_id` · `position` · `title` · `intro` · `practice_song_id` · `practice_phrases` · `final_song_id` |
+| `lesson_steps` | `lesson_id` · `step_id` · `position` |
+
+Reglas que impone la base:
+- Las posiciones de un paso, su variación y la posición inicial del estilo son del **mismo
+  estilo**. Un estilo publicado necesita posición inicial.
+- `spoken_beats` ⊆ 1…`beats_per_phrase`; el anuncio (`call_beat` + `call_span_beats`) cabe en
+  la frase.
+- **Una canción no se publica** sin audio, duración, fin de baile, rejilla (≥ 2 anclas), fuente
+  y documento de licencia (D009). Con la licencia vencida deja de verse sin despublicarla.
+- `profiles.default_style_id`: el estilo con el que abre la app (D023); lo edita el alumno.
+
+**Storage** (buckets privados, URLs firmadas de corta duración):
+
+| Bucket | Leer | Escribir |
+|---|---|---|
+| `step-videos` · `songs` · `voice-clips` | alumno con suscripción activa, admin | admin |
+| `song-licenses` | admin | admin |
+
 ## Edge Functions
 
 ### `plan-session`

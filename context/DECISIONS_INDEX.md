@@ -44,6 +44,10 @@
 | D036 | Producto | Sin suscripción: vitrina con candado; sin prueba gratis en v1; acceso = has_active_subscription() | `decisions/04-producto.md` | Aprobado |
 | D037 | Arquitectura | Migraciones probadas con PGlite + stub de Supabase en bun test; César las aplica con db push | `decisions/03-arquitectura.md` | Implementado |
 | D038 | Producto | user_steps (estado + favorito, el cliente solo toca favorito) y srs_cards (FSRS por rol) separadas | `decisions/04-producto.md` | Implementado |
+| D042 | Arquitectura | Generador: recorrido ponderado guiado por tablas de factibilidad (DP); targets comprometidos por prioridad | `decisions/09-core-combinaciones-srs.md` | Implementado |
+| D043 | Arquitectura | Tarjeta del core = fila de srs_cards (snake_case, ISO); reviewCard da también la fila de step_reviews | `decisions/09-core-combinaciones-srs.md` | Implementado |
+| D044 | Producto | FSRS sin pasos cortos (enable_short_term false): intervalos en días; srs_cards no guarda learning_steps | `decisions/09-core-combinaciones-srs.md` | Implementado |
+| D045 | Arquitectura | PRNG del core: mulberry32 sobre uint32, algoritmo exacto en combinaciones.md | `decisions/09-core-combinaciones-srs.md` | Implementado |
 
 <!-- ID secuencial, nunca se reutiliza; una decisión que cambia se marca "Obsoleta → D0NN"
      y se añade la nueva. Si hay unidades en paralelo, el orquestador reserva un rango de IDs

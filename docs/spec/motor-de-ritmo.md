@@ -14,34 +14,55 @@ cliente (web, Android, iOS) solo reproduce la canción y dispara clips en esos t
 | `callSpanBeats` | 2 | 2 | tiempos que ocupa el nombre (se silencian esos números) |
 | `leadInPhrases` | 1 | 1 | frases de cuenta antes del primer paso |
 
-Valores iniciales según D011; editables por estilo en el panel.
+Valores iniciales según D011; editables por estilo en el panel. Límites (los mismos `check`
+de `dance_styles`): `beatsPerPhrase` 2–16; `spokenBeats` entre 1 y `beatsPerPhrase` tiempos
+distintos, cada uno en `1…beatsPerPhrase`; `callBeat + callSpanBeats − 1 ≤ beatsPerPhrase`;
+`callSpanBeats` 1–4; `leadInPhrases` 0–4. Core: `_shared/core/style.ts`.
 
 ## 2. Rejilla de beats de una canción
 
-- `anchors`: lista de `{ beat: int, tMs: int }` ordenada por `beat`, mínimo 2.
+- `anchors`: lista de `{ beat: int, tMs: int }` ordenada por `beat` sin repetir, con `tMs`
+  estrictamente creciente, mínimo 2.
 - `beat 0` = el primer "1" en que se empieza a bailar (lo marca el admin).
 - `t(b)`: interpolación lineal entre las dos anclas que rodean `b`. Fuera del rango, se
-  extrapola con el periodo del segmento más cercano.
+  extrapola con el periodo del segmento más cercano. En un ancla intermedia se usa el
+  segmento que empieza en ella (da lo mismo: vale su `tMs`). Fórmula exacta, en doble
+  precisión y sin redondear, con `a`, `c` las anclas del segmento:
+  `t(b) = a.tMs + ((b − a.beat) · (c.tMs − a.tMs)) / (c.beat − a.beat)`.
+- Inversa (`msToBeat`, para la UI): la misma interpolación con los ejes cambiados.
 - `danceEndMs`: último instante en que se baila (lo marca el admin; por defecto, antes del
   final de la canción).
 - `bpm` guardado = promedio informativo; **el motor usa la rejilla, no el BPM**.
+- Core: `_shared/core/grid.ts`.
 
 ## 3. Frases disponibles
 
-- La frase de entrada ocupa los beats `-8 … -1`. Si `t(-8) < 0` (intro demasiado corta), la
-  frase 0 se usa como entrada y el primer paso empieza en la frase 1.
-- Frases disponibles `N` = cantidad de frases completas `p ≥ 0` tales que
-  `t(8·(p+1)) ≤ danceEndMs` (contando desde el primer beat de baile).
+Con `B = beatsPerPhrase` y `L = leadInPhrases` (salsa y merengue: `B = 8`, `L = 1`):
+
+- La entrada son las `L` frases justo antes del primer paso: si el plan empieza en la frase
+  0, los beats `-8 … -1`. Si `t(-8) < 0` (intro demasiado corta), la frase 0 se usa como
+  entrada y el primer paso empieza en la frase 1.
+- En general (D039), el desplazamiento `k` es el menor entero `≥ 0` con `t(B·(k − L)) ≥ 0`: el
+  plan empieza en la frase `startPhrase = k`. Con `L = 0`, `k = 0` salvo que el propio beat 0
+  caiga antes del audio.
+- Frases completas desde el beat 0: `M` = cantidad de frases `p ≥ 0` con
+  `t(B·(p+1)) ≤ danceEndMs` (el borde cuenta).
+- Frases disponibles `N = max(0, M − k)`: las frases donde van pasos, `startPhrase … startPhrase
+  + N − 1`. Las que se comió la entrada no cuentan (D039).
 - "Caben N figuras de 8 tiempos" en la UI = `N`.
+- Core: `_shared/core/phrases.ts` (`phraseWindow` → `{ startPhrase, phrases: N }`).
 
 ## 4. Plan
 
-Lista `[{ stepId, startPhrase, phrases }]`, contigua, que cubre exactamente `N` frases (ver
-`combinaciones.md`).
+Lista `[{ stepId, startPhrase, phrases }]`, contigua, que empieza en `startPhrase` (§3) y cubre
+exactamente `N` frases (ver `combinaciones.md`). Para la línea de tiempo cada elemento lleva
+además el `slug` del paso (`{ stepId, slug, startPhrase, phrases }`), que agrega quien arma la
+sesión. `phrases ≥ 1` entero; plan vacío → línea de tiempo vacía.
 
 ## 5. Línea de tiempo
 
-Lista de eventos ordenada por `tMs`:
+Lista de eventos ordenada por `tMs` (en el mismo beat: `stepStart`, `call`, `count`, `end`;
+D041). Core: `_shared/core/timeline.ts`.
 
 ```json
 { "tMs": 12345, "beat": 36, "beatInPhrase": 5, "kind": "call", "clip": "step.enchufla", "stepId": "…" }
@@ -50,8 +71,8 @@ Lista de eventos ordenada por `tMs`:
 | `kind` | Cuándo | `clip` |
 |---|---|---|
 | `count` | cada tiempo de `spokenBeats` que no esté silenciado por un anuncio | `count.<n>` |
-| `call` | en `callBeat` de la **última frase** del paso en curso, si el siguiente paso es **distinto**; para el primer paso, en la frase de entrada | `step.<slug>` |
-| `stepStart` | primer tiempo de cada paso (solo UI, sin audio) | `null` |
+| `call` | en `callBeat` de la **última frase** del paso en curso, si el siguiente paso es **distinto**; para el primer paso, en la última frase de entrada (con `leadInPhrases = 0` no hay entrada ni anuncio del primer paso) | `step.<slug>` |
+| `stepStart` | primer tiempo de cada elemento del plan, también si repite el paso anterior (solo UI, sin audio) | `null` |
 | `end` | fin de la última frase | `null` |
 
 Reglas:
@@ -59,6 +80,11 @@ Reglas:
   (salsa: suena "Enchufla" en el 5–6 y la cuenta sigue en el 7).
 - Paso repetido (mismo `stepId` consecutivo): **no hay anuncio**, la cuenta sigue.
 - `tMs` es relativo al inicio del archivo de audio, sin compensar latencia.
+- `tMs` va en **ms enteros**: `tMs = floor(t(beat) + 0.5)` (mitad hacia arriba), igual en
+  todas las plataformas (D040). `beat` es entero (negativo en la entrada) y `beatInPhrase`
+  es 1-based también ahí (módulo positivo: el beat `-1` es el tiempo `B`).
+- `stepId`: en `count` y `stepStart`, el paso en curso (`null` en la entrada); en `call`, el
+  paso que se anuncia; en `end`, `null`.
 
 ## 6. Requisitos del reproductor (cada plataforma)
 
@@ -94,4 +120,5 @@ Reglas:
 - Duración: un número ≤ 250 ms (a 210 BPM un tiempo dura ~286 ms); un nombre de paso ≤ 2
   tiempos a la velocidad de la canción (el reproductor puede acelerar el clip hasta 1.25×).
 
-Vectores: `vectors/ritmo-*.json` (07a).
+Vectores: `vectors/ritmo-*.json` (§2–§3) y `vectors/timeline-*.json` (§5); runner en
+`tests/unit/core-ritmo-vectors.test.ts`.

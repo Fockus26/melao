@@ -1,0 +1,29 @@
+{
+  "descripcion": "Tres segmentos cada vez más rápidos (500, 450 y 400 ms por tiempo): cada beat usa su segmento; fuera, el más cercano",
+  "entrada": {
+    "anchors": [
+      {
+        "beat": 0,
+        "tMs": 1000
+      },
+      {
+        "beat": 8,
+        "tMs": 5000
+      },
+      {
+        "beat": 16,
+        "tMs": 8600
+      },
+      {
+        "beat": 24,
+        "tMs": 11800
+      }
+    ],
+    "beatToMs": [-4, 4, 8, 12, 20, 28],
+    "msToBeat": [3000, 6800, 10200, 13400]
+  },
+  "salida": {
+    "beatToMs": [-1000, 3000, 5000, 6800, 10200, 13400],
+    "msToBeat": [4, 12, 20, 28]
+  }
+}

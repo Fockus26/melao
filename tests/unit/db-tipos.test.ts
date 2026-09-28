@@ -19,7 +19,8 @@ const typesSource = readFileSync(
     "database.types.ts",
   ),
   "utf8",
-);
+  // En Windows con core.autocrlf la copia de trabajo llega en CRLF.
+).replaceAll("\r\n", "\n");
 
 /** Extrae `tabla → { columna → admite null }` de los bloques `Row` del archivo generado. */
 function rowsFromTypes(

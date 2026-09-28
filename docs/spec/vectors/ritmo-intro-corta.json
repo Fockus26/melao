@@ -1,0 +1,31 @@
+{
+  "descripcion": "Salsa, 120 BPM, primer 1 a los 1000 ms: t(-8) = -3000 < 0, la frase 0 hace de entrada y el plan empieza en la frase 1",
+  "entrada": {
+    "anchors": [
+      {
+        "beat": 0,
+        "tMs": 1000
+      },
+      {
+        "beat": 1,
+        "tMs": 1500
+      }
+    ],
+    "style": {
+      "beatsPerPhrase": 8,
+      "spokenBeats": [1, 2, 3, 5, 6, 7],
+      "callBeat": 5,
+      "callSpanBeats": 2,
+      "leadInPhrases": 1
+    },
+    "danceEndMs": 21000
+  },
+  "salida": {
+    "entryShiftPhrases": 1,
+    "availablePhrases": 5,
+    "phraseWindow": {
+      "startPhrase": 1,
+      "phrases": 4
+    }
+  }
+}

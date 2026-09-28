@@ -1,0 +1,31 @@
+{
+  "descripcion": "Salsa, 120 BPM, intro de 4000 ms (la entrada cabe justo): el borde t(8·(p+1)) = danceEndMs cuenta",
+  "entrada": {
+    "anchors": [
+      {
+        "beat": 0,
+        "tMs": 4000
+      },
+      {
+        "beat": 1,
+        "tMs": 4500
+      }
+    ],
+    "style": {
+      "beatsPerPhrase": 8,
+      "spokenBeats": [1, 2, 3, 5, 6, 7],
+      "callBeat": 5,
+      "callSpanBeats": 2,
+      "leadInPhrases": 1
+    },
+    "danceEndMs": 24000
+  },
+  "salida": {
+    "entryShiftPhrases": 0,
+    "availablePhrases": 5,
+    "phraseWindow": {
+      "startPhrase": 0,
+      "phrases": 5
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "descripcion": "120 BPM (500 ms por tiempo), primer 1 a los 4000 ms: interpola, extrapola la entrada e invierte",
+  "entrada": {
+    "anchors": [
+      {
+        "beat": 0,
+        "tMs": 4000
+      },
+      {
+        "beat": 1,
+        "tMs": 4500
+      }
+    ],
+    "beatToMs": [-8, -1, 0, 1, 2.5, 8, 64],
+    "msToBeat": [0, 4000, 6000, 4250]
+  },
+  "salida": {
+    "beatToMs": [0, 3500, 4000, 4500, 5250, 8000, 36000],
+    "msToBeat": [-8, 0, 4, 0.5]
+  }
+}

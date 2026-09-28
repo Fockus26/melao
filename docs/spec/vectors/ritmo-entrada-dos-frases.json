@@ -1,0 +1,31 @@
+{
+  "descripcion": "Estilo con 2 frases de entrada e intro de 5000 ms: t(-16) < 0 pero t(-8) ≥ 0, solo se desplaza 1 frase (D039)",
+  "entrada": {
+    "anchors": [
+      {
+        "beat": 0,
+        "tMs": 5000
+      },
+      {
+        "beat": 1,
+        "tMs": 5500
+      }
+    ],
+    "style": {
+      "beatsPerPhrase": 8,
+      "spokenBeats": [1, 2, 3, 5, 6, 7],
+      "callBeat": 5,
+      "callSpanBeats": 2,
+      "leadInPhrases": 2
+    },
+    "danceEndMs": 41000
+  },
+  "salida": {
+    "entryShiftPhrases": 1,
+    "availablePhrases": 9,
+    "phraseWindow": {
+      "startPhrase": 1,
+      "phrases": 8
+    }
+  }
+}

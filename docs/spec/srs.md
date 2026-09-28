@@ -18,6 +18,7 @@ Parámetros: los de FSRS por defecto, retención deseada 0.90 (ajustable despué
 | Bien | 3 | Good |
 | Fácil | 4 | Easy |
 
+La tarjeta vive en `srs_cards`; el estado del catálogo y el favorito, en `user_steps` (D038).
 Cada calificación genera una fila en `step_reviews` (con el contexto: lección o práctica, y la
 sesión) y actualiza la tarjeta.
 

@@ -24,7 +24,7 @@
 | Estilos y pasos | `dance_styles` · `positions` · `steps` · `step_prerequisites` · `step_videos` (rol `leader\|follower\|both`) |
 | Canciones | `songs` (audio, duración, bpm, `beat_grid`, `dance_start`/`dance_end`, dificultad, licencia) · `song_styles` |
 | Curso | `courses` · `course_units` · `lessons` · `lesson_steps` · `lesson_progress` |
-| Repaso y práctica | `user_steps` (estado, favorito, campos FSRS) · `step_reviews` · `user_song_favorites` · `practice_sessions` |
+| Repaso y práctica | `user_steps` (estado, favorito) · `srs_cards` (FSRS, D038) · `step_reviews` · `user_song_favorites` · `practice_sessions` · `practice_session_steps` · `lesson_progress` |
 | Suscripción | `plans` · `subscriptions` (provider `placeholder\|stripe\|google_play\|app_store`) |
 | v2 | `coaching_threads` · `coaching_messages` · `coaching_submissions` · `coaching_annotations` |
 
@@ -93,6 +93,34 @@ Reglas que impone la base:
 | `step-videos` · `songs` · `voice-clips` | alumno con suscripción activa, admin | admin |
 | `song-licenses` | admin | admin |
 
+### Datos del alumno (`20260927180000_progreso.sql`)
+
+Cada alumno lee **solo lo suyo**; el admin lee todo; anónimo, nada. Las reglas de negocio
+(FSRS, estado de los pasos, sesiones, progreso) las escriben las Edge Functions (D003, D013),
+que exigen suscripción activa. El cliente solo escribe lo marcado.
+
+| Tabla | Campos | El cliente puede |
+|---|---|---|
+| `user_steps` | `user_id` · `step_id` · `status` (`unknown\|learning\|known`) · `favorite` | crear su fila y cambiar `favorite` (pasos visibles) |
+| `srs_cards` | `user_id` · `step_id` · `role` · `state` (`new\|learning\|review\|relearning`) · `stability` · `difficulty` (0–10) · `due_at` · `last_review_at` · `reps` · `lapses` | — |
+| `step_reviews` | `user_id` · `step_id` · `role` · `rating` (1–4) · `context` (`lesson\|practice\|catalog`) · `session_id` · `lesson_id` · `reviewed_at` · `due_after`; único por (sesión, paso, rol) | — |
+| `practice_sessions` | `user_id` · `style_id` · `song_id` · `mode` (`lesson\|free`) · `lesson_id` · `seed` · `filters` · `phrases_available` · `plan` · `created_at` · `completed_at` | poner `completed_at` en las suyas |
+| `practice_session_steps` | `session_id` · `step_id` · `phrases` (un paso distinto por sesión) | — |
+| `lesson_progress` | `user_id` · `lesson_id` · `completed_at` | — |
+| `user_song_favorites` | `user_id` · `song_id` | agregar y quitar (canciones visibles) |
+
+Consultas típicas del cliente:
+- "Para hoy" = `srs_cards` con `due_at ≤ ahora`.
+- "Los que más cuestan" = `srs_cards` por `stability` ascendente.
+- Siguiente lección = la primera sin fila en `lesson_progress`, en orden de unidad y posición.
+
+Funciones (alumno y admin; anónimo no):
+- `public.song_popularity()` → `(song_id, sessions_30d, percentile)`: sesiones de los últimos
+  30 días, de todos los alumnos, solo canciones visibles.
+- `public.step_popularity(style)` → `(step_id, appearances_30d, percentile)`: apariciones en
+  sesiones de los últimos 30 días, solo pasos visibles del estilo. Alimenta el peso
+  `popular(1 + percentil)` de `combinaciones.md`.
+
 ## Edge Functions
 
 ### `plan-session`
@@ -101,9 +129,11 @@ Salida: `{ sessionId, phrasesAvailable, plan: [{ stepId, startPhrase, phrases }]
 Reglas: `motor-de-ritmo.md` y `combinaciones.md`. Registra la sesión en `practice_sessions`.
 
 ### `review-steps`
-Entrada: `{ sessionId?, context: "lesson"|"practice"|"catalog", reviews: [{ stepId, role, rating: 1-4, reviewedAt }] }`
+Entrada: `{ sessionId?, lessonId?, context: "lesson"|"practice"|"catalog", reviews: [{ stepId, role, rating: 1-4, reviewedAt }], status?: [{ stepId, status: "unknown"|"learning"|"known" }] }`
 Salida: `{ cards: [{ stepId, role, dueAt, state }] }`
-Reglas: `srs.md`. Idempotente por `(sessionId, stepId, role)`.
+Reglas: `srs.md`. Idempotente por `(sessionId, stepId, role)`. Con `context: "lesson"` y `lessonId`, al
+calificar la práctica final registra `lesson_progress` (desbloquea la siguiente). `status`
+cambia el estado del catálogo ("me lo sé" = tarjeta + repaso Good). Exige suscripción activa.
 
 ### `activate-subscription`
 Entrada: `{ planSlug }`

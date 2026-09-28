@@ -111,3 +111,14 @@ prueba gratis se suma después como otra condición de la misma función, sin re
 **Alternativa descartada:** primera lección gratis (regla extra por lección); prueba de N días
 (fechas y abuso con cuentas nuevas); ocultar todo (la app se siente vacía).
 **Estado:** Aprobado
+
+## D038 — Estado del catálogo y tarjeta FSRS en tablas separadas
+**Decisión:** `user_steps` guarda estado ("no lo sé" / "aprendiendo" / "me lo sé") y favorito por
+(alumno, paso); `srs_cards` guarda la tarjeta FSRS por (alumno, paso, rol). El cliente solo
+escribe el favorito; estado, tarjetas, repasos, sesiones y progreso de lecciones los escriben
+las Edge Functions (`review-steps` también completa la lección y cambia el estado).
+**Por qué:** `api.md` preveía una sola tabla, pero la tarjeta es por rol (srs.md) y el favorito
+por paso: juntas, el favorito se duplicaría por rol. Separadas, el cliente puede tocar el
+favorito sin poder tocar ningún campo de FSRS.
+**Alternativa descartada:** una tabla con permisos por columna (el favorito repetido por rol).
+**Estado:** Implementado

@@ -2,7 +2,7 @@
    Regenerar con `bun run tokens`; un test falla si este archivo y el JSON divergen. */
 
 @custom-variant dark (&:where(.dark, .dark *));
-@source inline("type-display-xl type-display type-h1 type-h2 type-h3 type-h4 type-h5 type-h6 type-body type-small type-caption type-eyebrow type-overline type-button type-button-lg type-numeric-xl type-numeric-lg type-stage-count type-stage-next type-stage-current type-stage-beat type-stage-label duration-press duration-hover duration-move duration-enter duration-pulse z-base z-nav z-popover z-scrim z-sheet z-dialog z-toast");
+@source inline("type-display-xl type-display type-h1 type-h2 type-h3 type-h4 type-h5 type-h6 type-body type-small type-caption type-eyebrow type-overline type-button type-button-lg type-numeric-xl type-numeric-lg type-stage-count type-stage-next type-stage-current type-stage-beat type-stage-label duration-press duration-hover duration-state duration-move duration-enter duration-spin duration-pulse z-base z-nav z-popover z-scrim z-sheet z-dialog z-toast");
 
 @theme static {
   /* Color: tema claro como base; .dark lo sobrescribe más abajo */
@@ -185,8 +185,10 @@
   --ease-*: initial;
   --duration-press: 120ms;
   --duration-hover: 160ms;
+  --duration-state: 200ms;
   --duration-move: 240ms;
   --duration-enter: 320ms;
+  --duration-spin: 800ms;
   --duration-pulse: 1600ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
@@ -454,12 +456,20 @@
   transition-duration: var(--duration-hover);
 }
 
+@utility duration-state {
+  transition-duration: var(--duration-state);
+}
+
 @utility duration-move {
   transition-duration: var(--duration-move);
 }
 
 @utility duration-enter {
   transition-duration: var(--duration-enter);
+}
+
+@utility duration-spin {
+  transition-duration: var(--duration-spin);
 }
 
 @utility duration-pulse {

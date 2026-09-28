@@ -44,6 +44,9 @@
 | D036 | Producto | Sin suscripción: vitrina con candado; sin prueba gratis en v1; acceso = has_active_subscription() | `decisions/04-producto.md` | Aprobado |
 | D037 | Arquitectura | Migraciones probadas con PGlite + stub de Supabase en bun test; César las aplica con db push | `decisions/03-arquitectura.md` | Implementado |
 | D038 | Producto | user_steps (estado + favorito, el cliente solo toca favorito) y srs_cards (FSRS por rol) separadas | `decisions/04-producto.md` | Implementado |
+| D039 | Producto | Frases disponibles N = frases completas menos las que se comió la entrada; el plan empieza en startPhrase = k | `decisions/08-core-ritmo.md` | Implementado |
+| D040 | Producto | tMs de la línea de tiempo en ms enteros: floor(t + 0.5); la rejilla no redondea | `decisions/08-core-ritmo.md` | Implementado |
+| D041 | Producto | Orden de eventos por beat (stepStart, call, count, end); un stepStart por elemento del plan | `decisions/08-core-ritmo.md` | Implementado |
 | D046 | Arquitectura | shadcn (radix-nova, lucide) con las clases de los tokens, sin @theme inline propio; `cn` configurado con los tokens | `decisions/10-primitivos.md` | Implementado |
 | D047 | Tokens | Duraciones nuevas: duration-state 200 ms y duration-spin 800 ms (handoff §2/§6) | `decisions/10-primitivos.md` | Implementado |
 | D048 | Diseño | Ajustes de medidas al implementar primitivos (ayuda 14/20, zonas táctiles de chip/segmento, sheet y diálogo) | `decisions/10-primitivos.md` | Implementado |

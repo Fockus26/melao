@@ -1,0 +1,240 @@
+{
+  "descripcion": "Merengue: se cuentan los 8 tiempos; el anuncio silencia el 5–6",
+  "entrada": {
+    "style": {
+      "beatsPerPhrase": 8,
+      "spokenBeats": [1, 2, 3, 4, 5, 6, 7, 8],
+      "callBeat": 5,
+      "callSpanBeats": 2,
+      "leadInPhrases": 1
+    },
+    "anchors": [
+      {
+        "beat": 0,
+        "tMs": 4000
+      },
+      {
+        "beat": 1,
+        "tMs": 4500
+      }
+    ],
+    "plan": [
+      {
+        "stepId": "m-basico",
+        "slug": "paso-basico",
+        "startPhrase": 0,
+        "phrases": 1
+      },
+      {
+        "stepId": "m-vuelta",
+        "slug": "vuelta",
+        "startPhrase": 1,
+        "phrases": 1
+      }
+    ]
+  },
+  "salida": {
+    "events": [
+      {
+        "tMs": 0,
+        "beat": -8,
+        "beatInPhrase": 1,
+        "kind": "count",
+        "clip": "count.1",
+        "stepId": null
+      },
+      {
+        "tMs": 500,
+        "beat": -7,
+        "beatInPhrase": 2,
+        "kind": "count",
+        "clip": "count.2",
+        "stepId": null
+      },
+      {
+        "tMs": 1000,
+        "beat": -6,
+        "beatInPhrase": 3,
+        "kind": "count",
+        "clip": "count.3",
+        "stepId": null
+      },
+      {
+        "tMs": 1500,
+        "beat": -5,
+        "beatInPhrase": 4,
+        "kind": "count",
+        "clip": "count.4",
+        "stepId": null
+      },
+      {
+        "tMs": 2000,
+        "beat": -4,
+        "beatInPhrase": 5,
+        "kind": "call",
+        "clip": "step.paso-basico",
+        "stepId": "m-basico"
+      },
+      {
+        "tMs": 3000,
+        "beat": -2,
+        "beatInPhrase": 7,
+        "kind": "count",
+        "clip": "count.7",
+        "stepId": null
+      },
+      {
+        "tMs": 3500,
+        "beat": -1,
+        "beatInPhrase": 8,
+        "kind": "count",
+        "clip": "count.8",
+        "stepId": null
+      },
+      {
+        "tMs": 4000,
+        "beat": 0,
+        "beatInPhrase": 1,
+        "kind": "stepStart",
+        "clip": null,
+        "stepId": "m-basico"
+      },
+      {
+        "tMs": 4000,
+        "beat": 0,
+        "beatInPhrase": 1,
+        "kind": "count",
+        "clip": "count.1",
+        "stepId": "m-basico"
+      },
+      {
+        "tMs": 4500,
+        "beat": 1,
+        "beatInPhrase": 2,
+        "kind": "count",
+        "clip": "count.2",
+        "stepId": "m-basico"
+      },
+      {
+        "tMs": 5000,
+        "beat": 2,
+        "beatInPhrase": 3,
+        "kind": "count",
+        "clip": "count.3",
+        "stepId": "m-basico"
+      },
+      {
+        "tMs": 5500,
+        "beat": 3,
+        "beatInPhrase": 4,
+        "kind": "count",
+        "clip": "count.4",
+        "stepId": "m-basico"
+      },
+      {
+        "tMs": 6000,
+        "beat": 4,
+        "beatInPhrase": 5,
+        "kind": "call",
+        "clip": "step.vuelta",
+        "stepId": "m-vuelta"
+      },
+      {
+        "tMs": 7000,
+        "beat": 6,
+        "beatInPhrase": 7,
+        "kind": "count",
+        "clip": "count.7",
+        "stepId": "m-basico"
+      },
+      {
+        "tMs": 7500,
+        "beat": 7,
+        "beatInPhrase": 8,
+        "kind": "count",
+        "clip": "count.8",
+        "stepId": "m-basico"
+      },
+      {
+        "tMs": 8000,
+        "beat": 8,
+        "beatInPhrase": 1,
+        "kind": "stepStart",
+        "clip": null,
+        "stepId": "m-vuelta"
+      },
+      {
+        "tMs": 8000,
+        "beat": 8,
+        "beatInPhrase": 1,
+        "kind": "count",
+        "clip": "count.1",
+        "stepId": "m-vuelta"
+      },
+      {
+        "tMs": 8500,
+        "beat": 9,
+        "beatInPhrase": 2,
+        "kind": "count",
+        "clip": "count.2",
+        "stepId": "m-vuelta"
+      },
+      {
+        "tMs": 9000,
+        "beat": 10,
+        "beatInPhrase": 3,
+        "kind": "count",
+        "clip": "count.3",
+        "stepId": "m-vuelta"
+      },
+      {
+        "tMs": 9500,
+        "beat": 11,
+        "beatInPhrase": 4,
+        "kind": "count",
+        "clip": "count.4",
+        "stepId": "m-vuelta"
+      },
+      {
+        "tMs": 10000,
+        "beat": 12,
+        "beatInPhrase": 5,
+        "kind": "count",
+        "clip": "count.5",
+        "stepId": "m-vuelta"
+      },
+      {
+        "tMs": 10500,
+        "beat": 13,
+        "beatInPhrase": 6,
+        "kind": "count",
+        "clip": "count.6",
+        "stepId": "m-vuelta"
+      },
+      {
+        "tMs": 11000,
+        "beat": 14,
+        "beatInPhrase": 7,
+        "kind": "count",
+        "clip": "count.7",
+        "stepId": "m-vuelta"
+      },
+      {
+        "tMs": 11500,
+        "beat": 15,
+        "beatInPhrase": 8,
+        "kind": "count",
+        "clip": "count.8",
+        "stepId": "m-vuelta"
+      },
+      {
+        "tMs": 12000,
+        "beat": 16,
+        "beatInPhrase": 1,
+        "kind": "end",
+        "clip": null,
+        "stepId": null
+      }
+    ]
+  }
+}

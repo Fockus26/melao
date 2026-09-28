@@ -31,6 +31,13 @@
 ## Esquema implementado
 
 Migraciones en `supabase/migrations/` (probadas con PGlite, D037). Precios en centavos de USD.
+
+**Tipos TS:** `supabase/functions/_shared/database.types.ts`, generado con `bun run db:types`
+(Supabase CLI contra el proyecto remoto; no se edita a mano). Lo importan la web y las Edge
+Functions. Toda migración nueva se aplica y regenera los tipos en el mismo PR:
+`tests/unit/db-tipos.test.ts` compara tablas, columnas, nulabilidad, enums y funciones del
+archivo contra las migraciones y falla si divergen. Android e iOS generan sus modelos desde
+este mismo esquema (o sus enums de `Constants`).
 En las tablas de acceso: **L** = leer, **C** = crear, **E** = editar, **B** = borrar.
 
 ### Usuarios y suscripción (`20260926200000_usuarios_y_suscripcion.sql`)

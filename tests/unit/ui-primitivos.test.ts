@@ -13,8 +13,12 @@ describe("cn conoce los tokens de Melao (D046)", () => {
     expect<string[]>([...TEXT_ROLES]).toEqual(
       listGroup(tokens.typography).map((t) => t.name),
     );
-    expect<string[]>([...RADII]).toEqual(listGroup(tokens.radius).map((t) => t.name));
-    expect<string[]>([...SHADOWS]).toEqual(listGroup(tokens.shadow).map((t) => t.name));
+    expect<string[]>([...RADII]).toEqual(
+      listGroup(tokens.radius).map((t) => t.name),
+    );
+    expect<string[]>([...SHADOWS]).toEqual(
+      listGroup(tokens.shadow).map((t) => t.name),
+    );
     expect<string[]>(DURATIONS.map((d) => `duration-${d}`)).toEqual(
       listGroup(tokens.motion)
         .map((t) => t.name)

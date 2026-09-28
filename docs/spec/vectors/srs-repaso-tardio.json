@@ -1,0 +1,52 @@
+{
+  "descripcion": "Bien 10 días tarde: el intervalo se calcula desde el último repaso real",
+  "entrada": {
+    "pasos": [
+      {
+        "op": "markKnown",
+        "now": "2026-10-01T12:00:00.000Z"
+      },
+      {
+        "op": "review",
+        "rating": 3,
+        "now": "2026-10-14T12:00:00.000Z"
+      }
+    ]
+  },
+  "salida": {
+    "resultados": [
+      {
+        "card": {
+          "state": "review",
+          "stability": 2.3065,
+          "difficulty": 2.11810397,
+          "due_at": "2026-10-04T12:00:00.000Z",
+          "last_review_at": "2026-10-01T12:00:00.000Z",
+          "reps": 1,
+          "lapses": 0
+        },
+        "review": {
+          "rating": 3,
+          "reviewed_at": "2026-10-01T12:00:00.000Z",
+          "due_after": "2026-10-04T12:00:00.000Z"
+        }
+      },
+      {
+        "card": {
+          "state": "review",
+          "stability": 27.95629345,
+          "difficulty": 2.11121424,
+          "due_at": "2026-11-11T12:00:00.000Z",
+          "last_review_at": "2026-10-14T12:00:00.000Z",
+          "reps": 2,
+          "lapses": 0
+        },
+        "review": {
+          "rating": 3,
+          "reviewed_at": "2026-10-14T12:00:00.000Z",
+          "due_after": "2026-11-11T12:00:00.000Z"
+        }
+      }
+    ]
+  }
+}

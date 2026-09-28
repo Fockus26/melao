@@ -1,0 +1,135 @@
+{
+  "descripcion": "Calificación 1–4 → Again/Hard/Good/Easy, cada una sobre la misma tarjeta nueva",
+  "entrada": {
+    "pasos": [
+      {
+        "op": "review",
+        "card": {
+          "state": "new",
+          "stability": 0,
+          "difficulty": 0,
+          "due_at": "2026-10-01T12:00:00.000Z",
+          "last_review_at": null,
+          "reps": 0,
+          "lapses": 0
+        },
+        "rating": 1,
+        "now": "2026-10-01T12:00:00.000Z"
+      },
+      {
+        "op": "review",
+        "card": {
+          "state": "new",
+          "stability": 0,
+          "difficulty": 0,
+          "due_at": "2026-10-01T12:00:00.000Z",
+          "last_review_at": null,
+          "reps": 0,
+          "lapses": 0
+        },
+        "rating": 2,
+        "now": "2026-10-01T12:00:00.000Z"
+      },
+      {
+        "op": "review",
+        "card": {
+          "state": "new",
+          "stability": 0,
+          "difficulty": 0,
+          "due_at": "2026-10-01T12:00:00.000Z",
+          "last_review_at": null,
+          "reps": 0,
+          "lapses": 0
+        },
+        "rating": 3,
+        "now": "2026-10-01T12:00:00.000Z"
+      },
+      {
+        "op": "review",
+        "card": {
+          "state": "new",
+          "stability": 0,
+          "difficulty": 0,
+          "due_at": "2026-10-01T12:00:00.000Z",
+          "last_review_at": null,
+          "reps": 0,
+          "lapses": 0
+        },
+        "rating": 4,
+        "now": "2026-10-01T12:00:00.000Z"
+      }
+    ]
+  },
+  "salida": {
+    "resultados": [
+      {
+        "fsrs": "Again",
+        "card": {
+          "state": "review",
+          "stability": 0.212,
+          "difficulty": 6.4133,
+          "due_at": "2026-10-02T12:00:00.000Z",
+          "last_review_at": "2026-10-01T12:00:00.000Z",
+          "reps": 1,
+          "lapses": 0
+        },
+        "review": {
+          "rating": 1,
+          "reviewed_at": "2026-10-01T12:00:00.000Z",
+          "due_after": "2026-10-02T12:00:00.000Z"
+        }
+      },
+      {
+        "fsrs": "Hard",
+        "card": {
+          "state": "review",
+          "stability": 1.2931,
+          "difficulty": 5.11217071,
+          "due_at": "2026-10-03T12:00:00.000Z",
+          "last_review_at": "2026-10-01T12:00:00.000Z",
+          "reps": 1,
+          "lapses": 0
+        },
+        "review": {
+          "rating": 2,
+          "reviewed_at": "2026-10-01T12:00:00.000Z",
+          "due_after": "2026-10-03T12:00:00.000Z"
+        }
+      },
+      {
+        "fsrs": "Good",
+        "card": {
+          "state": "review",
+          "stability": 2.3065,
+          "difficulty": 2.11810397,
+          "due_at": "2026-10-04T12:00:00.000Z",
+          "last_review_at": "2026-10-01T12:00:00.000Z",
+          "reps": 1,
+          "lapses": 0
+        },
+        "review": {
+          "rating": 3,
+          "reviewed_at": "2026-10-01T12:00:00.000Z",
+          "due_after": "2026-10-04T12:00:00.000Z"
+        }
+      },
+      {
+        "fsrs": "Easy",
+        "card": {
+          "state": "review",
+          "stability": 8.2956,
+          "difficulty": 1,
+          "due_at": "2026-10-09T12:00:00.000Z",
+          "last_review_at": "2026-10-01T12:00:00.000Z",
+          "reps": 1,
+          "lapses": 0
+        },
+        "review": {
+          "rating": 4,
+          "reviewed_at": "2026-10-01T12:00:00.000Z",
+          "due_after": "2026-10-09T12:00:00.000Z"
+        }
+      }
+    ]
+  }
+}

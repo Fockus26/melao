@@ -1,0 +1,23 @@
+{
+  "descripcion": "Solo pasos de 2 frases y N impar: no hay plan posible → error no_plan (no se cuelga)",
+  "entrada": {
+    "phrases": 3,
+    "steps": [
+      {
+        "id": "exhibela",
+        "startPosition": "guapea",
+        "endPosition": "guapea",
+        "phrases": 2,
+        "canStart": true,
+        "canEnd": true,
+        "repeatable": false
+      }
+    ],
+    "baseSteps": [],
+    "startPosition": "guapea",
+    "seed": 1
+  },
+  "salida": {
+    "error": "no_plan"
+  }
+}

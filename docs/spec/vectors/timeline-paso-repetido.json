@@ -1,0 +1,254 @@
+{
+  "descripcion": "Salsa: base dos veces seguidas (mismo stepId) no se anuncia; se anuncia el cambio a enchufla",
+  "entrada": {
+    "style": {
+      "beatsPerPhrase": 8,
+      "spokenBeats": [1, 2, 3, 5, 6, 7],
+      "callBeat": 5,
+      "callSpanBeats": 2,
+      "leadInPhrases": 1
+    },
+    "anchors": [
+      {
+        "beat": 0,
+        "tMs": 4000
+      },
+      {
+        "beat": 1,
+        "tMs": 4500
+      }
+    ],
+    "plan": [
+      {
+        "stepId": "s-base",
+        "slug": "base",
+        "startPhrase": 0,
+        "phrases": 1
+      },
+      {
+        "stepId": "s-base",
+        "slug": "base",
+        "startPhrase": 1,
+        "phrases": 1
+      },
+      {
+        "stepId": "s-enchufla",
+        "slug": "enchufla",
+        "startPhrase": 2,
+        "phrases": 1
+      }
+    ]
+  },
+  "salida": {
+    "events": [
+      {
+        "tMs": 0,
+        "beat": -8,
+        "beatInPhrase": 1,
+        "kind": "count",
+        "clip": "count.1",
+        "stepId": null
+      },
+      {
+        "tMs": 500,
+        "beat": -7,
+        "beatInPhrase": 2,
+        "kind": "count",
+        "clip": "count.2",
+        "stepId": null
+      },
+      {
+        "tMs": 1000,
+        "beat": -6,
+        "beatInPhrase": 3,
+        "kind": "count",
+        "clip": "count.3",
+        "stepId": null
+      },
+      {
+        "tMs": 2000,
+        "beat": -4,
+        "beatInPhrase": 5,
+        "kind": "call",
+        "clip": "step.base",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 3000,
+        "beat": -2,
+        "beatInPhrase": 7,
+        "kind": "count",
+        "clip": "count.7",
+        "stepId": null
+      },
+      {
+        "tMs": 4000,
+        "beat": 0,
+        "beatInPhrase": 1,
+        "kind": "stepStart",
+        "clip": null,
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 4000,
+        "beat": 0,
+        "beatInPhrase": 1,
+        "kind": "count",
+        "clip": "count.1",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 4500,
+        "beat": 1,
+        "beatInPhrase": 2,
+        "kind": "count",
+        "clip": "count.2",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 5000,
+        "beat": 2,
+        "beatInPhrase": 3,
+        "kind": "count",
+        "clip": "count.3",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 6000,
+        "beat": 4,
+        "beatInPhrase": 5,
+        "kind": "count",
+        "clip": "count.5",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 6500,
+        "beat": 5,
+        "beatInPhrase": 6,
+        "kind": "count",
+        "clip": "count.6",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 7000,
+        "beat": 6,
+        "beatInPhrase": 7,
+        "kind": "count",
+        "clip": "count.7",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 8000,
+        "beat": 8,
+        "beatInPhrase": 1,
+        "kind": "stepStart",
+        "clip": null,
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 8000,
+        "beat": 8,
+        "beatInPhrase": 1,
+        "kind": "count",
+        "clip": "count.1",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 8500,
+        "beat": 9,
+        "beatInPhrase": 2,
+        "kind": "count",
+        "clip": "count.2",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 9000,
+        "beat": 10,
+        "beatInPhrase": 3,
+        "kind": "count",
+        "clip": "count.3",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 10000,
+        "beat": 12,
+        "beatInPhrase": 5,
+        "kind": "call",
+        "clip": "step.enchufla",
+        "stepId": "s-enchufla"
+      },
+      {
+        "tMs": 11000,
+        "beat": 14,
+        "beatInPhrase": 7,
+        "kind": "count",
+        "clip": "count.7",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 12000,
+        "beat": 16,
+        "beatInPhrase": 1,
+        "kind": "stepStart",
+        "clip": null,
+        "stepId": "s-enchufla"
+      },
+      {
+        "tMs": 12000,
+        "beat": 16,
+        "beatInPhrase": 1,
+        "kind": "count",
+        "clip": "count.1",
+        "stepId": "s-enchufla"
+      },
+      {
+        "tMs": 12500,
+        "beat": 17,
+        "beatInPhrase": 2,
+        "kind": "count",
+        "clip": "count.2",
+        "stepId": "s-enchufla"
+      },
+      {
+        "tMs": 13000,
+        "beat": 18,
+        "beatInPhrase": 3,
+        "kind": "count",
+        "clip": "count.3",
+        "stepId": "s-enchufla"
+      },
+      {
+        "tMs": 14000,
+        "beat": 20,
+        "beatInPhrase": 5,
+        "kind": "count",
+        "clip": "count.5",
+        "stepId": "s-enchufla"
+      },
+      {
+        "tMs": 14500,
+        "beat": 21,
+        "beatInPhrase": 6,
+        "kind": "count",
+        "clip": "count.6",
+        "stepId": "s-enchufla"
+      },
+      {
+        "tMs": 15000,
+        "beat": 22,
+        "beatInPhrase": 7,
+        "kind": "count",
+        "clip": "count.7",
+        "stepId": "s-enchufla"
+      },
+      {
+        "tMs": 16000,
+        "beat": 24,
+        "beatInPhrase": 1,
+        "kind": "end",
+        "clip": null,
+        "stepId": null
+      }
+    ]
+  }
+}

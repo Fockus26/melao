@@ -1,0 +1,33 @@
+{
+  "descripcion": "Anclas solo a partir del beat 4: el 0 y la entrada se extrapolan con el primer segmento; la entrada no cabe y la frase 0 hace de entrada",
+  "entrada": {
+    "anchors": [
+      {
+        "beat": 4,
+        "tMs": 2000
+      },
+      {
+        "beat": 12,
+        "tMs": 6000
+      }
+    ],
+    "style": {
+      "beatsPerPhrase": 8,
+      "spokenBeats": [1, 2, 3, 5, 6, 7],
+      "callBeat": 5,
+      "callSpanBeats": 2,
+      "leadInPhrases": 1
+    },
+    "danceEndMs": 30000,
+    "beatToMs": [-8, 0, 20, 40]
+  },
+  "salida": {
+    "beatToMs": [-4000, 0, 10000, 20000],
+    "entryShiftPhrases": 1,
+    "availablePhrases": 7,
+    "phraseWindow": {
+      "startPhrase": 1,
+      "phrases": 6
+    }
+  }
+}

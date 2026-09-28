@@ -1,0 +1,138 @@
+{
+  "descripcion": "Salsa, intro de 1000 ms: la frase 0 es la entrada (beats 0–7) y anuncia el primer paso en su 5; el plan empieza en la frase 1",
+  "entrada": {
+    "style": {
+      "beatsPerPhrase": 8,
+      "spokenBeats": [1, 2, 3, 5, 6, 7],
+      "callBeat": 5,
+      "callSpanBeats": 2,
+      "leadInPhrases": 1
+    },
+    "anchors": [
+      {
+        "beat": 0,
+        "tMs": 1000
+      },
+      {
+        "beat": 1,
+        "tMs": 1500
+      }
+    ],
+    "plan": [
+      {
+        "stepId": "s-base",
+        "slug": "base",
+        "startPhrase": 1,
+        "phrases": 1
+      }
+    ]
+  },
+  "salida": {
+    "events": [
+      {
+        "tMs": 1000,
+        "beat": 0,
+        "beatInPhrase": 1,
+        "kind": "count",
+        "clip": "count.1",
+        "stepId": null
+      },
+      {
+        "tMs": 1500,
+        "beat": 1,
+        "beatInPhrase": 2,
+        "kind": "count",
+        "clip": "count.2",
+        "stepId": null
+      },
+      {
+        "tMs": 2000,
+        "beat": 2,
+        "beatInPhrase": 3,
+        "kind": "count",
+        "clip": "count.3",
+        "stepId": null
+      },
+      {
+        "tMs": 3000,
+        "beat": 4,
+        "beatInPhrase": 5,
+        "kind": "call",
+        "clip": "step.base",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 4000,
+        "beat": 6,
+        "beatInPhrase": 7,
+        "kind": "count",
+        "clip": "count.7",
+        "stepId": null
+      },
+      {
+        "tMs": 5000,
+        "beat": 8,
+        "beatInPhrase": 1,
+        "kind": "stepStart",
+        "clip": null,
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 5000,
+        "beat": 8,
+        "beatInPhrase": 1,
+        "kind": "count",
+        "clip": "count.1",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 5500,
+        "beat": 9,
+        "beatInPhrase": 2,
+        "kind": "count",
+        "clip": "count.2",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 6000,
+        "beat": 10,
+        "beatInPhrase": 3,
+        "kind": "count",
+        "clip": "count.3",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 7000,
+        "beat": 12,
+        "beatInPhrase": 5,
+        "kind": "count",
+        "clip": "count.5",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 7500,
+        "beat": 13,
+        "beatInPhrase": 6,
+        "kind": "count",
+        "clip": "count.6",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 8000,
+        "beat": 14,
+        "beatInPhrase": 7,
+        "kind": "count",
+        "clip": "count.7",
+        "stepId": "s-base"
+      },
+      {
+        "tMs": 9000,
+        "beat": 16,
+        "beatInPhrase": 1,
+        "kind": "end",
+        "clip": null,
+        "stepId": null
+      }
+    ]
+  }
+}

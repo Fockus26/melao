@@ -44,7 +44,10 @@
 | D036 | Producto | Sin suscripción: vitrina con candado; sin prueba gratis en v1; acceso = has_active_subscription() | `decisions/04-producto.md` | Aprobado |
 | D037 | Arquitectura | Migraciones probadas con PGlite + stub de Supabase en bun test; César las aplica con db push | `decisions/03-arquitectura.md` | Implementado |
 | D038 | Producto | user_steps (estado + favorito, el cliente solo toca favorito) y srs_cards (FSRS por rol) separadas | `decisions/04-producto.md` | Implementado |
+| D046 | Arquitectura | shadcn (radix-nova, lucide) con las clases de los tokens, sin @theme inline propio; `cn` configurado con los tokens | `decisions/10-primitivos.md` | Implementado |
+| D047 | Tokens | Duraciones nuevas: duration-state 200 ms y duration-spin 800 ms (handoff §2/§6) | `decisions/10-primitivos.md` | Implementado |
+| D048 | Diseño | Ajustes de medidas al implementar primitivos (ayuda 14/20, zonas táctiles de chip/segmento, sheet y diálogo) | `decisions/10-primitivos.md` | Implementado |
 
 <!-- ID secuencial, nunca se reutiliza; una decisión que cambia se marca "Obsoleta → D0NN"
      y se añade la nueva. Si hay unidades en paralelo, el orquestador reserva un rango de IDs
-     por unidad para que no choquen. Próximo ID libre: D039. -->
+     por unidad para que no choquen. Próximo ID libre: D049. -->

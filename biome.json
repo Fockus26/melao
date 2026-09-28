@@ -13,7 +13,8 @@
       "!.next",
       "!dist",
       "!build",
-      "!app/tokens.css"
+      "!app/tokens.css",
+      "!supabase/functions/_shared/database.types.ts"
     ]
   },
   "formatter": {

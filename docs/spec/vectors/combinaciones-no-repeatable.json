@@ -1,0 +1,84 @@
+{
+  "descripcion": "Misma entrada que combinaciones-repeatable con exhibela no repeatable: su repetición inmediata pesa ×0.2 y el plan cambia",
+  "entrada": {
+    "phrases": 8,
+    "steps": [
+      {
+        "id": "exhibela",
+        "startPosition": "guapea",
+        "endPosition": "guapea",
+        "phrases": 1,
+        "canStart": true,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "vuelta-derecha",
+        "startPosition": "guapea",
+        "endPosition": "guapea",
+        "phrases": 1,
+        "canStart": true,
+        "canEnd": true,
+        "repeatable": false
+      }
+    ],
+    "baseSteps": [
+      {
+        "id": "guapea",
+        "startPosition": "guapea",
+        "endPosition": "guapea",
+        "phrases": 1,
+        "canStart": true,
+        "canEnd": true,
+        "repeatable": true
+      }
+    ],
+    "startPosition": "guapea",
+    "seed": 5
+  },
+  "salida": {
+    "plan": [
+      {
+        "stepId": "vuelta-derecha",
+        "startPhrase": 0,
+        "phrases": 1
+      },
+      {
+        "stepId": "exhibela",
+        "startPhrase": 1,
+        "phrases": 1
+      },
+      {
+        "stepId": "vuelta-derecha",
+        "startPhrase": 2,
+        "phrases": 1
+      },
+      {
+        "stepId": "exhibela",
+        "startPhrase": 3,
+        "phrases": 1
+      },
+      {
+        "stepId": "exhibela",
+        "startPhrase": 4,
+        "phrases": 1
+      },
+      {
+        "stepId": "vuelta-derecha",
+        "startPhrase": 5,
+        "phrases": 1
+      },
+      {
+        "stepId": "exhibela",
+        "startPhrase": 6,
+        "phrases": 1
+      },
+      {
+        "stepId": "vuelta-derecha",
+        "startPhrase": 7,
+        "phrases": 1
+      }
+    ],
+    "unplaced": []
+  }
+}

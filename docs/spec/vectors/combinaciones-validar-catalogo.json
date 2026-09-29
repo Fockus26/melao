@@ -1,0 +1,79 @@
+{
+  "descripcion": "Catálogo roto: desde cerrada y abierta no se vuelve a una posición con base; desde abierta no hay paso canEnd; rueda no tiene pasos",
+  "entrada": {
+    "catalogo": {
+      "positions": ["guapea", "cerrada", "abierta", "rueda"],
+      "startPosition": "guapea",
+      "steps": [
+        {
+          "id": "guapea",
+          "startPosition": "guapea",
+          "endPosition": "guapea",
+          "phrases": 1,
+          "canStart": true,
+          "canEnd": true,
+          "repeatable": true,
+          "category": "base"
+        },
+        {
+          "id": "dile-que-no",
+          "startPosition": "guapea",
+          "endPosition": "cerrada",
+          "phrases": 1,
+          "canStart": true,
+          "canEnd": true,
+          "repeatable": false,
+          "category": "entrada"
+        },
+        {
+          "id": "abanico",
+          "startPosition": "cerrada",
+          "endPosition": "abierta",
+          "phrases": 1,
+          "canStart": false,
+          "canEnd": false,
+          "repeatable": false,
+          "category": "figura"
+        },
+        {
+          "id": "paseala",
+          "startPosition": "abierta",
+          "endPosition": "abierta",
+          "phrases": 1,
+          "canStart": false,
+          "canEnd": false,
+          "repeatable": false,
+          "category": "figura"
+        }
+      ]
+    }
+  },
+  "salida": {
+    "problemas": [
+      {
+        "code": "no_base_reachable",
+        "position": "cerrada"
+      },
+      {
+        "code": "no_end_reachable",
+        "position": "cerrada"
+      },
+      {
+        "code": "no_base_reachable",
+        "position": "abierta"
+      },
+      {
+        "code": "no_end_reachable",
+        "position": "abierta"
+      },
+      {
+        "code": "no_base_reachable",
+        "position": "rueda"
+      },
+      {
+        "code": "no_end_reachable",
+        "position": "rueda"
+      }
+    ]
+  }
+}

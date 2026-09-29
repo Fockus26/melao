@@ -8,6 +8,9 @@ paréntesis son solo referencia.
 Perfil (en pantallas ≥ 1024 px, navegación lateral). **Progreso** no ocupa un destino de la
 barra: se abre desde Inicio ("Ver progreso") y desde Perfil; en la navegación lateral (≥ 1024 px)
 es el ítem 6 (D028). La sesión de práctica y la lección ocupan la pantalla completa, sin barra.
+Destino activo: el de camino más largo que es prefijo de la ruta actual, por segmentos (en una
+ruta sin destino propio en la barra, como Progreso, queda activo Inicio); se marca con peso y
+filete o fondo, nunca solo con color (D062).
 
 **Estados comunes a toda pantalla con datos:** cargando (esqueleto por bloque) · vacío ·
 error con reintento · sin conexión · sin suscripción activa (lleva a Planes).
@@ -45,6 +48,11 @@ error con reintento · sin conexión · sin suscripción activa (lleva a Planes)
 | Calibrar audífonos | Antes de empezar → tocar a oído con 12 clics (4 de práctica) → resultado en ms → probar / guardar · ajuste fino ±10 ms (−300 a +300) | toques irregulares (desvío > 40 ms); sin audífonos Bluetooth (altavoz: no hace falta) |
 
 ## Admin (solo `admin`, tablet y escritorio)
+
+**Navegación del admin:** Resumen · Estilos · Pasos · Canciones · Analizador de ritmo · Camino ·
+Usuarios, y al pie "Ver como alumno". Con etiquetas desde 1280 px; debajo, riel solo de íconos
+cuyo nombre se muestra al enfocar o al pasar el puntero (D062).
+
 | Pantalla | Bloques |
 |---|---|
 | Resumen | Contadores de contenido publicado y pendiente, avisos (canciones sin licencia, pasos sin video) |

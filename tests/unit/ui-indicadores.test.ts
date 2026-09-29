@@ -72,7 +72,7 @@ describe("PathNode", () => {
     number: 3,
     title: "Enchufla",
     label: "Lección 3",
-    href: "/app/leccion/3",
+    href: "/app/lessons/3",
   };
 
   test("la bloqueada no es enlace ni enfocable, y dice su estado", () => {

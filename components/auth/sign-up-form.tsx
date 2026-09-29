@@ -222,11 +222,11 @@ export function SignUpForm({ next }: { next: string }) {
       {/* Aceptación de términos por aviso, también para Google (D074). */}
       <p className="type-small text-text-secondary">
         Al crear tu cuenta aceptas los{" "}
-        <Link href="/legal/terminos" className={AUTH_INLINE_LINK}>
+        <Link href="/legal/terms" className={AUTH_INLINE_LINK}>
           Términos
         </Link>{" "}
         y la{" "}
-        <Link href="/legal/privacidad" className={AUTH_INLINE_LINK}>
+        <Link href="/legal/privacy" className={AUTH_INLINE_LINK}>
           Política de privacidad
         </Link>
         .

@@ -187,21 +187,21 @@ La estructura de cada pantalla está en orden vertical real.
 | 7 | Preguntas frecuentes | Dudas de pago, cancelación, nivel, roles | placeholder | — |
 | 8 | Footer | Legal, contacto | placeholder | — |
 
-### Planes — `/planes` y Checkout — `/checkout`
+### Planes — `/plans` y Checkout — `/checkout`
 | # | Sección | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Comparativa | Básico vs Consultoría (qué incluye cada uno) | placeholder | Elegir |
 | 2 | Checkout: resumen | Plan, precio mensual | placeholder | — |
 | 3 | Checkout: aviso | "El pago está en integración: hoy tu plan se activa por $0" | placeholder | Activar plan |
 
-### Auth — `/entrar` · `/registro` · `/recuperar` · `/restablecer`
+### Auth — `/login` · `/register` · `/forgot-password` · `/reset-password`
 | # | Sección | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Formulario | Email + contraseña (requisitos visibles en registro), aceptar términos en registro | placeholder | Entrar / Crear cuenta |
 | 2 | Alternativa | Continuar con Google | — | Google |
 | 3 | Enlaces | Olvidé mi contraseña, crear cuenta / ya tengo cuenta | — | — |
 
-### Bienvenida (onboarding) — `/bienvenida`
+### Bienvenida (onboarding) — `/welcome`
 | # | Paso | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Estilos | Elegir uno o varios (salsa casino, merengue) | placeholder | Siguiente |
@@ -217,14 +217,14 @@ La estructura de cada pantalla está en orden vertical real.
 | 4 | Práctica rápida | Canción aleatoria con mis pasos | — | Practicar |
 | 5 | Lo que más te cuesta | 3–5 pasos con peor calificación | placeholder | Ver progreso |
 
-### Curso (camino) — `/app/curso`
+### Curso (camino) — `/app/course`
 | # | Sección | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Selector de estilo | Cambiar de curso | — | — |
 | 2 | Camino | Unidades con nodos de lección numerados: bloqueada · disponible · actual · completada | placeholder | abrir lección |
 | 3 | Nodo de repaso | Aparece cuando hay pasos vencidos | — | Repasar |
 
-### Lección — `/app/curso/leccion/[id]` (pantalla completa, flujo por pasos)
+### Lección — `/app/lessons/[id]` (pantalla completa, flujo por pasos)
 | # | Etapa | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Intro | Número y título, pasos que se aprenden, duración | placeholder | Empezar |
@@ -236,7 +236,7 @@ La estructura de cada pantalla está en orden vertical real.
 Indicador de progreso de la lección visible en todas las etapas; salir a mitad pide
 confirmación.
 
-### Práctica · configurador — `/app/practicar`
+### Práctica · configurador — `/app/practice`
 | # | Sección | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Estilo | Salsa casino / merengue | — | — |
@@ -244,13 +244,13 @@ confirmación.
 | 3 | Pasos | Dificultad · aleatorio · favoritos · populares · según mi repaso · incluir "aprendiendo" | — | — |
 | 4 | Resumen | "Caben 24 figuras de 8 tiempos" + duración y BPM | — | Empezar |
 
-### Práctica · canciones — `/app/practicar/canciones`
+### Práctica · canciones — `/app/practice/songs`
 | # | Sección | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Búsqueda y filtros | Por título/artista, dificultad, estilo | — | — |
 | 2 | Lista | Título, artista, BPM, duración, dificultad (texto + forma), favorito | placeholder | elegir |
 
-### Práctica · sesión (modo escenario) — `/app/practicar/sesion`
+### Práctica · sesión (modo escenario) — `/app/practice/session`
 | # | Sección | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Cabecera | Estilo, BPM, salir | — | Salir |
@@ -264,13 +264,13 @@ confirmación.
 Se usa igual dentro de la lección (mini práctica y práctica final). Diseña también el
 horizontal (teléfono acostado).
 
-### Práctica · resultado — `/app/practicar/resultado`
+### Práctica · resultado — `/app/practice/result`
 | # | Sección | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Calificación | Los 4 botones por cada paso distinto (los no vencidos se pueden saltar) | — | Guardar |
 | 2 | Resumen | Duración, pasos bailados | — | Otra vez · Terminar |
 
-### Pasos (catálogo) — `/app/pasos` y detalle — `/app/pasos/[id]`
+### Pasos (catálogo) — `/app/steps` y detalle — `/app/steps/[slug]`
 | # | Sección | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Búsqueda y filtros | Categoría, estado (no lo sé · aprendiendo · me lo sé) | — | — |
@@ -281,7 +281,7 @@ horizontal (teléfono acostado).
 | 6 | Detalle: relaciones | Variaciones y prerequisitos | placeholder | — |
 | 7 | Detalle: historial | Calificaciones pasadas y próximo repaso | — | — |
 
-### Progreso — `/app/progreso`
+### Progreso — `/app/progress`
 | # | Sección | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Lo que más te cuesta | Pasos con peor calificación | — | Practicar estos |
@@ -289,7 +289,7 @@ horizontal (teléfono acostado).
 | 3 | Lecciones | Completadas / total | — | — |
 | 4 | Sesiones recientes | Fecha, canción, duración | — | — |
 
-### Perfil — `/app/perfil`
+### Perfil — `/app/profile`
 | # | Sección | Propósito | Contenido | CTA |
 |---|---|---|---|---|
 | 1 | Cuenta | Nombre, email | — | Editar |

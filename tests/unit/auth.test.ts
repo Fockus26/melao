@@ -23,11 +23,11 @@ import {
 describe("safeNext: solo rutas internas (sin open redirect)", () => {
   test("acepta rutas internas con query y hash", () => {
     expect(safeNext("/app")).toBe("/app");
-    expect(safeNext("/app/curso?leccion=3#paso-2")).toBe(
-      "/app/curso?leccion=3#paso-2",
+    expect(safeNext("/app/course?lesson=3#step-2")).toBe(
+      "/app/course?lesson=3#step-2",
     );
     expect(safeNext("/admin")).toBe("/admin");
-    expect(safeNext("/restablecer")).toBe("/restablecer");
+    expect(safeNext("/reset-password")).toBe("/reset-password");
   });
 
   test.each([
@@ -42,10 +42,10 @@ describe("safeNext: solo rutas internas (sin open redirect)", () => {
     ["sin barra inicial", "app"],
     ["tabulador dentro", "/\t/evil.com"],
     ["salto de línea", "/app\n"],
-    ["bucle a entrar", "/entrar?next=/app"],
-    ["bucle a registro", "/registro"],
+    ["bucle a login", "/login?next=/app"],
+    ["bucle a register", "/register"],
     ["callback", "/auth/callback?code=x"],
-    ["recuperar", "/recuperar"],
+    ["forgot-password", "/forgot-password"],
     ["muy largo", `/${"a".repeat(600)}`],
   ])("rechaza %s", (_, value) => {
     expect(safeNext(value)).toBe(DEFAULT_AFTER_AUTH);
@@ -54,7 +54,7 @@ describe("safeNext: solo rutas internas (sin open redirect)", () => {
   test("normaliza segmentos que intentan salir del sitio", () => {
     // Resuelto, "/app/../..//evil.com" es "//evil.com": sería otro origen.
     expect(safeNext("/app/../..//evil.com")).toBe(DEFAULT_AFTER_AUTH);
-    expect(safeNext("/app/./curso/../pasos")).toBe("/app/pasos");
+    expect(safeNext("/app/./course/../steps")).toBe("/app/steps");
     // Codificada no se decodifica: sigue siendo una ruta de este sitio.
     expect(new URL(safeNext("/%2F%2Fevil.com"), "https://melao.app").host).toBe(
       "melao.app",
@@ -69,36 +69,36 @@ describe("safeNext: solo rutas internas (sin open redirect)", () => {
 describe("rutas protegidas y solo para invitados", () => {
   test("protege /app y /admin por segmentos", () => {
     expect(isProtectedPath("/app")).toBe(true);
-    expect(isProtectedPath("/app/curso/leccion-3")).toBe(true);
+    expect(isProtectedPath("/app/course/lesson-3")).toBe(true);
     expect(isProtectedPath("/admin")).toBe(true);
-    expect(isProtectedPath("/admin/pasos")).toBe(true);
+    expect(isProtectedPath("/admin/steps")).toBe(true);
     expect(isProtectedPath("/applause")).toBe(false);
     expect(isProtectedPath("/administrar")).toBe(false);
     expect(isProtectedPath("/")).toBe(false);
-    expect(isProtectedPath("/entrar")).toBe(false);
+    expect(isProtectedPath("/login")).toBe(false);
   });
 
-  test("entrar y registro son solo para invitados; recuperar no", () => {
-    expect(isGuestOnlyPath("/entrar")).toBe(true);
-    expect(isGuestOnlyPath("/registro")).toBe(true);
-    expect(isGuestOnlyPath("/recuperar")).toBe(false);
-    expect(isGuestOnlyPath("/restablecer")).toBe(false);
+  test("login y register son solo para invitados; forgot-password no", () => {
+    expect(isGuestOnlyPath("/login")).toBe(true);
+    expect(isGuestOnlyPath("/register")).toBe(true);
+    expect(isGuestOnlyPath("/forgot-password")).toBe(false);
+    expect(isGuestOnlyPath("/reset-password")).toBe(false);
   });
 
   test("signInPathFor lleva next salvo al destino por defecto", () => {
-    expect(signInPathFor("/app")).toBe("/entrar");
-    expect(signInPathFor("/app/curso?x=1")).toBe(
-      "/entrar?next=%2Fapp%2Fcurso%3Fx%3D1",
+    expect(signInPathFor("/app")).toBe("/login");
+    expect(signInPathFor("/app/course?x=1")).toBe(
+      "/login?next=%2Fapp%2Fcourse%3Fx%3D1",
     );
-    expect(signInPathFor("//evil.com")).toBe("/entrar");
+    expect(signInPathFor("//evil.com")).toBe("/login");
   });
 
   test("callbackUrl arma la vuelta con next seguro", () => {
     expect(callbackUrl("https://melao.app")).toBe(
       "https://melao.app/auth/callback",
     );
-    expect(callbackUrl("https://melao.app", "/restablecer")).toBe(
-      "https://melao.app/auth/callback?next=%2Frestablecer",
+    expect(callbackUrl("https://melao.app", "/reset-password")).toBe(
+      "https://melao.app/auth/callback?next=%2Freset-password",
     );
     expect(callbackUrl("https://melao.app", "https://evil.com")).toBe(
       "https://melao.app/auth/callback",
@@ -145,13 +145,13 @@ describe("errores de Supabase en español", () => {
   });
 
   test("motivos del callback", () => {
-    expect(callbackErrorReason("otp_expired")).toBe("enlace-vencido");
+    expect(callbackErrorReason("otp_expired")).toBe("link-expired");
     expect(callbackErrorReason("bad_oauth_state")).toBe("google");
     expect(callbackErrorReason("pkce_code_verifier_not_found")).toBe(
-      "otro-navegador",
+      "other-browser",
     );
-    expect(callbackErrorReason(null)).toBe("acceso");
-    expect(isCallbackErrorReason("sin-codigo")).toBe(true);
+    expect(callbackErrorReason(null)).toBe("access-failed");
+    expect(isCallbackErrorReason("missing-code")).toBe(true);
     expect(isCallbackErrorReason("toString")).toBe(false);
     expect(isCallbackErrorReason("<script>")).toBe(false);
     for (const message of Object.values(CALLBACK_ERRORS))

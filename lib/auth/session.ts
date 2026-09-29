@@ -21,7 +21,7 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   };
 });
 
-/** Sesión obligatoria: sin ella, a `/entrar?next=<ruta>`. */
+/** Sesión obligatoria: sin ella, a `/login?next=<ruta>`. */
 export async function requireUser(path: string): Promise<SessionUser> {
   const user = await getSessionUser();
   if (!user) redirect(signInPathFor(path));

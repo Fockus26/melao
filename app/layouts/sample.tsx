@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Piezas compartidas de las muestras de `/layouts/*` (D060). Las shells reciben la ruta
- * activa por prop (`?activo=`) porque las pantallas reales aún no existen.
+ * activa por prop (`?active=`) porque las pantallas reales aún no existen.
  * Copy de ejemplo: placeholder realista (CONTENT_CHECKLIST fila 39).
  */
 
@@ -16,7 +16,7 @@ export function firstParam(
   return Array.isArray(value) ? value[0] : value;
 }
 
-/** `?activo=curso` → el ítem cuyo último segmento es `curso` (por defecto, el primero). */
+/** `?active=course` → el ítem cuyo último segmento es `course` (por defecto, el primero). */
 export function pickItem(
   items: readonly NavItem[],
   slug: string | undefined,
@@ -53,7 +53,7 @@ export function SampleControls({
           return (
             <li key={item.href}>
               <Link
-                href={`${base}?activo=${slug}`}
+                href={`${base}?active=${slug}`}
                 aria-current={isActive ? "true" : undefined}
                 className={cn(
                   "inline-flex min-h-12 items-center rounded-pill border px-4 type-small",

@@ -12,10 +12,10 @@ export const metadata: Metadata = {
 
 /** Muestra de la shell pública. Copy de ejemplo (CONTENT_CHECKLIST fila 39). */
 export default async function PublicSample(
-  props: PageProps<"/layouts/publico">,
+  props: PageProps<"/layouts/public">,
 ) {
-  const { cabecera } = await props.searchParams;
-  const account = firstParam(cabecera) === "cuenta";
+  const { header } = await props.searchParams;
+  const account = firstParam(header) === "account";
 
   return (
     <PublicShell
@@ -36,10 +36,10 @@ export default async function PublicSample(
           </p>
           <div className="flex flex-wrap gap-2">
             <Button asChild variant={account ? "outline" : "primary"}>
-              <Link href="/layouts/publico">Header de la landing</Link>
+              <Link href="/layouts/public">Header de la landing</Link>
             </Button>
             <Button asChild variant={account ? "primary" : "outline"}>
-              <Link href="/layouts/publico?cabecera=cuenta">
+              <Link href="/layouts/public?header=account">
                 Header con la sesión
               </Link>
             </Button>

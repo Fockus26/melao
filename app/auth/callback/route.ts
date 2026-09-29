@@ -23,8 +23,8 @@ function isOtpType(value: string | null): value is EmailOtpType {
 /**
  * Vuelta de Google y de los enlaces de correo (confirmación y recuperación). Intercambia el
  * código PKCE (`?code=`) o verifica el token del correo (`?token_hash=&type=`), deja la sesión
- * en cookies y manda a `next` (solo rutas internas). Si algo falla, a `/entrar?error=<motivo>`
- * (o a `/recuperar` si venía de recuperar la contraseña), nunca a una página en blanco.
+ * en cookies y manda a `next` (solo rutas internas). Si algo falla, a `/login?error=<motivo>`
+ * (o a `/forgot-password` si venía de recuperar la contraseña), nunca a una página en blanco.
  */
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
 
   const code = params.get("code");
   const tokenHash = params.get("token_hash");
-  if (!code && !(tokenHash && isOtpType(type))) return fail("sin-codigo");
+  if (!code && !(tokenHash && isOtpType(type))) return fail("missing-code");
 
   const supabase = await createClient();
   const { error } = code

@@ -169,7 +169,10 @@ heredada `SUPABASE_SERVICE_ROLE_KEY`. Nunca en un cliente.
 reloj; se prueba con bun), `supabase.ts` (el puerto de datos con supabase-js) e `index.ts`
 (arma el cliente y llama a `Deno.serve`). Compartido en `_shared/`: `http.ts`, `auth.ts`,
 `client.ts`, `validate.ts`, `sql-errors.ts`, `runtime.ts`. Las dependencias usan el mismo
-especificador en Deno (`deno.json`) y en bun (`package.json`), con la misma versión.
+especificador en Deno (`deno.json`) y en bun (`package.json`), con la misma versión. Al
+desplegar, Supabase empaqueta cada función con el `deno.json` **de su carpeta** (el global de
+`supabase/functions/` solo vale en local): cada función trae una copia con los mismos imports
+(lo vigila `tests/unit/ef-deno-json.test.ts`).
 
 ### `plan-session`
 Entrada: `{ styleId, songId, mode: "lesson"|"free", lessonId?, stepFilters?, seed? }`

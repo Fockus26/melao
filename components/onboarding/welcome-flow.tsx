@@ -71,6 +71,7 @@ export function WelcomeFlow({
   const router = useRouter();
   const id = useId();
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const arrowKey = useRef(false);
   const available = styles.filter((s) => s.available !== false);
   const [step, setStep] = useState<WelcomeStep>(initialStep);
   const [styleIds, setStyleIds] = useState<string[]>(() =>
@@ -95,6 +96,11 @@ export function WelcomeFlow({
       setStep(next);
     });
     titleRef.current?.focus();
+  }
+
+  function choose(value: string) {
+    if (step === 2) setRole(value as DanceRole);
+    else setLevel(value as ExperienceLevel);
   }
 
   function toggleStyle(styleId: string, checked: boolean) {
@@ -273,11 +279,16 @@ export function WelcomeFlow({
               <RadioGroup.Root
                 aria-labelledby={titleId}
                 value={step === 2 ? role : level}
-                onValueChange={(v) =>
-                  step === 2
-                    ? setRole(v as DanceRole)
-                    : setLevel(v as ExperienceLevel)
-                }
+                onValueChange={choose}
+                // Patrón radio de WAI-ARIA: la flecha mueve el foco y elige. Radix mueve el foco
+                // en un setTimeout y solo elige si la tecla sigue abajo: con una pulsación
+                // rápida no elige (se midió). Aquí la flecha deja el aviso hasta el foco siguiente.
+                onKeyDownCapture={(e) => {
+                  arrowKey.current = e.key.startsWith("Arrow");
+                }}
+                onPointerDownCapture={() => {
+                  arrowKey.current = false;
+                }}
                 disabled={pending}
                 className="flex flex-col gap-3"
               >
@@ -287,6 +298,11 @@ export function WelcomeFlow({
                     value={option.value}
                     aria-labelledby={`${id}-${option.value}`}
                     aria-describedby={`${id}-${option.value}-texto`}
+                    onFocus={() => {
+                      if (!arrowKey.current) return;
+                      arrowKey.current = false;
+                      choose(option.value);
+                    }}
                     className={cn(CARD, "group/card min-h-24")}
                   >
                     <span className="flex grow flex-col gap-1">
@@ -324,7 +340,8 @@ export function WelcomeFlow({
                   <Button
                     variant="outline"
                     size="lg"
-                    className="w-30"
+                    // Base de 120 que cede a 320 px: el principal no baja de su contenido.
+                    className="shrink basis-30"
                     disabled={pending}
                     onClick={() => go((step - 1) as WelcomeStep)}
                   >

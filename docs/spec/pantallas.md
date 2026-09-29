@@ -20,8 +20,8 @@ error con reintento · sin conexión · sin suscripción activa (lleva a Planes)
 | Pantalla | Bloques en orden | Acciones |
 |---|---|---|
 | Landing (`/`) | Hero · Cómo funciona · El coach (demo de la cuenta) · Repaso inteligente · Estilos · Planes · Preguntas frecuentes · Footer | Empieza (→ Registro), Ver planes |
-| Planes (`/plans`) | Comparativa Básico / Consultoría | Elegir plan (→ Checkout) |
-| Checkout (`/checkout`) | Resumen del plan y precio · Aviso "pago en integración: hoy se activa por $0" · Activar | Activar (servidor) → Bienvenida o Inicio |
+| Planes (`/plans`) | Una card por plan activo de `plans` (por `sort_order`): nombre, precio + período ("al mes" / "al año", D084), 5 filas incluido / no incluido según `includes_coaching`. Con sesión: correo en el header y "Tu plan" en la card de la suscripción vigente (`active` con el período en curso). Sin planes activos: aviso | Elegir plan (→ `/checkout?plan=<slug>`; un invitado pasa por Entrar con `next`) · en el plan vigente: Ir a Inicio |
+| Checkout (`/checkout?plan=<slug>`) | Exige sesión; sin `plan` o con uno inexistente o inactivo → Planes. Resumen (plan, precio / período, renovación mensual o anual, cancelación, "Total hoy US$0") · Aviso "El pago está en integración" · Casilla de términos y privacidad (obligatoria) · Activar plan. Si ese plan ya es el vigente: "Tu plan … está *activo*" | Activar → `activate-subscription` con la sesión del alumno (D086). Estados: activando · activo ("Tu plan … está *activo*" → Inicio, que desvía a Bienvenida si falta) · 409 `subscription_exists` (otro plan vigente, D049: aviso + Ir a Inicio) · 401 (sesión vencida: aviso + Entrar con `next`) · 404 `plan_not_found` (aviso + Ver planes) · error o sin conexión (aviso + Intentar de nuevo) |
 | Legal (`/legal/terms`, `/legal/privacy`) | Texto | — |
 
 ## Auth y onboarding

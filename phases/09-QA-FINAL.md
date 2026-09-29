@@ -20,7 +20,7 @@ Los dos agentes de QA pueden correr en paralelo: auditan cosas distintas y no se
 
 - [ ] Cero hallazgos **críticos** abiertos, en ambos QA.
 - [ ] Hallazgos **altos** corregidos, o documentados con la razón y aceptados por César.
-- [ ] Medios y bajos registrados en `decisions/09-qa.md` aunque no se corrijan — la decisión
+- [ ] Medios y bajos registrados en `decisions/` (un `D0NN-<tema>.md` por decisión, categoría QA) aunque no se corrijan — la decisión
       de no corregir también es una decisión, y conviene que quede escrita.
 - [ ] La sección "Acciones requeridas de César" de `functional-qa` está resuelta o
       explícitamente pospuesta.

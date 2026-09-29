@@ -21,8 +21,7 @@ al cerrar cada unidad de trabajo.
 | `PAGE_INVENTORY.md` | Qué rutas existen | `frontend-build` |
 | `CONTENT_CHECKLIST.md` | Todo el contenido real pendiente | todos |
 | `CURRENT_PHASE.md` | Dónde estamos ahora | quien cierra la fase |
-| `DECISIONS_INDEX.md` | Índice de todas las decisiones | quien decide |
-| `decisions/` | El detalle, una categoría por archivo | quien decide |
+| `decisions/` | Un archivo por decisión; su primera línea es la fila del índice | quien decide |
 | `PHASE_LOG/` | La narrativa de cada unidad (por rama) y de cada fase cerrada | quien cierra la unidad |
 | `GIT_STATE.md` | Modo (`pr` / `local`) y rama base | `git-flow` |
 
@@ -32,7 +31,7 @@ al cerrar cada unidad de trabajo.
 |---|---|---|
 | Siempre | `CURRENT_PHASE.md` (≤ 60 líneas) | Se lee entero, en cada sesión |
 | Según la tarea | `DESIGN_RULES`, `COLORS`, `TYPOGRAPHY`, `DESIGN_TOKENS`, `PROJECT_CONTEXT` | Solo si la tarea toca eso (tabla de `CLAUDE.md`) |
-| Buscar | `DECISIONS_INDEX`, `CONTENT_CHECKLIST`, inventarios, `PHASE_LOG/`, `decisions/` | `grep` por palabra o ID; se abre solo lo que sale |
+| Buscar | `decisions/`, `CONTENT_CHECKLIST`, inventarios, `PHASE_LOG/` | `grep` por palabra o ID; se abre solo lo que sale |
 
 Por eso los archivos de "siempre" tienen tope y los de "buscar" tienen filas de una línea.
 Detalle en `reference/TOKEN-ECONOMY.md` del kit.
@@ -53,6 +52,7 @@ Detalle en `reference/TOKEN-ECONOMY.md` del kit.
 ## Por qué está partido en tantos archivos
 
 Un solo `DESIGN_DECISIONS.md` monolítico crece sin límite y a mitad de un proyecto real ya no
-se puede leer. Partiendo por categoría, cada archivo se mantiene corto, `DECISIONS_INDEX.md`
-sirve de buscador, y `CURRENT_PHASE.md` puede quedarse en una pantalla porque la narrativa de
+se puede leer. Partiendo por categoría, cada archivo se mantiene corto, las decisiones van
+una por archivo (su cabecera es el índice, con `grep`, y dos PRs no chocan), y
+`CURRENT_PHASE.md` puede quedarse en una pantalla porque la narrativa de
 lo cerrado se va a `PHASE_LOG/`.

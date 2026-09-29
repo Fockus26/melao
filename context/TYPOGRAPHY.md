@@ -39,7 +39,7 @@
 
 ## Reglas
 
-- Todo tamaño fuera de esta tabla es una decisión nueva (`decisions/02-tipografia.md`).
+- Todo tamaño fuera de esta tabla es una decisión nueva (`decisions/D0NN-<tema>.md`, categoría Tipografía).
 - Serif solo en titulares; nunca en botones, controles, cifras ni cuenta (D008).
 - Nada por debajo de 12 px.
 

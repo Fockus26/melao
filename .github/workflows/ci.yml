@@ -9,6 +9,9 @@ on:
   pull_request:
   push:
     branches: [main]
+  # Lo lanza release.yml sobre la rama del PR de versión: ese PR lo abre GITHUB_TOKEN y no
+  # dispara `pull_request`, así que sin esto se queda sin el check `ci` que exige main.
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}

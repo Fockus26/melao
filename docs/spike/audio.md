@@ -2,7 +2,7 @@
 
 Página: **`/spike/audio`** (herramienta interna, `noindex`, sin enlaces). Código: `lib/audio/`
 (motor, sin React) y `app/spike/audio/` (la página). Decisiones: D030 (planificador) y D031
-(fuente de audio del spike) en `context/decisions/06-audio.md`.
+(fuente de audio del spike) en `context/decisions/D030-*.md` y `D031-*.md`.
 
 Pregunta que responde: **¿la web aguanta el reproductor del coach en un Android de gama media
 y en un iPhone?** Memoria de una canción decodificada (~85 MB en PCM), deriva entre canción y

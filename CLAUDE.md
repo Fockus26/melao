@@ -29,11 +29,11 @@ funcionalidad. **El contrato multiplataforma es `docs/spec/`.**
 | abre o cierra una unidad | skill `git-flow` + `context/GIT_STATE.md` |
 | llega con un prompt de orquestador | **solo** lo que el prompt cite: ya trae rutas, líneas y decisiones |
 
-**Buscar, no leer:** `DECISIONS_INDEX.md`, `CONTENT_CHECKLIST.md`, inventarios, `PHASE_LOG/`,
-`decisions/`, `plans/pendientes.md`. Se hace `grep` por la palabra o el ID:
+**Buscar, no leer:** `decisions/` (un archivo por decisión), `CONTENT_CHECKLIST.md`,
+inventarios, `PHASE_LOG/`, `plans/pendientes.md`. Se hace `grep` por la palabra o el ID:
 
 ```bash
-grep -n "dorado\|FSRS" context/DECISIONS_INDEX.md   # ¿ya se decidió algo sobre esto? No lo re-litigues
+grep -rhi "^# D.*dorado\|^# D.*FSRS" context/decisions/   # ¿ya se decidió algo? No lo re-litigues
 grep -n "Button" context/COMPONENTS_INVENTORY.md     # ¿existe ya?
 ```
 
@@ -93,7 +93,7 @@ algo que se revisa en dos minutos. Una unidad = una rama = un PR.
 ### Qué va al repo y qué es local
 
 En git: `context/PROJECT_CONTEXT.md`, `DESIGN_RULES.md`, `COLORS.md`, `DESIGN_TOKENS.md`,
-`TYPOGRAPHY.md`, `DECISIONS_INDEX.md`, `decisions/`, `docs/spec/`, `design/`.
+`TYPOGRAPHY.md`, `decisions/`, `docs/spec/`, `design/`.
 Local (gitignored): `context/CURRENT_PHASE.md`, `CONTENT_CHECKLIST.md`, `PAGE_INVENTORY.md`,
 `SECTION_INVENTORY.md`, `COMPONENTS_INVENTORY.md`, `PHASE_LOG/`, `plans/`, `.env*`.
 Los slots del pool de worktrees (`orchestrate`, `..\melao-wt\wtN`) traen los `.env*`

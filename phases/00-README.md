@@ -33,7 +33,7 @@ Elegir de más es tan malo como elegir de menos: una fase vacía es ceremonia si
 ## Regla común a todas
 
 - Cada fase se cierra actualizando `context/`: el inventario que toque, `decisions/`,
-  `DECISIONS_INDEX.md`, `CONTENT_CHECKLIST.md`, `PHASE_LOG/0N-<fase>.md` y `CURRENT_PHASE.md`.
+  `CONTENT_CHECKLIST.md`, `PHASE_LOG/0N-<fase>.md` y `CURRENT_PHASE.md`.
 - Ninguna fase se cierra con la puerta `a11y` en rojo.
 - Si algo es ambiguo: exactamente 3 opciones, con ventaja y desventaja real, y se espera.
 - Si falta un dato del handoff: se pregunta, **no se estima del mockup**.

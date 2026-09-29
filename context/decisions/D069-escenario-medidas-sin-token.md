@@ -1,4 +1,4 @@
-# D069 · Tipografía · Escenario apaisado con los tokens stage-next 30/36 y stage-beat 22/28; alto reservado de nombres · Implementado
+# D069 · Tipografía · Escenario apaisado con los tokens stage-next 30/36 y stage-beat 22/28; alto reservado de nombres · Aprobado
 
 **Decisión:** el handoff pide en apaisado nombre siguiente 32/38 y tira 20/26, que no son
 tokens: se usan `stage-next` (30/36) y `stage-beat` (22/28) en ambas orientaciones. Para que
@@ -8,5 +8,6 @@ chips 32. Radio 2 del progreso = `rounded-pill` sobre 4 px.
 **Por qué:** cero valores mágicos; con esas reservas la cuenta queda en el mismo sitio con
 nombres de 32 caracteres desde 360 de ancho (medido). A 320 con dos nombres de 32 el
 siguiente ocupa 6 líneas y la fila crece: se acepta (caso límite, sin scroll horizontal).
+**Aprobado por César (2026-09-29):** se queda así, sin tokens nuevos.
 **Alternativa descartada:** tokens nuevos `stage-next-landscape`/`stage-beat-landscape`
 (decisión de diseño de César); cortar el nombre con `line-clamp` (oculta texto).

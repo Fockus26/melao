@@ -15,7 +15,8 @@
     "test:related": "bun scripts/test-related.ts",
     "shots:publish": "bash scripts/publish-pr-shots.sh .pr-shots",
     "tokens": "bun scripts/tokens.ts",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "smoke:ef": "bun scripts/smoke-ef.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

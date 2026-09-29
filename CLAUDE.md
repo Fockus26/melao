@@ -56,7 +56,8 @@ bun run typecheck            # next typegen + tsc --noEmit
 bun run lint
 bun run test:related         # mientras trabajas: solo los tests afectados (grafo de imports)
 bun run test                 # antes del PR: toda la suite (CI la corre siempre)
-bun run shots                # capturas para el PR (node + Playwright, ver scripts/)
+bun run a11y /ruta …         # axe claro y oscuro (BASE_URL=http://localhost:<puerto>)
+bun run shots                # capturas para el PR (node + Playwright, ver scripts/); vacía .pr-shots/
 bun run shots:publish        # las sube a la rama pr-shots e imprime el markdown
 ```
 
@@ -65,7 +66,8 @@ bun run shots:publish        # las sube a la rama pr-shots e imprime el markdown
 corren sin preguntar.
 
 **Scripts con Playwright se corren con `node`, no con `bun`:** en Windows, Playwright bajo
-Bun se cuelga al lanzar Chromium.
+Bun se cuelga al lanzar Chromium. Andan igual desde Git Bash y PowerShell: corrigen las rutas
+que convierte MSYS y encuentran el Chromium instalado desde Claude Desktop (D071).
 
 **Documentación:** Context7 antes de usar la API de cualquier librería. Next 16 cambia APIs:
 leer `node_modules/next/dist/docs/` antes de escribir código de Next.

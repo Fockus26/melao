@@ -1,0 +1,125 @@
+{
+  "descripcion": "N = 0: plan vacío y todos los objetivos a unplaced",
+  "entrada": {
+    "phrases": 0,
+    "steps": [
+      {
+        "id": "guapea",
+        "startPosition": "guapea",
+        "endPosition": "guapea",
+        "phrases": 1,
+        "canStart": true,
+        "canEnd": true,
+        "repeatable": true
+      },
+      {
+        "id": "dile-que-no",
+        "startPosition": "guapea",
+        "endPosition": "cerrada",
+        "phrases": 1,
+        "canStart": true,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "enchufla",
+        "startPosition": "cerrada",
+        "endPosition": "guapea",
+        "phrases": 1,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "exhibela",
+        "startPosition": "guapea",
+        "endPosition": "guapea",
+        "phrases": 2,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "vacilala",
+        "startPosition": "cerrada",
+        "endPosition": "cerrada",
+        "phrases": 2,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "sombrero",
+        "startPosition": "cerrada",
+        "endPosition": "cerrada",
+        "phrases": 2,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "setenta",
+        "startPosition": "cerrada",
+        "endPosition": "guapea",
+        "phrases": 3,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "dame",
+        "startPosition": "cerrada",
+        "endPosition": "cerrada",
+        "phrases": 1,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": true
+      },
+      {
+        "id": "abanico",
+        "startPosition": "cerrada",
+        "endPosition": "abierta",
+        "phrases": 1,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "paseala",
+        "startPosition": "abierta",
+        "endPosition": "abierta",
+        "phrases": 1,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "cierre",
+        "startPosition": "abierta",
+        "endPosition": "cerrada",
+        "phrases": 1,
+        "canStart": false,
+        "canEnd": false,
+        "repeatable": false
+      }
+    ],
+    "baseSteps": [
+      {
+        "id": "guapea",
+        "startPosition": "guapea",
+        "endPosition": "guapea",
+        "phrases": 1,
+        "canStart": true,
+        "canEnd": true,
+        "repeatable": true
+      }
+    ],
+    "startPosition": "guapea",
+    "targets": ["enchufla"],
+    "seed": 1
+  },
+  "salida": {
+    "plan": [],
+    "unplaced": ["enchufla"]
+  }
+}

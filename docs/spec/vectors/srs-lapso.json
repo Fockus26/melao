@@ -1,0 +1,94 @@
+{
+  "descripcion": "Muy difícil sobre una tarjeta en review: lapses + 1, la estabilidad cae y vence pronto; después Fácil",
+  "entrada": {
+    "pasos": [
+      {
+        "op": "markKnown",
+        "now": "2026-10-01T12:00:00.000Z"
+      },
+      {
+        "op": "review",
+        "rating": 3,
+        "now": "2026-10-04T12:00:00.000Z"
+      },
+      {
+        "op": "review",
+        "rating": 1,
+        "now": "2026-10-18T12:00:00.000Z"
+      },
+      {
+        "op": "review",
+        "rating": 4,
+        "now": "2026-10-20T09:15:00.000Z"
+      }
+    ]
+  },
+  "salida": {
+    "resultados": [
+      {
+        "card": {
+          "state": "review",
+          "stability": 2.3065,
+          "difficulty": 2.11810397,
+          "due_at": "2026-10-04T12:00:00.000Z",
+          "last_review_at": "2026-10-01T12:00:00.000Z",
+          "reps": 1,
+          "lapses": 0
+        },
+        "review": {
+          "rating": 3,
+          "reviewed_at": "2026-10-01T12:00:00.000Z",
+          "due_after": "2026-10-04T12:00:00.000Z"
+        }
+      },
+      {
+        "card": {
+          "state": "review",
+          "stability": 13.82690327,
+          "difficulty": 2.11121424,
+          "due_at": "2026-10-18T12:00:00.000Z",
+          "last_review_at": "2026-10-04T12:00:00.000Z",
+          "reps": 2,
+          "lapses": 0
+        },
+        "review": {
+          "rating": 3,
+          "reviewed_at": "2026-10-04T12:00:00.000Z",
+          "due_after": "2026-10-18T12:00:00.000Z"
+        }
+      },
+      {
+        "card": {
+          "state": "review",
+          "stability": 1.72636178,
+          "difficulty": 7.39223814,
+          "due_at": "2026-10-20T12:00:00.000Z",
+          "last_review_at": "2026-10-18T12:00:00.000Z",
+          "reps": 3,
+          "lapses": 1
+        },
+        "review": {
+          "rating": 1,
+          "reviewed_at": "2026-10-18T12:00:00.000Z",
+          "due_after": "2026-10-20T12:00:00.000Z"
+        }
+      },
+      {
+        "card": {
+          "state": "review",
+          "stability": 8.08935712,
+          "difficulty": 6.50607402,
+          "due_at": "2026-10-28T09:15:00.000Z",
+          "last_review_at": "2026-10-20T09:15:00.000Z",
+          "reps": 4,
+          "lapses": 1
+        },
+        "review": {
+          "rating": 4,
+          "reviewed_at": "2026-10-20T09:15:00.000Z",
+          "due_after": "2026-10-28T09:15:00.000Z"
+        }
+      }
+    ]
+  }
+}

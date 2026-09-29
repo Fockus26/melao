@@ -58,6 +58,7 @@ bun run test:related         # mientras trabajas: solo los tests afectados (graf
 bun run test                 # antes del PR: toda la suite (CI la corre siempre)
 bun run a11y /ruta …         # axe claro y oscuro (BASE_URL=http://localhost:<puerto>)
 bun run shots                # capturas para el PR (node + Playwright, ver scripts/); vacía .pr-shots/
+bun run smoke:ef             # prueba de humo de las Edge Functions (la corre César: usa EMAIL_TEST/PASSWORD_TEST)
 bun run shots:publish        # las sube a la rama pr-shots e imprime el markdown
 ```
 

@@ -152,3 +152,21 @@ cliente.
 
 Catálogo de pasos, canciones, curso y progreso se leen con el SDK de Supabase respetando RLS;
 las vistas de popularidad y "más difíciles" se exponen como vistas o funciones SQL (07a).
+
+## Datos de ejemplo (seed)
+
+`supabase/seed.sql` siembra un catálogo **placeholder** para desarrollo y para las primeras
+pruebas (D053–D055); César corrige nombres, dificultades, frases, posiciones, canciones y el
+orden del curso. Lo aplica `supabase db reset` y, a mano, el proyecto real. Es idempotente
+(UUID fijos, `on conflict (clave) do nothing`): una segunda corrida no cambia ni pisa nada.
+
+| Qué | Contenido |
+|---|---|
+| Estilos | `salsa-casino` y `merengue`, publicados, con los valores del core (`style.ts`) |
+| Posiciones | salsa: `guapea` (inicial), `cerrada`, `abierta` · merengue: `cerrada` (inicial), `abierta` |
+| Pasos | 20 de casino y 11 de merengue, publicados; pasan `validateCatalog`. Base: `guapea`, `basico-cerrada` (salsa) · `basico`, `basico-abierta` (merengue) |
+| Canciones | 5 pistas de prueba **sin audio ni licencia, sin publicar** (D009), con rejilla de 2–3 anclas y `dance_end_ms` |
+| Curso | uno por estilo, publicado: 2 unidades × 3 lecciones, con pasos en orden y canción de práctica |
+
+No siembra usuarios, suscripciones ni datos de alumno (los `plans` vienen de la migración).
+Test: `tests/unit/db-seed.test.ts`.

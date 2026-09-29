@@ -82,3 +82,8 @@ export const asUser = <T>(
 ) => as(db, { role: "authenticated", uid }, fn);
 export const asService = <T>(db: PGlite, fn: (tx: Transaction) => Promise<T>) =>
   as(db, { role: "service_role" }, fn);
+
+/** Aplica `supabase/seed.sql` (datos de ejemplo, idempotente) sobre una base ya migrada. */
+export async function applySeed(db: PGlite): Promise<void> {
+  await db.exec(readFileSync(join(root, "supabase", "seed.sql"), "utf8"));
+}

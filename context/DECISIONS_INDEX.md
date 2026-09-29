@@ -51,7 +51,10 @@
 | D043 | Arquitectura | Tarjeta del core = fila de srs_cards (snake_case, ISO); reviewCard da también la fila de step_reviews | `decisions/09-core-combinaciones-srs.md` | Implementado |
 | D044 | Producto | FSRS sin pasos cortos (enable_short_term false): intervalos en días; srs_cards no guarda learning_steps | `decisions/09-core-combinaciones-srs.md` | Aprobado (César, 2026-09-28) |
 | D045 | Arquitectura | PRNG del core: mulberry32 sobre uint32, algoritmo exacto en combinaciones.md | `decisions/09-core-combinaciones-srs.md` | Implementado |
+| D046 | Arquitectura | shadcn (radix-nova, lucide) con las clases de los tokens, sin @theme inline propio; `cn` configurado con los tokens | `decisions/10-primitivos.md` | Implementado |
+| D047 | Tokens | Duraciones nuevas: duration-state 200 ms y duration-spin 800 ms (handoff §2/§6) | `decisions/10-primitivos.md` | Aprobado (César, 2026-09-28) |
+| D048 | Diseño | Ajustes de medidas al implementar primitivos (ayuda 14/20, zonas táctiles de chip/segmento, sheet y diálogo) | `decisions/10-primitivos.md` | Aprobado (César, 2026-09-28) |
 
 <!-- ID secuencial, nunca se reutiliza; una decisión que cambia se marca "Obsoleta → D0NN"
      y se añade la nueva. Si hay unidades en paralelo, el orquestador reserva un rango de IDs
-     por unidad para que no choquen. Próximo ID libre: D039. -->
+     por unidad para que no choquen. Próximo ID libre: D049. -->

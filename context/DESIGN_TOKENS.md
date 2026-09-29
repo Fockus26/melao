@@ -37,8 +37,10 @@ Ritmo vertical: 32 entre secciones de app · 24 entre bloques de formulario · 1
 |---|---|
 | `duration-press` | 120ms |
 | `duration-hover` | 160ms |
+| `duration-state` | 200ms · switch, segmentado, diálogo que aparece (D047) |
 | `duration-move` | 240ms |
 | `duration-enter` | 320ms |
+| `duration-spin` | 800ms · una vuelta del spinner de carga (D047) |
 | `duration-pulse` | 1600ms |
 | `ease-standard` | `cubic-bezier(.2,0,0,1)` |
 | `ease-exit` | `cubic-bezier(.4,0,1,1)` |
@@ -73,7 +75,7 @@ Todo sale de `app/tokens.css`, generado por `bun run tokens` (D033). Referencia 
 | Espaciado | `--spacing: 4px` + `--spacing-<n>` | `p-4`, `gap-6`, `mt-30`… (n × 4 px) |
 | Radios | `--radius-<none\|sm\|md\|lg\|pill>` | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-pill` (los de Tailwind vaciados) |
 | Sombras | `--shadow-<sheet\|modal\|drag>` | `shadow-sheet`, `shadow-modal`, `shadow-drag` (los de Tailwind vaciados) |
-| Duración | `--duration-<press\|hover\|move\|enter\|pulse>` | `duration-press`, `duration-hover`… (`transition-duration`) |
+| Duración | `--duration-<press\|hover\|state\|move\|enter\|spin\|pulse>` | `duration-press`, `duration-hover`… (`transition-duration`) |
 | Curva | `--ease-<standard\|exit\|linear>` | `ease-standard`, `ease-exit`, `ease-linear` |
 | z-index | `--z-<base\|nav\|popover\|scrim\|sheet\|dialog\|toast>` | `z-nav`, `z-dialog`… |
 

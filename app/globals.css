@@ -1,5 +1,29 @@
 @import "tailwindcss";
 @import "./tokens.css";
+/* Utilidades de entrada/salida (animate-in, fade-in, slide-in-from-*) de los primitivos. */
+@import "tw-animate-css";
+/* Variantes data-open / data-checked / data-disabled… que usan los primitivos de shadcn. */
+@import "shadcn/tailwind.css";
+
+/* Los primitivos usan los tokens de Melao directamente (bg-bg, text-text, border-border-input…);
+   no se declaran los nombres de shadcn como colores (D046). Los alias `--primary`, `--ring`…
+   de tokens.css quedan para librerías de terceros que los lean. */
+@theme {
+  --animate-skeleton: skeleton-pulse var(--duration-pulse) ease-in-out infinite;
+  --animate-spinner: spinner-turn var(--duration-spin) linear infinite;
+
+  @keyframes skeleton-pulse {
+    50% {
+      opacity: 0.55;
+    }
+  }
+
+  @keyframes spinner-turn {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
 
 /* Base mínima con tokens. El layout de la app llega en la fase 02. */
 @layer base {

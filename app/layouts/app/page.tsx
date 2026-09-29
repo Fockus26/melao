@@ -9,7 +9,7 @@ import {
 } from "../sample";
 
 export const metadata: Metadata = {
-  title: "AppShell · Layouts · Melao",
+  title: "AppShell · Layouts",
   robots: { index: false, follow: false },
 };
 

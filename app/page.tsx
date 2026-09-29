@@ -1,3 +1,8 @@
+import type { Metadata } from "next";
+
+// Título y descripción: los de la raíz. URL canónica sin parámetros (D088).
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
 // Portada provisional hasta la landing de la fase 05 (CONTENT_CHECKLIST fila 29).
 export default function Home() {
   return (

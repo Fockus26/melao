@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { firstParam } from "../sample";
 
 export const metadata: Metadata = {
-  title: "PublicShell · Layouts · Melao",
+  title: "PublicShell · Layouts",
   robots: { index: false, follow: false },
 };
 

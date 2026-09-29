@@ -8,7 +8,7 @@ import { firstParam } from "@/lib/search-params";
 
 // Copy provisional: títulos y textos de auth (CONTENT_CHECKLIST fila 42).
 export const metadata: Metadata = {
-  title: "Recupera tu contraseña · Melao",
+  title: "Recupera tu contraseña",
   robots: { index: false, follow: false },
 };
 

@@ -24,7 +24,7 @@ import { MotionDemo } from "./motion-demo";
  * Interna: sin enlace desde la app y fuera de buscadores.
  */
 export const metadata: Metadata = {
-  title: "Tokens · Melao",
+  title: "Tokens",
   robots: { index: false, follow: false },
 };
 

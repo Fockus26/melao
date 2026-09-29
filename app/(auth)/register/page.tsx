@@ -7,7 +7,7 @@ import { firstParam } from "@/lib/search-params";
 
 // Copy provisional: títulos y textos de auth (CONTENT_CHECKLIST fila 42).
 export const metadata: Metadata = {
-  title: "Crea tu cuenta · Melao",
+  title: "Crea tu cuenta",
   description:
     "Crea tu cuenta de Melao con tu correo o con Google y empieza a practicar en casa.",
 };

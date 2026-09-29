@@ -7,7 +7,7 @@ import { ThemeSwitch } from "@/components/theme/theme-switch";
  * enlace desde la app y fuera de buscadores. Copy de ejemplo (CONTENT_CHECKLIST fila 39).
  */
 export const metadata: Metadata = {
-  title: "Layouts · Melao",
+  title: "Layouts",
   robots: { index: false, follow: false },
 };
 

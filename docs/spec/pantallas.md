@@ -74,6 +74,11 @@ cuyo nombre se muestra al enfocar o al pasar el puntero (D062).
 ## Sistema
 404 · error inesperado · sin conexión.
 
+**Indexación y compartir (D088):** se indexan solo las pantallas públicas (`/`, `/plans`,
+`/login`, `/register`, `/legal/*`); la app, el admin, auth, Bienvenida y Checkout no. Un enlace
+compartido muestra la imagen de marca (1200 × 630, D087). La app instalada (PWA en web) abre en
+Inicio (`/app`) con el nombre "Melao"; en Android/iOS el ícono es la misma baldosa con la M.
+
 ## Consultoría (v2)
 | Pantalla | Bloques |
 |---|---|

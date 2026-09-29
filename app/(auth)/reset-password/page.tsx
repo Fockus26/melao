@@ -10,7 +10,7 @@ import { getSessionUser } from "@/lib/auth/session";
 
 // Copy provisional: títulos y textos de auth (CONTENT_CHECKLIST fila 42).
 export const metadata: Metadata = {
-  title: "Nueva contraseña · Melao",
+  title: "Nueva contraseña",
   robots: { index: false, follow: false },
 };
 

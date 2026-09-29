@@ -11,3 +11,8 @@ Emails cada vez que cambien.
 dashboard sea la única fuente.
 **Alternativa descartada:** aplicarlos por la Management API (script con token de acceso):
 más automático, pero exige manejar un token personal; se puede sumar después.
+**Requisito (2026-09-29):** en el plan gratis, Supabase solo deja editar las plantillas con un
+**SMTP propio** (sin él pide Pro), y su SMTP de fábrica solo envía a miembros del equipo del
+proyecto, con límite bajo por hora. Para correos en español y para alumnos reales hace falta
+configurar un SMTP propio (Supabase › Auth › Emails › SMTP Settings); hasta entonces los correos
+salen en inglés y solo a César.

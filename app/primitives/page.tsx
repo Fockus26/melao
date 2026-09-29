@@ -45,7 +45,7 @@ import {
  * Copy de ejemplo: placeholder realista (CONTENT_CHECKLIST fila 30).
  */
 export const metadata: Metadata = {
-  title: "Primitivos · Melao",
+  title: "Primitivos",
   robots: { index: false, follow: false },
 };
 

@@ -11,7 +11,7 @@ import { StageDemo } from "./stage-demo";
  * fuera de buscadores. Apaisado se ve girando el teléfono (media query, D068), no con un botón.
  */
 export const metadata: Metadata = {
-  title: "Escenario · Melao",
+  title: "Escenario",
   robots: { index: false, follow: false },
 };
 

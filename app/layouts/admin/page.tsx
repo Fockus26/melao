@@ -10,7 +10,7 @@ import {
 } from "../sample";
 
 export const metadata: Metadata = {
-  title: "AdminShell · Layouts · Melao",
+  title: "AdminShell · Layouts",
   robots: { index: false, follow: false },
 };
 

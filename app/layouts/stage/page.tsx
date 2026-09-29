@@ -6,7 +6,7 @@ import { ThemeSwitch } from "@/components/theme/theme-switch";
 import { ICON_STROKE } from "@/components/ui/icon";
 
 export const metadata: Metadata = {
-  title: "Escenario · Layouts · Melao",
+  title: "Escenario · Layouts",
   robots: { index: false, follow: false },
 };
 

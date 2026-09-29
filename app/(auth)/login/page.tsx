@@ -8,7 +8,7 @@ import { firstParam } from "@/lib/search-params";
 
 // Copy provisional: títulos y textos de auth (CONTENT_CHECKLIST fila 42).
 export const metadata: Metadata = {
-  title: "Entrar · Melao",
+  title: "Entrar",
   description: "Entra a Melao con tu correo o con Google.",
 };
 

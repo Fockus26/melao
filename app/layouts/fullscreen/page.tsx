@@ -7,7 +7,7 @@ import { Button, IconButton } from "@/components/ui/button";
 import { ICON_STROKE } from "@/components/ui/icon";
 
 export const metadata: Metadata = {
-  title: "Pantalla completa · Layouts · Melao",
+  title: "Pantalla completa · Layouts",
   robots: { index: false, follow: false },
 };
 

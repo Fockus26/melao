@@ -1,13 +1,43 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import {
+  SHARE_TITLE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  siteUrl,
+  THEME_COLOR,
+} from "@/lib/seo/site";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { fraunces, geist } from "./fonts";
 import "./globals.css";
 
-// Copy provisional: título y descripción del sitio (CONTENT_CHECKLIST fila 28).
+/**
+ * Metadata raíz (D088). Cada página pone solo su título: el template agrega « · Melao».
+ * La imagen al compartir, el ícono de Apple y el favicon salen de los archivos de `app/`
+ * (`opengraph-image.png`, `twitter-image.png`, `apple-icon.png`, `favicon.ico`, `icon.svg`),
+ * que genera `bun run brand:assets` (D087). Descripción provisional: fila 28.
+ */
 export const metadata: Metadata = {
-  title: "Melao",
-  description:
-    "Aprende salsa casino y merengue en casa, con un coach por voz que cuenta al ritmo de la canción.",
+  metadataBase: new URL(siteUrl()),
+  title: { default: SITE_NAME, template: `%s · ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  appleWebApp: { title: SITE_NAME },
+  openGraph: {
+    type: "website",
+    locale: "es_419",
+    siteName: SITE_NAME,
+    title: SHARE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: { card: "summary_large_image" },
+};
+
+// Barra del navegador del color de fondo de cada tema (va en `viewport`, no en `metadata`).
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: THEME_COLOR.light },
+    { media: "(prefers-color-scheme: dark)", color: THEME_COLOR.dark },
+  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -47,5 +47,5 @@ cambia el movimiento aprobado.
   "card"; la sombra es la de diálogo).
 **Por qué:** son los huecos entre el handoff y lo que shadcn/los tokens permiten; se eligió lo
 conservador (más legible, zona táctil ≥ 48) sin inventar tokens.
-**Alternativa descartada:** agregar un rol `help` 13/18 a `tokens.json` (pendiente de César).
-**Estado:** Implementado (feat/ui-primitivos); rol 13/18 pendiente de decidir.
+**Alternativa descartada:** agregar un rol `help` 13/18 a `tokens.json` (César eligió 14/20, 2026-09-28).
+**Estado:** Aprobado (César, 2026-09-28): ayuda en 14/20, sin rol 13/18.

@@ -33,6 +33,11 @@ const SAMPLES = [
     text: "Header de 72 y footer de la landing; variante con el correo de la sesión para Planes y Checkout.",
   },
   {
+    href: "/layouts/checkout",
+    title: "Checkout · estados",
+    text: "Checkout con sesión simulada: activa, 409 por otro plan, error, sin conexión, sesión vencida y plan retirado.",
+  },
+  {
     href: "/layouts/admin",
     title: "AdminShell",
     text: "Navegación de 232 con etiquetas desde 1280 px y riel de 72 solo con íconos por debajo.",

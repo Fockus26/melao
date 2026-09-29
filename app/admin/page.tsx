@@ -3,7 +3,7 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 import { requireAdmin } from "@/lib/auth/session";
 
 export const metadata: Metadata = {
-  title: "Panel · Admin · Melao",
+  title: "Panel · Admin",
   robots: { index: false, follow: false },
 };
 

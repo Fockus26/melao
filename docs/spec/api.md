@@ -93,10 +93,24 @@ Nadie escribe `subscriptions` desde un cliente: solo Edge Functions con la clave
 
 - El perfil lo crea la base al registrarse el usuario (nombre tomado de Google si viene).
 - `public.set_app_role(target, new_role)`: solo un admin; es la única vía para cambiar `app_role`.
+- `public.complete_onboarding(p_style_ids, p_dance_role, p_level)` (alumno; anónimo no):
+  cierra la Bienvenida en una transacción. Exige sesión, ≥ 1 estilo y que todos estén
+  publicados (si no, error `22023`; sin sesión, `42501`). Reemplaza `user_styles`, pone
+  `dance_role` y `experience_level`, conserva `default_style_id` si sigue entre los elegidos
+  (si no, el primero por `sort_order`) y `onboarded_at = now()`. Idempotente. Es la única vía
+  para escribir `user_styles` y `experience_level` (D080–D083). Los clientes desvían a
+  Bienvenida mientras `onboarded_at` sea null.
 - `public.has_active_subscription()`: `true` si el usuario tiene una suscripción `active` con
   el periodo vigente. Es la regla de acceso al contenido (D036) y los clientes la pueden
   llamar para decidir si muestran el candado.
 - Planes iniciales: `basico` (2000, US$20/mes) y `consultoria` (4000, US$40/mes, con consultoría).
+
+### Bienvenida (`20260929200000_onboarding.sql`)
+
+| Tabla / columna | Campos | Anónimo | Alumno | Admin |
+|---|---|---|---|---|
+| `profiles.experience_level` | `beginner|knows_steps`, null hasta el onboarding | — | L del suyo; se escribe solo con `complete_onboarding` | L de todos |
+| `user_styles` | `user_id` · `style_id` · `created_at`; único por (alumno, estilo) | — | L de los suyos; se escribe solo con `complete_onboarding` | L de todos |
 
 ### Contenido (`20260927120000_contenido.sql`)
 

@@ -22,7 +22,7 @@ error con reintento · sin conexión · sin suscripción activa (lleva a Planes)
 | Landing (`/`) | Hero · Cómo funciona · El coach (demo de la cuenta) · Repaso inteligente · Estilos · Planes · Preguntas frecuentes · Footer | Empieza (→ Registro), Ver planes |
 | Planes (`/plans`) | Una card por plan activo de `plans` (por `sort_order`): nombre, precio + período ("al mes" / "al año", D084), 5 filas incluido / no incluido según `includes_coaching`. Con sesión: correo en el header y "Tu plan" en la card de la suscripción vigente (`active` con el período en curso). Sin planes activos: aviso | Elegir plan (→ `/checkout?plan=<slug>`; un invitado pasa por Entrar con `next`) · en el plan vigente: Ir a Inicio |
 | Checkout (`/checkout?plan=<slug>`) | Exige sesión; sin `plan` o con uno inexistente o inactivo → Planes. Resumen (plan, precio / período, renovación mensual o anual, cancelación, "Total hoy US$0") · Aviso "El pago está en integración" · Casilla de términos y privacidad (obligatoria) · Activar plan. Si ese plan ya es el vigente: "Tu plan … está *activo*" | Activar → `activate-subscription` con la sesión del alumno (D086). Estados: activando · activo ("Tu plan … está *activo*" → Inicio, que desvía a Bienvenida si falta) · 409 `subscription_exists` (otro plan vigente, D049: aviso + Ir a Inicio) · 401 (sesión vencida: aviso + Entrar con `next`) · 404 `plan_not_found` (aviso + Ver planes) · error o sin conexión (aviso + Intentar de nuevo) |
-| Legal (`/legal/terms`, `/legal/privacy`) | Texto | — |
+| Legal (`/legal/terms`, `/legal/privacy`) | Título · Última actualización · Aviso "Texto provisional" (mientras sea borrador) · Secciones numeradas · Enlace al otro documento | — (enlazadas desde el footer público y el registro) |
 
 ## Auth y onboarding
 | Pantalla | Bloques | Estados |
@@ -34,11 +34,12 @@ error con reintento · sin conexión · sin suscripción activa (lleva a Planes)
 
 **Flujo de acceso (todas las plataformas):** mismos proveedores (correo + contraseña y Google) y
 mismos estados. Tras entrar o registrarse con sesión, al destino pedido (`next`, solo rutas
-internas) o a Inicio (aún no hay Bienvenida, D074). Con sesión, Entrar y Registro llevan
+internas) o a Inicio; quien no hizo la Bienvenida (`profiles.onboarded_at` null) sale de
+cualquier pantalla de la app a Bienvenida (D081). Con sesión, Entrar y Registro llevan
 directo a Inicio. Sin sesión, cualquier pantalla de la app o del admin lleva a Entrar y vuelve
 después a la pantalla pedida. Admin sin rol `admin`: "no encontrado" (D073). Cerrar sesión:
 desde Inicio (provisional) y, cuando exista, Perfil. Contrato en `docs/spec/api.md` § Acceso.
-| Bienvenida (`/welcome`) | 1 Estilo(s) → 2 Rol (líder/seguidor, uno para todos) → 3 Nivel (desde cero / ya sé pasos) | — |
+| Bienvenida (`/welcome`) | Logo + "Paso n de 3" + barra de 3 segmentos · 1 Estilo(s): los publicados, uno o varios (D082) → 2 Rol (líder/seguidor, uno para todos; se pide siempre, D080) → 3 Nivel (desde cero / ya sé pasos) · Atrás / Siguiente (deshabilitado hasta elegir, con el motivo en texto) · Empezar → `complete_onboarding` → Inicio (también "ya sé pasos" mientras no haya catálogo, D083). Exige sesión; con el onboarding hecho, a Inicio. Preselecciona lo que ya tenga el perfil. El foco va al título en cada paso | guardando, error al guardar (banner), estilo que dejó de estar publicado, estilos sin cargar |
 
 ## App
 | Pantalla | Bloques en orden | Estados propios |
@@ -73,6 +74,11 @@ cuyo nombre se muestra al enfocar o al pasar el puntero (D062).
 
 ## Sistema
 404 · error inesperado · sin conexión.
+
+**Indexación y compartir (D088):** se indexan solo las pantallas públicas (`/`, `/plans`,
+`/login`, `/register`, `/legal/*`); la app, el admin, auth, Bienvenida y Checkout no. Un enlace
+compartido muestra la imagen de marca (1200 × 630, D087). La app instalada (PWA en web) abre en
+Inicio (`/app`) con el nombre "Melao"; en Android/iOS el ícono es la misma baldosa con la M.
 
 ## Consultoría (v2)
 | Pantalla | Bloques |

@@ -7,7 +7,7 @@ import { ThemeSwitch } from "@/components/theme/theme-switch";
  * enlace desde la app y fuera de buscadores. Copy de ejemplo (CONTENT_CHECKLIST fila 39).
  */
 export const metadata: Metadata = {
-  title: "Layouts · Melao",
+  title: "Layouts",
   robots: { index: false, follow: false },
 };
 
@@ -41,6 +41,11 @@ const SAMPLES = [
     href: "/layouts/admin",
     title: "AdminShell",
     text: "Navegación de 232 con etiquetas desde 1280 px y riel de 72 solo con íconos por debajo.",
+  },
+  {
+    href: "/layouts/welcome",
+    title: "Bienvenida",
+    text: "Los 3 pasos de /welcome (estilos, rol y nivel) en su columna de 560, sin sesión ni base.",
   },
 ] as const;
 

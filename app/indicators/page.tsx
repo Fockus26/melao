@@ -13,7 +13,7 @@ import { BeatRowDemo, RatingDemo } from "./demos";
  * Copy de ejemplo: placeholder realista (CONTENT_CHECKLIST fila 35).
  */
 export const metadata: Metadata = {
-  title: "Indicadores · Melao",
+  title: "Indicadores",
   robots: { index: false, follow: false },
 };
 

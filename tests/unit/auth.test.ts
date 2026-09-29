@@ -10,8 +10,10 @@ import {
   DEFAULT_AFTER_AUTH,
   isGuestOnlyPath,
   isProtectedPath,
+  needsOnboarding,
   safeNext,
   signInPathFor,
+  WELCOME_PATH,
 } from "@/lib/auth/redirect";
 import {
   checkPassword,
@@ -76,6 +78,24 @@ describe("rutas protegidas y solo para invitados", () => {
     expect(isProtectedPath("/administrar")).toBe(false);
     expect(isProtectedPath("/")).toBe(false);
     expect(isProtectedPath("/login")).toBe(false);
+    expect(isProtectedPath(WELCOME_PATH)).toBe(true);
+    expect(isProtectedPath("/checkout")).toBe(true);
+    expect(isProtectedPath("/checkout/basico")).toBe(true);
+    expect(isProtectedPath("/welcomed")).toBe(false);
+  });
+
+  test("Bienvenida pendiente mientras no haya onboarded_at (D081)", () => {
+    expect(needsOnboarding({ onboarded_at: null })).toBe(true);
+    expect(needsOnboarding(null)).toBe(true);
+    expect(needsOnboarding(undefined)).toBe(true);
+    expect(needsOnboarding({ onboarded_at: "2026-09-29T12:00:00Z" })).toBe(
+      false,
+    );
+  });
+
+  test("/welcome es un next válido: se vuelve ahí tras entrar", () => {
+    expect(safeNext(WELCOME_PATH)).toBe(WELCOME_PATH);
+    expect(signInPathFor(WELCOME_PATH)).toBe("/login?next=%2Fwelcome");
   });
 
   test("login y register son solo para invitados; forgot-password no", () => {

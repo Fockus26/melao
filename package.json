@@ -1,6 +1,6 @@
 {
   "name": "melao",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -16,7 +16,8 @@
     "shots:publish": "bash scripts/publish-pr-shots.sh .pr-shots",
     "tokens": "bun scripts/tokens.ts",
     "typecheck": "next typegen && tsc --noEmit",
-    "smoke:ef": "bun scripts/smoke-ef.ts"
+    "smoke:ef": "bun scripts/smoke-ef.ts",
+    "brand:assets": "node scripts/brand-assets.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

@@ -495,6 +495,7 @@ export type Database = {
           dance_role: Database["public"]["Enums"]["dance_role"] | null
           default_style_id: string | null
           display_name: string | null
+          experience_level: Database["public"]["Enums"]["experience_level"] | null
           id: string
           onboarded_at: string | null
           theme: Database["public"]["Enums"]["theme_pref"]
@@ -508,6 +509,9 @@ export type Database = {
           dance_role?: Database["public"]["Enums"]["dance_role"] | null
           default_style_id?: string | null
           display_name?: string | null
+          experience_level?:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
           id: string
           onboarded_at?: string | null
           theme?: Database["public"]["Enums"]["theme_pref"]
@@ -521,6 +525,9 @@ export type Database = {
           dance_role?: Database["public"]["Enums"]["dance_role"] | null
           default_style_id?: string | null
           display_name?: string | null
+          experience_level?:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
           id?: string
           onboarded_at?: string | null
           theme?: Database["public"]["Enums"]["theme_pref"]
@@ -1046,11 +1053,52 @@ export type Database = {
           },
         ]
       }
+      user_styles: {
+        Row: {
+          created_at: string
+          style_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          style_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          style_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_styles_style_id_fkey"
+            columns: ["style_id"]
+            isOneToOne: false
+            referencedRelation: "dance_styles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_styles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      complete_onboarding: {
+        Args: {
+          p_dance_role: Database["public"]["Enums"]["dance_role"]
+          p_level: Database["public"]["Enums"]["experience_level"]
+          p_style_ids: string[]
+        }
+        Returns: undefined
+      }
       ef_activate_subscription: {
         Args: { p_plan_slug: string; p_user: string }
         Returns: Json
@@ -1106,6 +1154,7 @@ export type Database = {
       card_state: "new" | "learning" | "review" | "relearning"
       client_platform: "web" | "android" | "ios"
       dance_role: "leader" | "follower"
+      experience_level: "beginner" | "knows_steps"
       review_context: "lesson" | "practice" | "catalog"
       session_mode: "lesson" | "free"
       step_category:
@@ -1256,6 +1305,7 @@ export const Constants = {
       card_state: ["new", "learning", "review", "relearning"],
       client_platform: ["web", "android", "ios"],
       dance_role: ["leader", "follower"],
+      experience_level: ["beginner", "knows_steps"],
       review_context: ["lesson", "practice", "catalog"],
       session_mode: ["lesson", "free"],
       step_category: [

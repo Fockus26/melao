@@ -27,7 +27,7 @@ error con reintento · sin conexión · sin suscripción activa (lleva a Planes)
 | Pantalla | Bloques | Estados |
 |---|---|---|
 | Entrar | Google · "o con tu correo" · email, contraseña (+ "¿Olvidaste tu contraseña?") · Entrar · enlace a registro | error de credenciales, correo sin confirmar, límite de intentos, sin conexión, error del enlace/Google (llega del callback), enviando |
-| Registro | Google · "o con tu correo" · nombre, email, contraseña con requisitos visibles (8+, una letra, un número) · Crear cuenta (deshabilitado hasta cumplir, con el motivo en texto) · aviso de aceptación de términos y privacidad (vale también para Google, D074) · enlace a entrar | email en uso, contraseña débil, enviando, **revisa tu correo** (si el proyecto exige confirmar) |
+| Registro | Google · "o con tu correo" · nombre, email, contraseña con requisitos visibles (8+, minúscula, mayúscula, número y símbolo) · Crear cuenta (deshabilitado hasta cumplir, con el motivo en texto) · aviso de aceptación de términos y privacidad (vale también para Google, D074) · enlace a entrar | email en uso, contraseña débil, enviando, **revisa tu correo** (si el proyecto exige confirmar) |
 | Recuperar | Email → aviso "si hay una cuenta, te enviamos un enlace" (igual exista o no la cuenta) | enviando, enlace vencido / abierto en otro navegador (llega del callback) |
 | Restablecer | Nueva contraseña con requisitos → Guardar → Inicio | sin sesión de recuperación = enlace vencido (→ pedir otro), enviando (campos deshabilitados + botón cargando), misma contraseña |
 

@@ -34,23 +34,23 @@ Ninguna regla vive solo en el cliente: la contraseña la valida Supabase y los p
   proyecto real los recibe pegados en Supabase › Auth › Emails). El enlace es
   `{{ .ConfirmationURL }}` y termina en `/auth/callback`.
 - **Entrar:** `signInWithPassword` o `signInWithOAuth({ provider: "google" })`.
-- **Recuperar:** `resetPasswordForEmail(email, redirectTo = callback?next=/restablecer)`; el
+- **Recuperar:** `resetPasswordForEmail(email, redirectTo = callback?next=/reset-password)`; el
   aviso es el mismo exista o no la cuenta. **Restablecer:** `updateUser({ password })` con la
   sesión de recuperación.
 - **Vuelta (web `/auth/callback`):** recibe `code` (PKCE: Google, confirmación y
   recuperación) o `token_hash` + `type` (plantillas de correo con token) y guarda la sesión;
-  luego redirige a `next`. Errores → `/entrar?error=<motivo>` (o `/recuperar?error=…` si
+  luego redirige a `next`. Errores → `/login?error=<motivo>` (o `/forgot-password?error=…` si
   venía de recuperar). Motivos estables, compartidos por las tres plataformas:
-  `enlace-vencido` · `otro-navegador` (PKCE sin verificador: el correo ya quedó confirmado) ·
-  `sin-codigo` · `google` · `acceso`. Las nativas usan deep link al mismo flujo.
+  `link-expired` · `other-browser` (PKCE sin verificador: el correo ya quedó confirmado) ·
+  `missing-code` · `google` · `access-failed`. Las nativas usan deep link al mismo flujo.
 - **`next`:** solo rutas internas (`/…`, nunca `//`, `\`, esquemas ni las propias
   pantallas de auth); cualquier otra cosa cae en Inicio (`/app`). Sin open redirect.
 - **Rutas protegidas:** todo `/app/**` exige sesión; `/admin/**` además `app_role = admin`,
   leído de `profiles` con la sesión del usuario (RLS), nunca de metadatos del cliente. El
-  proxy web hace el chequeo optimista (redirige a `/entrar?next=…`) y cada página lo repite
+  proxy web hace el chequeo optimista (redirige a `/login?next=…`) y cada página lo repite
   junto a los datos.
 - **Cerrar sesión:** `signOut({ scope: "local" })` (solo este dispositivo); web: `POST
-  /auth/salir` → `/entrar`.
+  /auth/logout` → `/login`.
 - **Errores de Supabase → mensaje:** tabla en `lib/auth/errors.ts` (credenciales, correo sin
   confirmar, correo en uso, contraseña débil o repetida, límite de intentos, enlace vencido,
   sin conexión; el resto, genérico). Las nativas usan la misma tabla por `code`.

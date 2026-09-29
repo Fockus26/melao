@@ -1,7 +1,7 @@
 import type { FakeStageOptions, FakeStep } from "@/lib/stage/fake-source";
 
 /**
- * Estados de la muestra `/escenario` (handoff §3 Sesión › Estados). Textos de la muestra:
+ * Estados de la muestra `/stage` (handoff §3 Sesión › Estados). Textos de la muestra:
  * CONTENT_CHECKLIST fila 40. Las "instantáneas" arrancan congeladas en un momento concreto
  * (para capturas y revisión); el primer comando las pone en marcha.
  */
@@ -31,35 +31,35 @@ export interface DemoState {
 }
 
 export const DEMO_STATES = {
-  reproduciendo: { label: "Reproduciendo", options: { status: "playing" } },
-  anuncio: {
+  playing: { label: "Reproduciendo", options: { status: "playing" } },
+  announcement: {
     label: "Anuncio en el 5 (instantánea)",
     options: { status: "playing", frozen: true, startAtBeat: 21 },
   },
-  "se-repite": {
+  repeat: {
     label: "Se repite (instantánea)",
     options: { status: "playing", frozen: true, startAtBeat: 13 },
   },
-  preparando: { label: "Preparando audio", options: { status: "preparing" } },
-  bloqueado: { label: "Audio bloqueado", options: { status: "blocked" } },
-  pausada: {
+  preparing: { label: "Preparando audio", options: { status: "preparing" } },
+  blocked: { label: "Audio bloqueado", options: { status: "blocked" } },
+  paused: {
     label: "En pausa",
     options: { status: "paused", startAtBeat: 36 },
   },
-  pantalla: {
+  "screen-off": {
     label: "La pantalla puede apagarse",
     options: { status: "playing", screenMayTurnOff: true },
   },
-  "sin-voz": {
+  "no-voice": {
     label: "Cuenta en silencio",
     options: { status: "playing", voice: false },
   },
-  salir: {
+  exit: {
     label: "Salir a mitad",
     options: { status: "paused", startAtBeat: 21 },
     exitOpen: true,
   },
-  "nombre-largo": {
+  "long-name": {
     label: "Nombre de 32 caracteres a 220 BPM (instantánea)",
     options: {
       status: "playing",
@@ -69,7 +69,7 @@ export const DEMO_STATES = {
       steps: LONG_STEPS,
     },
   },
-  terminado: { label: "Terminada", options: { status: "ended" } },
+  ended: { label: "Terminada", options: { status: "ended" } },
 } satisfies Record<string, DemoState>;
 
 export type DemoStateId = keyof typeof DEMO_STATES;

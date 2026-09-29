@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function RecuperarPage(props: PageProps<"/recuperar">) {
+export default async function RecuperarPage(
+  props: PageProps<"/forgot-password">,
+) {
   const reason = firstParam((await props.searchParams).error);
   return (
     <AuthPanel

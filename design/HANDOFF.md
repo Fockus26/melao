@@ -2,6 +2,10 @@
 
 Dirección: **Salón editorial, variante Gala**, con el escenario de práctica en layout **Compás**.
 Logo: **C1 · Modulada**.
+
+> **Rutas según D077:** las URLs están en inglés (`/login`, `/app/course`, `/app/practice/session`…);
+> los textos visibles siguen en español. Tabla completa en `docs/spec/pantallas.md`.
+
 Lienzo con todas las pantallas (solo el diseño final, sin variantes):
 https://claude.ai/artifact/7WuxhQ5GhY3u1p9VgfmjNv (páginas *Marca y sistema · Público · App del
 alumno · Estados · Admin · Consultoría*). Cada mesa tiene arriba un selector **Claro / Oscuro**. En
@@ -314,7 +318,7 @@ secciones de la landing: 80 px (móvil) / 128 px (escritorio).
   hover), © en tabulares. Columna en móvil, fila en escritorio.
 - **Contenido**: todo el texto es placeholder realista; precios reales pendientes (§9).
 
-### Planes `/planes` y Checkout `/checkout` (P-Planes)
+### Planes `/plans` y Checkout `/checkout` (P-Planes)
 - Header con logo y correo de la sesión. Columna máx. 960, padding 48 24.
 - **Planes**: display + subtítulo; 1 / 2 col. Cada card: nombre h2, precio numeric 40/44 + "al mes",
   tabla de 5 filas de 44 con check (incluido) o guion (no incluido) + texto oculto "Incluido / No
@@ -325,14 +329,14 @@ secciones de la landing: 80 px (móvil) / 128 px (escritorio).
 - **Activado**: columna 560, check en círculo con borde success, display "Tu plan Básico está
   *activo*", CTA abajo.
 
-### Auth `/entrar` `/registro` `/recuperar` `/restablecer` (P-Auth)
+### Auth `/login` `/register` `/forgot-password` `/reset-password` (P-Auth)
 Columna máx. 440, padding 32 24, gap 24. h1 + filete. Google (outline lg con "G") arriba en entrar,
 separador "o con tu correo". Formularios con gap 16 y CTA lg. Estados diseñados: foco, rechazo
 (banner error `role="alert"` + campo en error), registro con validación en vivo y CTA
 deshabilitado hasta cumplir, recuperar enviado (banner éxito), restablecer enviando (campos
 deshabilitados + botón cargando). Escritorio: igual, centrado, sin panel lateral.
 
-### Bienvenida `/bienvenida` (P-Bienvenida)
+### Bienvenida `/welcome` (P-Bienvenida)
 Columna máx. 560. Barra de 3 segmentos + "Paso n de 3". Título display. 1) Estilos: cards de 88
 tipo checkbox (seleccionada: tint + borde gold-600 + casilla primary con check); Bachata
 deshabilitada con borde discontinuo y candado. 2) Rol: **uno para todos los estilos** (D023), dos
@@ -347,7 +351,7 @@ tiempo estimado, numeric-xl + "pasos por repasar", 1 línea de nombres, botón p
 (ícono 48 en sunken, texto, botón outline). **Lo que más te cuesta**: h2 + quiet "Ver progreso",
 filete, lista de filas de 64 (nombre, "Última vez: Difícil · hace 2 días", Difficulty, chevron).
 
-### Curso `/app/curso` (App-Curso + prototipo A2-Curso)
+### Curso `/app/course` (App-Curso + prototipo A2-Curso)
 - **Selector de estilo = el título**: botón sin borde con eyebrow "Tu curso · cambiar estilo",
   display "Salsa *casino*" y un círculo de 32 con chevron; debajo filete gold-500 de 48 que se
   alarga a 96 en hover (240 ms). Abre Sheet "Elige tu estilo" (filas de 80: nombre en Fraunces 22,
@@ -375,7 +379,7 @@ Calificación: h1 "¿Cómo te fue?", un RatingButtons por paso; los no vencidos 
 y "Saltar este paso". 6) Resumen: check en círculo gold-600, eyebrow, display, "Al repaso" con fecha
 de regreso por paso, card de siguiente lección, CTA + "Volver al curso". Escritorio: columna de 640.
 
-### Practicar · configurador `/app/practicar` (App-Practicar)
+### Practicar · configurador `/app/practice` (App-Practicar)
 display + filete. 1 / 2 col gap 32: izquierda los grupos (fieldset + legend eyebrow): Estilo
 (segmentado), Canción (chips de modo + card de la canción elegida con "Cambiar"), Pasos (chips de
 criterio, slider de dificultad máxima, switch "Incluir aprendiendo"). Derecha (abajo en móvil):
@@ -386,7 +390,7 @@ Volver + h1, búsqueda con ícono, chips de dificultad + favoritas, contador, li
 (máx. 2 líneas, clamp), artista (1 línea), "184 BPM · 4:05 · ▮▮▯ Media", corazón 48 (`aria-pressed`,
 relleno gold-600 cuando es favorita).
 
-### Sesión — escenario `/app/practicar/sesion` (A2-Sesion, E-Sesion) · layout **Compás**
+### Sesión — escenario `/app/practice/session` (A2-Sesion, E-Sesion) · layout **Compás**
 Fondo stage.bg a pantalla completa, en ambos temas. **Vertical 390**, padding 12 20 28:
 1. Cabecera: X 48 a la izquierda (confirmación) · "Salsa casino · 184 BPM".
 2. Chips de estado (En pausa · Cuenta en silencio · aviso de pantalla), alto reservado 28–32 para

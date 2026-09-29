@@ -11,8 +11,8 @@ const LANDING_LINKS = [
 ] as const;
 
 const LEGAL_LINKS = [
-  { href: "/legal/terminos", label: "Términos" },
-  { href: "/legal/privacidad", label: "Privacidad" },
+  { href: "/legal/terms", label: "Términos" },
+  { href: "/legal/privacy", label: "Privacidad" },
 ] as const;
 
 type PublicShellProps = {
@@ -65,10 +65,10 @@ export function PublicShell({
               </nav>
               <div className="flex items-center gap-2 justify-self-end">
                 <Button asChild variant="quiet">
-                  <Link href="/entrar">Entrar</Link>
+                  <Link href="/login">Entrar</Link>
                 </Button>
                 <Button asChild className="hidden lg:inline-flex">
-                  <Link href="/registro">Empieza</Link>
+                  <Link href="/register">Empieza</Link>
                 </Button>
               </div>
             </>

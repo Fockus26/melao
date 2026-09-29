@@ -2,12 +2,12 @@
  * axe-core (WCAG 2.1 A/AA) sobre rutas del servidor de desarrollo, en tema claro y oscuro.
  *
  * Uso (con **node**, no con bun: en Windows Playwright bajo Bun se cuelga al lanzar Chromium):
- *   BASE_URL=http://localhost:3000 node scripts/a11y-check.ts /primitivos /tokens
- *   (= bun run a11y /primitivos /tokens; en PowerShell: $env:BASE_URL="http://localhost:3000")
+ *   BASE_URL=http://localhost:3000 node scripts/a11y-check.ts /primitives /tokens
+ *   (= bun run a11y /primitives /tokens; en PowerShell: $env:BASE_URL="http://localhost:3000")
  *
  * Funciona igual desde Git Bash y PowerShell (ver `scripts/lib/windows-env.ts`):
  *   - Las rutas pueden ir con o sin `/` inicial; las que MSYS convirtió en ruta de Windows
- *     (`/indicadores` → `C:/Program Files/Git/indicadores`) se recuperan.
+ *     (`/indicators` → `C:/Program Files/Git/indicators`) se recuperan.
  *   - Si Chromium no está en `%LOCALAPPDATA%\ms-playwright` (se instaló desde una app MSIX
  *     como Claude Desktop), se busca en la copia virtualizada y se fija PLAYWRIGHT_BROWSERS_PATH.
  *

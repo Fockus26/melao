@@ -4,16 +4,16 @@
  */
 import { matchesPath } from "@/lib/navigation";
 
-/** Destino por defecto al entrar o registrarse (aún no hay `/bienvenida`, D074). */
+/** Destino por defecto al entrar o registrarse (aún no hay `/welcome`, D074). */
 export const DEFAULT_AFTER_AUTH = "/app";
 
 export const AUTH_ROUTES = {
-  signIn: "/entrar",
-  signUp: "/registro",
-  forgot: "/recuperar",
-  reset: "/restablecer",
+  signIn: "/login",
+  signUp: "/register",
+  forgot: "/forgot-password",
+  reset: "/reset-password",
   callback: "/auth/callback",
-  signOut: "/auth/salir",
+  signOut: "/auth/logout",
 } as const;
 
 /** Todo lo que cuelga de estos prefijos exige sesión; `/admin` además exige rol admin. */
@@ -38,7 +38,7 @@ export function isGuestOnlyPath(path: string): boolean {
 const PROBE_ORIGIN = "http://melao.invalid";
 
 /**
- * `next` seguro: solo rutas internas absolutas (`/app/curso?x=1`). Cualquier otra cosa
+ * `next` seguro: solo rutas internas absolutas (`/app/course?x=1`). Cualquier otra cosa
  * (URL externa, `//host`, barras invertidas, caracteres de control, las propias pantallas de
  * auth, que harían un bucle) devuelve `fallback`. Evita el open redirect.
  */
@@ -71,7 +71,7 @@ export function safeNext(
   return `${path}${url.search}${url.hash}`;
 }
 
-/** `/entrar?next=<ruta>` para mandar a entrar a quien pidió una ruta protegida. */
+/** `/login?next=<ruta>` para mandar a entrar a quien pidió una ruta protegida. */
 export function signInPathFor(pathWithSearch: string): string {
   const next = safeNext(pathWithSearch, "");
   return next && next !== DEFAULT_AFTER_AUTH

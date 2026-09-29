@@ -7,7 +7,7 @@ import { StageDemo } from "./stage-demo";
 
 /**
  * Muestra del escenario (handoff §7 paso 5) con el motor FALSO: el Stage completo arriba y,
- * debajo del pliegue, el selector de estado (`?estado=`). Interna: sin enlace desde la app y
+ * debajo del pliegue, el selector de estado (`?state=`). Interna: sin enlace desde la app y
  * fuera de buscadores. Apaisado se ve girando el teléfono (media query, D068), no con un botón.
  */
 export const metadata: Metadata = {
@@ -20,8 +20,8 @@ export default async function EscenarioPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { estado } = await searchParams;
-  const state: DemoStateId = isDemoState(estado) ? estado : "reproduciendo";
+  const { state: requested } = await searchParams;
+  const state: DemoStateId = isDemoState(requested) ? requested : "playing";
   return (
     <>
       <StageDemo key={state} state={state} />
@@ -42,7 +42,7 @@ export default async function EscenarioPage({
             {(Object.keys(DEMO_STATES) as DemoStateId[]).map((id) => (
               <li key={id}>
                 <Link
-                  href={`/escenario?estado=${id}`}
+                  href={`/stage?state=${id}`}
                   aria-current={id === state ? "page" : undefined}
                   className={cn(
                     "flex min-h-12 items-center rounded-md px-3 type-body text-text hover:bg-hover",

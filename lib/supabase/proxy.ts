@@ -14,7 +14,7 @@ export async function updateSession(request: NextRequest) {
   try {
     env = supabaseEnv();
   } catch (error) {
-    // Sin configuración, el sitio público sigue en pie; lo protegido cae en /entrar.
+    // Sin configuración, el sitio público sigue en pie; lo protegido cae en /login.
     console.error(error);
     return { response, userId: null };
   }

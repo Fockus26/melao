@@ -38,7 +38,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 /*
- * Demostraciones con estado de /primitivos. Todo el texto es de ejemplo (placeholder realista,
+ * Demostraciones con estado de /primitives. Todo el texto es de ejemplo (placeholder realista,
  * CONTENT_CHECKLIST fila 30): nombres de pasos, planes y avisos no son el catálogo real.
  */
 

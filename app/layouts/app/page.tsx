@@ -34,8 +34,8 @@ const CARDS = [
 ];
 
 export default async function AppShellSample(props: PageProps<"/layouts/app">) {
-  const { activo } = await props.searchParams;
-  const item = pickItem(SIDE_NAV, firstParam(activo));
+  const { active } = await props.searchParams;
+  const item = pickItem(SIDE_NAV, firstParam(active));
 
   return (
     <AppShell

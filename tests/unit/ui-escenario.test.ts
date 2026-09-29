@@ -3,7 +3,7 @@
 import { describe, expect, test } from "bun:test";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { LONG_STEPS } from "@/app/escenario/demo-states";
+import { LONG_STEPS } from "@/app/stage/demo-states";
 import {
   stageAnnouncement,
   stageCopy,

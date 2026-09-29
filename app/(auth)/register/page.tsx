@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "Crea tu cuenta de Melao con tu correo o con Google y empieza a practicar en casa.",
 };
 
-export default async function RegistroPage(props: PageProps<"/registro">) {
+export default async function RegistroPage(props: PageProps<"/register">) {
   const params = await props.searchParams;
   const next = safeNext(firstParam(params.next));
   const signInHref =

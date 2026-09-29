@@ -21,7 +21,7 @@ import { FormErrorBanner } from "./form-banner";
 /**
  * Recuperar: pide el enlace de restablecimiento. El aviso de "enviado" es el mismo exista o no
  * la cuenta (no revela qué correos están registrados). El enlace vuelve por `/auth/callback`
- * y termina en `/restablecer`. Copy provisional (CONTENT_CHECKLIST fila 42).
+ * y termina en `/reset-password`. Copy provisional (CONTENT_CHECKLIST fila 42).
  */
 export function ForgotForm({ initialError }: { initialError?: string | null }) {
   const id = useId();

@@ -29,7 +29,7 @@ Todo lo implementado · `design/HANDOFF.md` · `context/DESIGN_RULES.md`
 - [ ] Ritmo vertical consistente entre secciones equivalentes.
 - [ ] Objetivos táctiles ≥44px en mobile.
 - [ ] Modo oscuro revisado en todas las páginas.
-- [ ] Correcciones registradas en `decisions/08-responsive.md`.
+- [ ] Correcciones registradas en `decisions/` (un `D0NN-<tema>.md` por decisión, categoría Responsive).
 
 ## Ambigüedad frecuente
 

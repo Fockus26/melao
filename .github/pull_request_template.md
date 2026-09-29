@@ -37,4 +37,4 @@
 - [ ] UI: WCAG 2.1 AA (teclado, foco visible, 4.5:1, ningún estado solo por color, sin scroll horizontal a 320 px)
 - [ ] Sin valores mágicos: solo tokens
 - [ ] Copy nuevo marcado como provisional si no es final
-- [ ] `context/` actualizado (decisión + fila en el índice)
+- [ ] `context/` actualizado (cada decisión en su `decisions/D0NN-<tema>.md`)

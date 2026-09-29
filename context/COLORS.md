@@ -60,7 +60,7 @@
 - **Tres dorados (D002, D024):** 500 decora, 600 informa (≥ 3:1), 700 es texto (AA en las cinco
   superficies). Es fácil "unificar" al 500 y romper AA.
 - El escenario **no** usa los tokens del tema: no se implementa como `dark:`.
-- Detalle en `decisions/01-colores.md`.
+- Detalle en D002, D007, D021 y D024 (`context/decisions/D0NN-*.md`).
 
 ## En código (fase 01)
 

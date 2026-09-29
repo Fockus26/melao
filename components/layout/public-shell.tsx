@@ -6,7 +6,8 @@ import { MAIN_ID, SkipLink } from "./skip-link";
 /** Copy provisional de header y footer públicos (CONTENT_CHECKLIST fila 38). */
 const LANDING_LINKS = [
   { href: "/#como-funciona", label: "Cómo funciona" },
-  { href: "/#planes", label: "Planes" },
+  // Página propia mientras la landing no tenga su sección de planes.
+  { href: "/plans", label: "Planes" },
   { href: "/#preguntas", label: "Preguntas" },
 ] as const;
 

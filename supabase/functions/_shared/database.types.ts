@@ -1055,6 +1055,19 @@ export type Database = {
         Args: { p_plan_slug: string; p_user: string }
         Returns: Json
       }
+      ef_plan_session: {
+        Args: { p_payload: Json; p_user: string }
+        Returns: Json
+      }
+      ef_plan_session_state: {
+        Args: {
+          p_lesson?: string
+          p_song: string
+          p_style: string
+          p_user: string
+        }
+        Returns: Json
+      }
       ef_review_state: {
         Args: { p_step_ids: string[]; p_user: string }
         Returns: Json

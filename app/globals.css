@@ -25,6 +25,14 @@
   }
 }
 
+/* Escenario horizontal (handoff §3 Sesión, 844 × 390): teléfono apaisado. Por alto y no por
+   ancho, para que una tablet o un escritorio apaisados sigan con la columna vertical (D068). */
+@custom-variant stage-landscape {
+  @media (orientation: landscape) and (max-height: 32rem) {
+    @slot;
+  }
+}
+
 /* Base mínima con tokens. El layout de la app llega en la fase 02. */
 @layer base {
   html {

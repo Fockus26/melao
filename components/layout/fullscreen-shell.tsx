@@ -24,10 +24,10 @@ export function FullscreenShell({
     return (
       // `dark` en el subárbol: el escenario no hereda el tema de la app. Sus colores son los
       // stage-* (fijos) y el anillo de foco y cualquier token suelto toman el valor oscuro.
-      // Padding 12 20 28 (handoff §3 Sesión) + zona segura abajo.
+      // Padding 12 20 28 (handoff §3 Sesión) + zona segura abajo; apaisado, 12 24 16.
       <div
         data-variant="stage"
-        className="dark flex min-h-dvh flex-col bg-stage-bg px-5 pt-3 pb-[calc(var(--spacing-7)+env(safe-area-inset-bottom))] text-stage-current"
+        className="dark flex min-h-dvh flex-col bg-stage-bg px-5 pt-3 pb-[calc(var(--spacing-7)+env(safe-area-inset-bottom))] text-stage-current stage-landscape:px-6 stage-landscape:pb-[calc(var(--spacing-4)+env(safe-area-inset-bottom))]"
       >
         <SkipLink />
         <header className="flex min-h-12 items-center gap-3">{bar}</header>

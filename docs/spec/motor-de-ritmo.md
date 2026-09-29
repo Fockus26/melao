@@ -114,6 +114,28 @@ Reglas:
   en Android): la canción se prepara antes de *Iniciar*, con estado de carga visible.
 - Ajustes del perfil que filtran eventos: cuenta hablada sí/no, volumen de la voz.
 
+### 6.1 Vista del escenario (qué pinta la UI)
+
+Cada plataforma deriva la vista con la misma función pura sobre la línea de tiempo, la
+rejilla y el plan (con nombres), en `t = posición del reloj − latencyOffsetMs`
+(web: `lib/stage/view.ts` › `stageViewAt`; D067):
+
+- **Tiempo activo:** el mayor beat `b` con `floor(t(b) + 0.5) ≤ t` (el mismo redondeo que
+  los `tMs`, D040): la UI cambia de tiempo en el mismo ms que el evento, también en los
+  tiempos que no se cuentan (4 y 8 en salsa), que no tienen evento.
+- **Sección:** `intro` antes del primer evento · `leadIn` en las frases de entrada ·
+  `step` dentro de un elemento del plan · `end` desde el evento `end`.
+- **Paso y frase:** el elemento del plan cuya frase contiene `b`; "frase i de n" dentro de
+  ese elemento (o de la entrada).
+- **Anunciado:** el último `call`/`stepStart` con `tMs ≤ t` es un `call` ("SIGUIENTE ·
+  EN EL 1"). Si el siguiente elemento repite el paso: "SE REPITE", sin anuncio.
+- **Después:** hasta 3 pasos tras el siguiente, sin repeticiones consecutivas.
+- Estados del reproductor que la UI distingue: preparando (con %), bloqueado (hace falta un
+  toque), sonando, en pausa, terminado; más voz sí/no y "la pantalla puede apagarse".
+- Lector de pantalla: solo se anuncia el cambio de paso o de estado, nunca la cuenta.
+
+Tests: `tests/unit/stage-view.test.ts` recorre los mismos `vectors/timeline-*.json`.
+
 ## 7. Clips de voz
 
 - `count.1 … count.8` y `step.<slug>` por paso, en Storage `voice-clips`.

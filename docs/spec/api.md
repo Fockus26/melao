@@ -142,10 +142,10 @@ CORS abierto (`*`, sin cookies); el preflight `OPTIONS` responde 204.
 |---|---|---|
 | 400 | entrada inválida | `invalid_json` · `invalid_input` (el mensaje trae la ruta del campo) · `duplicate_step` · `role_required` · `session_lesson_mismatch` · `invalid_role` |
 | 401 | sin sesión o JWT inválido | `unauthorized` |
-| 403 | sin suscripción activa | `no_active_subscription` |
-| 404 | no existe (o no es del alumno) | `plan_not_found` · `user_not_found` · `session_not_found` · `lesson_not_found` · `step_not_found` |
+| 403 | sin suscripción activa · lección bloqueada | `no_active_subscription` · `lesson_locked` |
+| 404 | no existe (o no es del alumno, o no la ve) | `plan_not_found` · `user_not_found` · `session_not_found` · `lesson_not_found` · `step_not_found` · `style_not_found` · `song_not_found` |
 | 405 | método distinto de `POST` | `method_not_allowed` |
-| 409 | choca con el estado actual | `subscription_exists` |
+| 409 | choca con el estado actual | `subscription_exists` · `style_not_ready` · `song_not_ready` · `song_too_short` · `no_steps` · `no_plan` |
 | 500 | cualquier otro fallo (se registra; sin detalles al cliente) | `internal` |
 
 Una sesión de otro alumno responde 404, igual que una inexistente: no se revela.
@@ -160,6 +160,8 @@ Una sesión de otro alumno responde 404, igual que una inexistente: no se revela
 | `ef_activate_subscription(p_user, p_plan_slug)` | `activate-subscription` | crea o devuelve la suscripción |
 | `ef_review_state(p_user, p_step_ids)` | `review-steps` | lee suscripción, rol del perfil, pasos (`hasRoles`, estado) y tarjetas |
 | `ef_review_steps(p_user, p_payload)` | `review-steps` | escribe repasos, tarjetas, estado y progreso en una transacción |
+| `ef_plan_session_state(p_user, p_style, p_song, p_lesson?)` | `plan-session` | lee suscripción, admin, estilo, canción, lección (desbloqueo, pasos, anteriores) y pasos del estilo con estado, favorito, tarjeta y popularidad (migración `20260929180000_plan_session.sql`) |
+| `ef_plan_session(p_user, p_payload)` | `plan-session` | registra `practice_sessions` + `practice_session_steps` en una transacción |
 
 **Variables** (las inyecta Supabase al desplegar; no se configuran a mano): `SUPABASE_URL` y
 la clave secreta, de `SUPABASE_SECRET_KEYS` (JSON, clave `default`) o, si no está, de la
@@ -172,9 +174,42 @@ reloj; se prueba con bun), `supabase.ts` (el puerto de datos con supabase-js) e 
 especificador en Deno (`deno.json`) y en bun (`package.json`), con la misma versión.
 
 ### `plan-session`
-Entrada: `{ styleId, songId, mode: "lesson"|"free", lessonId?, stepFilters?, seed? }`
-Salida: `{ sessionId, phrasesAvailable, plan: [{ stepId, startPhrase, phrases }], unplaced: [stepId], timeline: [evento] }`
-Reglas: `motor-de-ritmo.md` y `combinaciones.md`. Registra la sesión en `practice_sessions`.
+Entrada: `{ styleId, songId, mode: "lesson"|"free", lessonId?, focusStepId?, stepFilters?, seed? }`
+- `stepFilters` (solo `free`): `{ minDifficulty?, maxDifficulty? (1–5), favoritesOnly?, includeLearning? (por defecto true) }`.
+- `focusStepId` (solo `lesson`): mini práctica de ese paso de la lección.
+- `seed`: entero 0–4294967295 (uint32). Si no viene, la genera el servidor (D064).
+
+Salida: `{ sessionId, seed, phrasesAvailable, plan: [{ stepId, startPhrase, phrases }], unplaced: [stepId], timeline: [evento] }`
+— `seed` es la que se usó (guardada en `practice_sessions.seed`): con la misma entrada y los
+mismos datos da el mismo plan y la misma línea de tiempo.
+
+Reglas: `motor-de-ritmo.md` y `combinaciones.md` (D063–D066). Exige suscripción activa.
+- **Visibilidad (D063).** Estilo, canción y lección se ven como con RLS: el alumno solo lo
+  publicado (canción con licencia vigente); el admin también lo no publicado (p. ej. las
+  canciones del seed, sin audio). Lo que no ve → 404. La canción tiene que ser del estilo
+  (`song_styles`) y la lección, de un curso del estilo. Lección bloqueada (la anterior del
+  curso sin completar) → 403 `lesson_locked`, salvo el admin.
+- **Canción.** Sin rejilla válida o sin `dance_end_ms` → 409 `song_not_ready`. `N` y
+  `startPhrase` salen de `phraseWindow` (motor-de-ritmo §3); con `N = 0` → 409
+  `song_too_short`. Estilo sin posición inicial → 409 `style_not_ready`.
+- **Pasos y targets (D065).** Pasos visibles del estilo (publicados; el admin, todos), en
+  orden de catálogo (`sort_order`, `slug`). `baseSteps` = base con misma posición de
+  inicio y fin.
+  - `free`: pasos en `known` (y `learning` salvo `includeLearning: false`) que cumplen los
+    filtros; ninguno → 409 `no_steps`. Targets = los vencidos (`due_at ≤ ahora`), del más
+    atrasado al menos, como mucho `N`.
+  - `lesson`: pasos de la lección, de las lecciones anteriores del curso y los `known`;
+    targets = pasos de la lección en su orden.
+  - `lesson` + `focusStepId`: ese paso y los de las lecciones anteriores (para llegar a su
+    posición de entrada); target = ese paso; `N = min(N, practice_phrases)`.
+  - Pesos: `due` (tarjeta vencida), `difficulty` (FSRS, si ya tuvo un repaso), `favorite`,
+    `popularity` (`step_popularity`). Tarjeta = la del `dance_role` del perfil (estilo sin
+    roles: `leader`; perfil sin rol: la más urgente y la más difícil de los dos roles).
+- Sin plan posible → 409 `no_plan`. En los errores no se registra nada.
+- **Registro.** Una llamada atómica a `ef_plan_session`: `practice_sessions` (`seed`,
+  `filters` = `stepFilters` más `focusStepId`, `phrases_available` = `N`, `plan`) y un
+  `practice_session_steps` por paso distinto con la suma de sus frases. La línea de tiempo
+  no se guarda: se recalcula del plan y la rejilla.
 
 ### `review-steps`
 Entrada: `{ sessionId?, lessonId?, context: "lesson"|"practice"|"catalog", reviews?: [{ stepId, role?, rating: 1-4, reviewedAt }], status?: [{ stepId, status: "unknown"|"learning"|"known", role? }] }`

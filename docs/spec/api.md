@@ -6,7 +6,8 @@
 
 ## Acceso
 
-- Auth: Supabase Auth (email + contraseña, Google; Apple antes de iOS).
+- Auth: Supabase Auth (email + contraseña, Google; Apple antes de iOS). Detalle abajo, en
+  **Flujo de autenticación**.
 - **RLS en todas las tablas.** Contenido publicado: la vitrina (nombres, estructura del curso,
   catálogo) para cualquier alumno con cuenta; los medios, la práctica y el repaso solo con
   suscripción activa (D036); todo para `admin`. Datos del alumno: solo su dueño. Escritura
@@ -15,6 +16,40 @@
   `activate-subscription` (y, en el futuro, los webhooks de la pasarela).
 - Storage privado con URLs firmadas de corta duración: `step-videos`, `songs`,
   `voice-clips` (v2: `coaching-uploads`).
+
+### Flujo de autenticación
+
+Lo implementa cada cliente con el SDK de Supabase (web: `@supabase/ssr`, sesión en cookies).
+Ninguna regla vive solo en el cliente: la contraseña la valida Supabase y los permisos, RLS.
+
+- **Registro:** `signUp(email, password, data: { full_name })`. El trigger
+  `on_auth_user_created` crea `profiles` con `display_name` = `full_name` (o `name`, que
+  manda Google). Si el proyecto exige confirmar el correo, no hay sesión hasta abrir el enlace;
+  con la confirmación activa, un correo ya registrado vuelve como usuario **sin identidades**
+  (se trata como "correo en uso").
+- **Contraseña (D075):** mínimo 8 caracteres, al menos una letra y un dígito ASCII
+  (Supabase › Auth › Email: longitud 8 + "letters and digits"). La UI solo refleja la regla.
+- **Entrar:** `signInWithPassword` o `signInWithOAuth({ provider: "google" })`.
+- **Recuperar:** `resetPasswordForEmail(email, redirectTo = callback?next=/restablecer)`; el
+  aviso es el mismo exista o no la cuenta. **Restablecer:** `updateUser({ password })` con la
+  sesión de recuperación.
+- **Vuelta (web `/auth/callback`):** recibe `code` (PKCE: Google, confirmación y
+  recuperación) o `token_hash` + `type` (plantillas de correo con token) y guarda la sesión;
+  luego redirige a `next`. Errores → `/entrar?error=<motivo>` (o `/recuperar?error=…` si
+  venía de recuperar). Motivos estables, compartidos por las tres plataformas:
+  `enlace-vencido` · `otro-navegador` (PKCE sin verificador: el correo ya quedó confirmado) ·
+  `sin-codigo` · `google` · `acceso`. Las nativas usan deep link al mismo flujo.
+- **`next`:** solo rutas internas (`/…`, nunca `//`, `\`, esquemas ni las propias
+  pantallas de auth); cualquier otra cosa cae en Inicio (`/app`). Sin open redirect.
+- **Rutas protegidas:** todo `/app/**` exige sesión; `/admin/**` además `app_role = admin`,
+  leído de `profiles` con la sesión del usuario (RLS), nunca de metadatos del cliente. El
+  proxy web hace el chequeo optimista (redirige a `/entrar?next=…`) y cada página lo repite
+  junto a los datos.
+- **Cerrar sesión:** `signOut({ scope: "local" })` (solo este dispositivo); web: `POST
+  /auth/salir` → `/entrar`.
+- **Errores de Supabase → mensaje:** tabla en `lib/auth/errors.ts` (credenciales, correo sin
+  confirmar, correo en uso, contraseña débil o repetida, límite de intentos, enlace vencido,
+  sin conexión; el resto, genérico). Las nativas usan la misma tabla por `code`.
 
 ## Tablas previstas
 

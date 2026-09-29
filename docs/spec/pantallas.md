@@ -26,9 +26,17 @@ error con reintento · sin conexión · sin suscripción activa (lleva a Planes)
 ## Auth y onboarding
 | Pantalla | Bloques | Estados |
 |---|---|---|
-| Entrar | Email, contraseña, "¿Olvidaste tu contraseña?", Google, enlace a registro | error de credenciales, enviando |
-| Registro | Nombre, email, contraseña (requisitos visibles), Google, aceptar términos | email en uso, contraseña débil |
-| Recuperar / Restablecer | Email → aviso de correo enviado · nueva contraseña | enlace vencido |
+| Entrar | Google · "o con tu correo" · email, contraseña (+ "¿Olvidaste tu contraseña?") · Entrar · enlace a registro | error de credenciales, correo sin confirmar, límite de intentos, sin conexión, error del enlace/Google (llega del callback), enviando |
+| Registro | Google · "o con tu correo" · nombre, email, contraseña con requisitos visibles (8+, una letra, un número) · Crear cuenta (deshabilitado hasta cumplir, con el motivo en texto) · aviso de aceptación de términos y privacidad (vale también para Google, D074) · enlace a entrar | email en uso, contraseña débil, enviando, **revisa tu correo** (si el proyecto exige confirmar) |
+| Recuperar | Email → aviso "si hay una cuenta, te enviamos un enlace" (igual exista o no la cuenta) | enviando, enlace vencido / abierto en otro navegador (llega del callback) |
+| Restablecer | Nueva contraseña con requisitos → Guardar → Inicio | sin sesión de recuperación = enlace vencido (→ pedir otro), enviando (campos deshabilitados + botón cargando), misma contraseña |
+
+**Flujo de acceso (todas las plataformas):** mismos proveedores (correo + contraseña y Google) y
+mismos estados. Tras entrar o registrarse con sesión, al destino pedido (`next`, solo rutas
+internas) o a Inicio (aún no hay Bienvenida, D074). Con sesión, Entrar y Registro llevan
+directo a Inicio. Sin sesión, cualquier pantalla de la app o del admin lleva a Entrar y vuelve
+después a la pantalla pedida. Admin sin rol `admin`: "no encontrado" (D073). Cerrar sesión:
+desde Inicio (provisional) y, cuando exista, Perfil. Contrato en `docs/spec/api.md` § Acceso.
 | Bienvenida | 1 Estilo(s) → 2 Rol (líder/seguidor, uno para todos) → 3 Nivel (desde cero / ya sé pasos) | — |
 
 ## App

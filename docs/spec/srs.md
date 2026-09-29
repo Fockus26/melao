@@ -5,7 +5,8 @@ Algoritmo FSRS (el actual de Anki), implementación `ts-fsrs` en el backend (Edg
 
 ## Tarjeta
 
-Una por **(alumno, paso, rol)**. Campos: `state` (new/learning/review/relearning),
+Una por **(alumno, paso, rol)**; en un estilo sin roles (`has_roles = false`), una por paso con
+rol `leader` (D051). Campos: `state` (new/learning/review/relearning),
 `stability`, `difficulty`, `due_at`, `last_review_at`, `reps`, `lapses`.
 Parámetros: los de FSRS por defecto, retención deseada 0.90 (ajustable después), sin *fuzz*
 (determinista) y **sin pasos cortos** (`enable_short_term: false`, D044): los intervalos son

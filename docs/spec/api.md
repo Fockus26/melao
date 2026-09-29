@@ -130,23 +130,89 @@ Funciones (alumno y admin; anónimo no):
 
 ## Edge Functions
 
+Código en `supabase/functions/` (Deno en Supabase). Contrato común a todas:
+
+**Petición.** `POST` con cuerpo JSON y `Authorization: Bearer <access_token del alumno>`.
+El alumno sale **siempre** del JWT (`auth.getUser(jwt)`), nunca de un campo del cuerpo.
+CORS abierto (`*`, sin cookies); el preflight `OPTIONS` responde 204.
+
+**Errores.** Una sola forma: `{ "error": { "code": "<código>", "message": "<texto para la UI>" } }`.
+
+| HTTP | Cuándo | Códigos |
+|---|---|---|
+| 400 | entrada inválida | `invalid_json` · `invalid_input` (el mensaje trae la ruta del campo) · `duplicate_step` · `role_required` · `session_lesson_mismatch` · `invalid_role` |
+| 401 | sin sesión o JWT inválido | `unauthorized` |
+| 403 | sin suscripción activa | `no_active_subscription` |
+| 404 | no existe (o no es del alumno) | `plan_not_found` · `user_not_found` · `session_not_found` · `lesson_not_found` · `step_not_found` |
+| 405 | método distinto de `POST` | `method_not_allowed` |
+| 409 | choca con el estado actual | `subscription_exists` |
+| 500 | cualquier otro fallo (se registra; sin detalles al cliente) | `internal` |
+
+Una sesión de otro alumno responde 404, igual que una inexistente: no se revela.
+
+**Escrituras atómicas (D050).** supabase-js no tiene transacciones: cada función escribe en
+**una** llamada a una función SQL (`public.ef_*`, `security definer`, ejecutable solo por
+`service_role`; migración `20260929120000_edge_functions.sql`). Las reglas que protegen datos
+(suscripción, dueño de la sesión, idempotencia) se comprueban ahí, no solo en TS.
+
+| Función SQL | La usa | Hace |
+|---|---|---|
+| `ef_activate_subscription(p_user, p_plan_slug)` | `activate-subscription` | crea o devuelve la suscripción |
+| `ef_review_state(p_user, p_step_ids)` | `review-steps` | lee suscripción, rol del perfil, pasos (`hasRoles`, estado) y tarjetas |
+| `ef_review_steps(p_user, p_payload)` | `review-steps` | escribe repasos, tarjetas, estado y progreso en una transacción |
+
+**Variables** (las inyecta Supabase al desplegar; no se configuran a mano): `SUPABASE_URL` y
+la clave secreta, de `SUPABASE_SECRET_KEYS` (JSON, clave `default`) o, si no está, de la
+heredada `SUPABASE_SERVICE_ROLE_KEY`. Nunca en un cliente.
+
+**Estructura (D052).** Por función: `handler.ts` (lógica, recibe sus puertos: auth, datos,
+reloj; se prueba con bun), `supabase.ts` (el puerto de datos con supabase-js) e `index.ts`
+(arma el cliente y llama a `Deno.serve`). Compartido en `_shared/`: `http.ts`, `auth.ts`,
+`client.ts`, `validate.ts`, `sql-errors.ts`, `runtime.ts`. Las dependencias usan el mismo
+especificador en Deno (`deno.json`) y en bun (`package.json`), con la misma versión.
+
 ### `plan-session`
 Entrada: `{ styleId, songId, mode: "lesson"|"free", lessonId?, stepFilters?, seed? }`
 Salida: `{ sessionId, phrasesAvailable, plan: [{ stepId, startPhrase, phrases }], unplaced: [stepId], timeline: [evento] }`
 Reglas: `motor-de-ritmo.md` y `combinaciones.md`. Registra la sesión en `practice_sessions`.
 
 ### `review-steps`
-Entrada: `{ sessionId?, lessonId?, context: "lesson"|"practice"|"catalog", reviews: [{ stepId, role, rating: 1-4, reviewedAt }], status?: [{ stepId, status: "unknown"|"learning"|"known" }] }`
-Salida: `{ cards: [{ stepId, role, dueAt, state }] }`
-Reglas: `srs.md`. Idempotente por `(sessionId, stepId, role)`. Con `context: "lesson"` y `lessonId`, al
-calificar la práctica final registra `lesson_progress` (desbloquea la siguiente). `status`
-cambia el estado del catálogo ("me lo sé" = tarjeta + repaso Good). Exige suscripción activa.
+Entrada: `{ sessionId?, lessonId?, context: "lesson"|"practice"|"catalog", reviews?: [{ stepId, role?, rating: 1-4, reviewedAt }], status?: [{ stepId, status: "unknown"|"learning"|"known", role? }] }`
+Salida: `{ cards: [{ stepId, role, dueAt, state }] }` — las tarjetas actuales de todos los pasos
+de la petición (un paso en `unknown` no tiene).
+
+Reglas (`srs.md`, D051). Exige suscripción activa.
+- Al menos un elemento entre `reviews` y `status`; como mucho 100 en cada una. Un paso no se
+  repite en `status` ni aparece en las dos listas; un (paso, rol) no se repite en `reviews`.
+- `reviewedAt`: ISO 8601 con zona. Se acota a [último repaso de la tarjeta, ahora del
+  servidor]: un reloj adelantado no programa en el futuro ni uno atrasado retrocede la tarjeta.
+- **Rol.** Estilo sin roles (`has_roles = false`): una sola tarjeta por paso, con rol
+  `leader` (el enum `dance_role` no tiene "ambos"). Con roles: `reviews` exige `role`;
+  `status` sin `role` usa el `dance_role` del perfil (sin ninguno → 400 `role_required`).
+- **Idempotencia.** `context` `lesson` o `practice` con `reviews` exige `sessionId`; un repaso
+  se guarda una vez por `(sessionId, stepId, role)` y la tarjeta solo se actualiza si el
+  repaso entró (reenviar, aun con otra nota, no cambia nada). `context: "catalog"` no lleva
+  sesión: sus repasos no son idempotentes, pero "me lo sé" sobre un paso que ya está en
+  `known` no hace nada.
+- Un repaso deja el paso en `learning` en el catálogo si estaba en `unknown`.
+- `status`: `known` = repaso Good (sobre la tarjeta que haya, o una nueva) y paso en `known`;
+  `learning` = tarjeta nueva si no había (una existente no se reinicia); `unknown` = se borran
+  las tarjetas del paso (todos los roles) y el historial de `step_reviews` queda.
+- `context: "lesson"` exige `lessonId`; con `sessionId`, la sesión tiene que ser de esa
+  lección (`session_lesson_mismatch`). Registra `lesson_progress` (desbloquea la siguiente)
+  cuando hay repasos y la sesión es la **práctica final**: su canción es `final_song_id` de
+  la lección, o la lección no fija una.
 
 ### `activate-subscription`
 Entrada: `{ planSlug }`
-Salida: `{ subscription: { plan, status, currentPeriodEnd } }`
-Reglas: v1 = proveedor `placeholder`, monto $0. El precio mostrado sale de `plans`, nunca del
-cliente.
+Salida: `{ subscription: { plan, status, currentPeriodEnd, priceCents, currency, billingInterval } }`
+Reglas (D015, D049): v1 = proveedor `placeholder`, sin cobro. Precio y período salen de
+`plans` (activo), nunca del cliente; período de un mes o un año según `billing_interval`.
+- Sin suscripción vigente: crea una `active`.
+- Con una vigente del **mismo** plan: la devuelve tal cual (idempotente; no la renueva).
+- Con una vigente de **otro** plan: 409 `subscription_exists` (el cambio de plan llega con la
+  pasarela real).
+- Una `active`/`past_due` con el período vencido se marca `expired` y se crea otra.
 
 ## Lecturas directas (SDK + RLS)
 

@@ -1051,6 +1051,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ef_activate_subscription: {
+        Args: { p_plan_slug: string; p_user: string }
+        Returns: Json
+      }
+      ef_review_state: {
+        Args: { p_step_ids: string[]; p_user: string }
+        Returns: Json
+      }
+      ef_review_steps: {
+        Args: { p_payload: Json; p_user: string }
+        Returns: Json
+      }
       has_active_subscription: { Args: never; Returns: boolean }
       set_app_role: {
         Args: {

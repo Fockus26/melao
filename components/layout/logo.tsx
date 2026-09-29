@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Logo de Melao — **placeholder** hasta que se exporte el SVG del logo C1 (CONTENT_CHECKLIST
- * fila 37, D061). Todo el logo vive aquí: al llegar el SVG se cambia este archivo y nada más.
- *
- * Marca: baldosa de radio 10 sobre viewBox 48 (handoff §5) en `primary` con una M de trazo
- * en `on-primary`: en oscuro sale dorada con la M negra, como la versión de app.
- * Wordmark: "Melao" en Fraunces 500 (el SVG final lo trae convertido a contornos).
+ * Logo de Melao: marca C1 · Modulada (D026, D079), copiada del tablero *Marca* del canvas de
+ * diseño. Baldosa de radio 11 sobre viewBox 48 con la M en contraforma: astas gruesas (5) y
+ * diagonales finas (2,6). Sin dorado en la marca: baldosa en `text` y M en `bg`, así en
+ * oscuro se invierte sola (baldosa clara, M oscura), como en el tablero.
+ * La versión reforzada para 16 px (astas 7, diagonales 5,5, radio 10) es `app/icon.svg`.
+ * Wordmark: "Melao" en Fraunces 500 como texto (en web; los assets exportados lo traen en contornos).
  */
 const SIZES = {
   // Header y lateral: marca 28 + wordmark (22 en el handoff; 24 = rol h2, sin tamaño nuevo).
@@ -39,14 +39,14 @@ export function Logo({
         focusable="false"
         className={cn(s.mark, "shrink-0")}
       >
-        <rect width="48" height="48" rx="10" className="fill-primary" />
+        <rect width="48" height="48" rx="11" className="fill-text" />
+        <path d="M14 35V13M34 35V13" strokeWidth="5" className="stroke-bg" />
         <path
-          d="M14 34V14l10 12 10-12v20"
+          d="M15 13.5l9 15 9-15"
           fill="none"
-          strokeWidth="5.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="stroke-on-primary"
+          strokeWidth="2.6"
+          strokeMiterlimit="10"
+          className="stroke-bg"
         />
       </svg>
       <span

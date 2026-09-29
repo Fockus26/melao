@@ -1,4 +1,4 @@
-# D061 · Contenido · Logo placeholder (baldosa + M de trazo + "Melao" en Fraunces 500) en `components/layout/logo.tsx` hasta exportar el SVG C1 · Implementado
+# D061 · Contenido · Logo placeholder (baldosa + M de trazo + "Melao" en Fraunces 500) en `components/layout/logo.tsx` hasta exportar el SVG C1 · Obsoleta → D079
 
 **Decisión:** mientras no esté el SVG del logo C1 (handoff §5: no está exportado), el logo es
 un SVG simple con tokens: baldosa `primary` de radio 10 sobre viewBox 48 con una M de trazo

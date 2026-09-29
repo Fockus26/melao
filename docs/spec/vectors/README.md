@@ -16,9 +16,22 @@ Un archivo por caso: `<tema>-<nombre>.json`.
 }
 ```
 
-## Previstos (fase 07a)
+Las operaciones con estado (FSRS) usan el formato **secuencia**: `entrada.pasos` es la lista
+de operaciones en orden sobre una misma tarjeta y `salida.resultados` trae un resultado por
+paso.
 
-- `ritmo-*` — interpolación de la rejilla, frases disponibles, intro corta, tempo que acelera.
-- `timeline-*` — anuncio en el 5, silencio del 5–6, paso repetido sin anuncio, merengue 1–8.
-- `combinaciones-*` — encadenamiento de posiciones, relleno con base, objetivos, semilla.
-- `srs-*` — mapeo 1–4 → FSRS, "me lo sé", vencimientos.
+Los números reales (tiempos de la rejilla, `stability`, `difficulty`, salidas del PRNG) se
+comparan con **6 decimales**; lo demás, exacto. Los JSON van con fin de línea LF
+(`.gitattributes`), igual en Windows, macOS y Linux.
+
+## Existentes (fase 07a)
+
+| Prefijo | Qué fija | Test (TS) |
+|---|---|---|
+| `ritmo-*` | rejilla (interpolación, extrapolación, tempo que acelera), frases disponibles, intro corta | `tests/unit/core-ritmo-vectors.test.ts` |
+| `timeline-*` | anuncio en el 5, paso repetido sin anuncio, paso de dos frases, merengue 1–8, redondeo | `tests/unit/core-ritmo-vectors.test.ts` |
+| `combinaciones-*` | encadenamiento de posiciones, relleno con base, pesos, objetivos, semillas, catálogo | `tests/unit/core-combinaciones-vectors.test.ts` |
+| `combinaciones-prng` | mulberry32: primeros números por semilla (la semilla se reduce a uint32) | `tests/unit/core-combinaciones-vectors.test.ts` |
+| `srs-*` | mapeo 1–4 → FSRS, "me lo sé", aprendiendo, lapso, repaso tardío, vencimientos | `tests/unit/core-srs-vectors.test.ts` |
+
+Contratos: `motor-de-ritmo.md`, `combinaciones.md` y `srs.md` en `docs/spec/`.

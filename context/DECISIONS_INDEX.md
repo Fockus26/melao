@@ -49,7 +49,7 @@
 | D041 | Producto | Orden de eventos por beat (stepStart, call, count, end); un stepStart por elemento del plan | `decisions/08-core-ritmo.md` | Implementado |
 | D042 | Arquitectura | Generador: recorrido ponderado guiado por tablas de factibilidad (DP); targets comprometidos por prioridad | `decisions/09-core-combinaciones-srs.md` | Implementado |
 | D043 | Arquitectura | Tarjeta del core = fila de srs_cards (snake_case, ISO); reviewCard da también la fila de step_reviews | `decisions/09-core-combinaciones-srs.md` | Implementado |
-| D044 | Producto | FSRS sin pasos cortos (enable_short_term false): intervalos en días; srs_cards no guarda learning_steps | `decisions/09-core-combinaciones-srs.md` | Implementado |
+| D044 | Producto | FSRS sin pasos cortos (enable_short_term false): intervalos en días; srs_cards no guarda learning_steps | `decisions/09-core-combinaciones-srs.md` | Aprobado (César, 2026-09-28) |
 | D045 | Arquitectura | PRNG del core: mulberry32 sobre uint32, algoritmo exacto en combinaciones.md | `decisions/09-core-combinaciones-srs.md` | Implementado |
 
 <!-- ID secuencial, nunca se reutiliza; una decisión que cambia se marca "Obsoleta → D0NN"

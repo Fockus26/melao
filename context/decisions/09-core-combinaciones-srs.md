@@ -37,7 +37,7 @@ nunca. Además un paso de baile se repasa por sesión: "Para hoy" es por día, u
 los 10 minutos no tiene uso. Sin *fuzz*, los vectores son deterministas.
 **Alternativa descartada:** migración que añade `learning_steps` a `srs_cards` y deja los pasos
 por defecto (1 min, 10 min). Se puede adoptar después sin romper tarjetas existentes.
-**Estado:** Implementado (07a)
+**Estado:** Implementado (07a) · aprobado por César 2026-09-28
 
 ## D045 — PRNG del core: mulberry32 sobre uint32
 **Decisión:** `core/random.ts`, semilla reducida a uint32 (módulo 2^32, negativos incluidos);

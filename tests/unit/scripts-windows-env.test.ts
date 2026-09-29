@@ -9,19 +9,19 @@ describe("normalizeRoute", () => {
   const roots = msysRoots({ EXEPATH: "C:\\Program Files\\Git\\bin" });
 
   test("deja igual una ruta web normal", () => {
-    expect(normalizeRoute("/primitivos", roots)).toBe("/primitivos");
+    expect(normalizeRoute("/primitives", roots)).toBe("/primitives");
     expect(normalizeRoute("/", roots)).toBe("/");
   });
 
   test("acepta rutas sin barra inicial y con doble barra", () => {
-    expect(normalizeRoute("indicadores")).toBe("/indicadores");
-    expect(normalizeRoute("//indicadores")).toBe("/indicadores");
+    expect(normalizeRoute("indicators")).toBe("/indicators");
+    expect(normalizeRoute("//indicators")).toBe("/indicators");
     expect(normalizeRoute("")).toBe("/");
   });
 
   test("recupera lo que MSYS convirtió con la raíz de EXEPATH", () => {
-    expect(normalizeRoute("C:/Program Files/Git/indicadores", roots)).toBe(
-      "/indicadores",
+    expect(normalizeRoute("C:/Program Files/Git/indicators", roots)).toBe(
+      "/indicators",
     );
     expect(normalizeRoute("C:/Program Files/Git/", roots)).toBe("/");
     expect(normalizeRoute("c:\\program files\\git\\a\\b?x=1", roots)).toBe(

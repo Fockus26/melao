@@ -1,5 +1,5 @@
 /**
- * Motor FALSO del escenario: solo para la muestra `/escenario` y los tests. No suena nada y
+ * Motor FALSO del escenario: solo para la muestra `/stage` y los tests. No suena nada y
  * avanza el tiempo con `requestAnimationFrame` y `performance.now()`, que es justo lo que el
  * motor real NO debe hacer: el real programa contra el reloj de Web Audio (D030) y deriva la
  * vista de `AudioContext.currentTime`. Lo que sí es real es el plan y la línea de tiempo: salen

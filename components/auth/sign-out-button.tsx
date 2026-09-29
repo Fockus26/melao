@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { AUTH_ROUTES } from "@/lib/auth/redirect";
 
 /**
- * Cerrar sesión: formulario POST a `/auth/salir` (funciona sin JS y no lo dispara un prefetch).
+ * Cerrar sesión: formulario POST a `/auth/logout` (funciona sin JS y no lo dispara un prefetch).
  */
 export function SignOutButton() {
   return (

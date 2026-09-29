@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "Entra a Melao con tu correo o con Google.",
 };
 
-export default async function EntrarPage(props: PageProps<"/entrar">) {
+export default async function EntrarPage(props: PageProps<"/login">) {
   const params = await props.searchParams;
   const next = safeNext(firstParam(params.next));
   const reason = firstParam(params.error);

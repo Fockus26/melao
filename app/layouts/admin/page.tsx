@@ -28,8 +28,8 @@ const STATS = [
 export default async function AdminShellSample(
   props: PageProps<"/layouts/admin">,
 ) {
-  const { activo } = await props.searchParams;
-  const item = pickItem(ADMIN_NAV, firstParam(activo));
+  const { active } = await props.searchParams;
+  const item = pickItem(ADMIN_NAV, firstParam(active));
 
   return (
     <AdminShell currentPath={item.href}>

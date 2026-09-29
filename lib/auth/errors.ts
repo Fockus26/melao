@@ -131,19 +131,19 @@ export function authErrorCopy(
 }
 
 /**
- * Motivos con los que `/auth/callback` devuelve a `/entrar?error=<motivo>`. Cortos y estables:
+ * Motivos con los que `/auth/callback` devuelve a `/login?error=<motivo>`. Cortos y estables:
  * van en la URL y los comparten las tres plataformas.
  */
 export const CALLBACK_ERRORS = {
-  "enlace-vencido": EXPIRED_LINK.message,
-  "sin-codigo":
+  "link-expired": EXPIRED_LINK.message,
+  "missing-code":
     "El enlace está incompleto. Pide uno nuevo o entra con tu correo y contraseña.",
   google: "No pudimos completar el acceso con Google. Inténtalo de nuevo.",
   // PKCE: el enlace se abrió en un navegador distinto del que lo pidió. Supabase ya confirmó
   // el correo antes de volver, así que basta con entrar.
-  "otro-navegador":
+  "other-browser":
     "Abriste el enlace en otro navegador. Si confirmabas tu correo, ya quedó listo: entra con tu correo y contraseña. Si cambiabas la contraseña, pide otro enlace y ábrelo aquí.",
-  acceso: GENERIC.message,
+  "access-failed": GENERIC.message,
 } as const;
 
 export type CallbackErrorReason = keyof typeof CALLBACK_ERRORS;
@@ -167,9 +167,9 @@ export function callbackErrorReason(
     code === "flow_state_not_found" ||
     code === "bad_code_verifier"
   )
-    return "enlace-vencido";
-  if (code === "pkce_code_verifier_not_found") return "otro-navegador";
+    return "link-expired";
+  if (code === "pkce_code_verifier_not_found") return "other-browser";
   if (code === "bad_oauth_state" || code === "bad_oauth_callback")
     return "google";
-  return "acceso";
+  return "access-failed";
 }

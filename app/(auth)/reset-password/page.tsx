@@ -36,7 +36,7 @@ export default async function RestablecerPage() {
         <ResetForm />
       ) : (
         <>
-          <FormErrorBanner message={CALLBACK_ERRORS["enlace-vencido"]} />
+          <FormErrorBanner message={CALLBACK_ERRORS["link-expired"]} />
           <Button asChild size="lg" className="w-full">
             <Link href={AUTH_ROUTES.forgot}>Pedir otro enlace</Link>
           </Button>

@@ -9,7 +9,7 @@ import { BeatRowDemo, RatingDemo } from "./demos";
 
 /**
  * Muestra de indicadores propios (handoff §7 paso 3): cada uno con todos sus estados, en claro y
- * oscuro. Interna como /primitivos: sin enlace desde la app y fuera de buscadores.
+ * oscuro. Interna como /primitives: sin enlace desde la app y fuera de buscadores.
  * Copy de ejemplo: placeholder realista (CONTENT_CHECKLIST fila 35).
  */
 export const metadata: Metadata = {

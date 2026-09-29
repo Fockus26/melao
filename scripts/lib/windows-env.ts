@@ -3,9 +3,9 @@
  * Funciones puras (el sistema de archivos se inyecta) para poder probarlas con `bun test`.
  *
  * 1. Rutas convertidas por MSYS. En Git Bash, un argumento que empieza con `/` se convierte en
- *    ruta de Windows antes de llegar a node: `/indicadores` → `C:/Program Files/Git/indicadores`.
+ *    ruta de Windows antes de llegar a node: `/indicators` → `C:/Program Files/Git/indicators`.
  *    Una ruta web nunca es una ruta absoluta de Windows, así que se recupera quitando la raíz
- *    de Git. (Alternativas sin script: `//indicadores`, `indicadores` o `MSYS_NO_PATHCONV=1`.)
+ *    de Git. (Alternativas sin script: `//indicators`, `indicators` o `MSYS_NO_PATHCONV=1`.)
  *
  * 2. Chromium de Playwright no encontrado (D071). Claude Desktop y PowerShell de la Microsoft
  *    Store son apps MSIX: lo que un proceso hijo escribe en `%LOCALAPPDATA%` se redirige a

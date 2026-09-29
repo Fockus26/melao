@@ -4,7 +4,7 @@
  *
  * Regla: gana el destino cuyo `href` es el prefijo más largo de la ruta actual, cortando por
  * segmentos. Así `/app` (Inicio) solo queda activo en `/app` exacto o en rutas que no tengan un
- * destino más específico, y `/app/pasos/enchufla` marca Pasos.
+ * destino más específico, y `/app/steps/enchufla` marca Pasos.
  */
 
 /** Quita la barra final (salvo en `/`), la query y el hash. */

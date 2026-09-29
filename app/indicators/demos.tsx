@@ -10,7 +10,7 @@ import type { SrsRating } from "@/supabase/functions/_shared/core/srs";
 import { SALSA_CASINO } from "@/supabase/functions/_shared/core/style";
 
 /*
- * Demostraciones con estado de /indicadores. Todo el texto es de ejemplo (placeholder realista,
+ * Demostraciones con estado de /indicators. Todo el texto es de ejemplo (placeholder realista,
  * CONTENT_CHECKLIST fila 35): pasos e intervalos no son el catálogo ni un cálculo FSRS real.
  */
 

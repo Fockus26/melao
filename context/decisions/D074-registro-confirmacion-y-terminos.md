@@ -12,3 +12,5 @@ con Google (que no pasa por el formulario).
 **Alternativa descartada:** casilla obligatoria (spec original): exige crear el primitivo y un
 paso extra antes de Google. Si César la quiere, el CTA ya se deshabilita hasta cumplir y es
 sumar una condición.
+**Actualizada por D081:** ya hay `/welcome`; el destino sigue siendo `next` o `/app`, que desvía
+a la Bienvenida mientras no esté hecha.

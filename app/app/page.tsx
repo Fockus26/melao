@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { SignOutButton } from "@/components/auth/sign-out-button";
-import { getOwnProfile, requireUser } from "@/lib/auth/session";
+import { getOwnProfile, requireOnboardedUser } from "@/lib/auth/session";
 
 export const metadata: Metadata = {
-  title: "Inicio · Melao",
+  title: "Inicio",
   robots: { index: false, follow: false },
 };
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
  * sesión, hasta que llegue la pantalla de Inicio de 07b.
  */
 export default async function AppHomePage() {
-  const user = await requireUser("/app");
+  const user = await requireOnboardedUser("/app");
   const profile = await getOwnProfile(user.id);
   const name = profile?.display_name;
 

@@ -4,7 +4,7 @@ import { parseWelcomeStep } from "@/lib/onboarding";
 import { firstParam } from "@/lib/search-params";
 
 export const metadata: Metadata = {
-  title: "Bienvenida · Layouts · Melao",
+  title: "Bienvenida · Layouts",
   robots: { index: false, follow: false },
 };
 

@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/server";
 
 // Copy provisional (CONTENT_CHECKLIST fila 45).
 export const metadata: Metadata = {
-  title: "Bienvenida · Melao",
+  title: "Bienvenida",
   description: "Elige qué bailas, tu rol y desde dónde empiezas.",
   robots: { index: false, follow: false },
 };

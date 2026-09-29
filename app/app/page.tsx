@@ -3,7 +3,7 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 import { getOwnProfile, requireOnboardedUser } from "@/lib/auth/session";
 
 export const metadata: Metadata = {
-  title: "Inicio · Melao",
+  title: "Inicio",
   robots: { index: false, follow: false },
 };
 

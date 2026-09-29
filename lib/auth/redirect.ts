@@ -4,8 +4,14 @@
  */
 import { matchesPath } from "@/lib/navigation";
 
-/** Destino por defecto al entrar o registrarse (aún no hay `/welcome`, D074). */
+/**
+ * Destino por defecto al entrar o registrarse. Quien no hizo la Bienvenida sale de `/app` a
+ * `/welcome` (D081): así el desvío vale igual para correo, Google y los enlaces de correo.
+ */
 export const DEFAULT_AFTER_AUTH = "/app";
+
+/** Bienvenida: estilos, rol y nivel. Exige sesión; con el onboarding hecho, a Inicio. */
+export const WELCOME_PATH = "/welcome";
 
 export const AUTH_ROUTES = {
   signIn: "/login",
@@ -17,7 +23,12 @@ export const AUTH_ROUTES = {
 } as const;
 
 /** Todo lo que cuelga de estos prefijos exige sesión; `/admin` además exige rol admin. */
-export const PROTECTED_PREFIXES = ["/app", "/admin"] as const;
+export const PROTECTED_PREFIXES = [
+  "/app",
+  "/admin",
+  WELCOME_PATH,
+  "/checkout",
+] as const;
 
 /** Con sesión, estas pantallas mandan directo al destino (no tiene sentido volver a entrar). */
 export const GUEST_ONLY_PATHS = [
@@ -27,6 +38,16 @@ export const GUEST_ONLY_PATHS = [
 
 export function isProtectedPath(path: string): boolean {
   return PROTECTED_PREFIXES.some((prefix) => matchesPath(path, prefix));
+}
+
+/**
+ * ¿Falta la Bienvenida? Sí mientras `profiles.onboarded_at` sea null (lo pone solo
+ * `complete_onboarding`). Sin perfil legible también: la Bienvenida lo resuelve o avisa.
+ */
+export function needsOnboarding(
+  profile: { onboarded_at: string | null } | null | undefined,
+): boolean {
+  return !profile?.onboarded_at;
 }
 
 export function isGuestOnlyPath(path: string): boolean {

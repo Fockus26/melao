@@ -22,7 +22,7 @@ error con reintento · sin conexión · sin suscripción activa (lleva a Planes)
 | Landing (`/`) | Hero · Cómo funciona · El coach (demo de la cuenta) · Repaso inteligente · Estilos · Planes · Preguntas frecuentes · Footer | Empieza (→ Registro), Ver planes |
 | Planes (`/plans`) | Comparativa Básico / Consultoría | Elegir plan (→ Checkout) |
 | Checkout (`/checkout`) | Resumen del plan y precio · Aviso "pago en integración: hoy se activa por $0" · Activar | Activar (servidor) → Bienvenida o Inicio |
-| Legal (`/legal/terms`, `/legal/privacy`) | Texto | — |
+| Legal (`/legal/terms`, `/legal/privacy`) | Título · Última actualización · Aviso "Texto provisional" (mientras sea borrador) · Secciones numeradas · Enlace al otro documento | — (enlazadas desde el footer público y el registro) |
 
 ## Auth y onboarding
 | Pantalla | Bloques | Estados |

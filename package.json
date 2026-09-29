@@ -9,6 +9,7 @@
     "lint": "biome check",
     "format": "biome format --write",
     "db:types": "supabase gen types typescript --project-id myombgpqvzoaweudfvdv --schema public > supabase/functions/_shared/database.types.ts",
+    "a11y": "node scripts/a11y-check.ts",
     "shots": "node scripts/pr-screenshots.ts .pr-shots.json",
     "test": "bun test ./tests/unit --dots --pass-with-no-tests",
     "test:related": "bun scripts/test-related.ts",

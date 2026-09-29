@@ -3,7 +3,9 @@
  *
  * Uso (con **node**, no con bun — ver la nota de abajo):
  *   node scripts/pr-screenshots.ts .pr-shots.json   (= bun run shots)   # Node ≥ 23.6 (o 22.x con --experimental-strip-types)
- *   → escribe .pr-shots/<nombre>[-light|-dark].png y lista las rutas.
+ *   → vacía los PNG de .pr-shots/, escribe .pr-shots/<nombre>[-light|-dark].png y lista las
+ *   rutas. Así `shots:publish` sube solo las de esta corrida, no las que dejó otra unidad en
+ *   el mismo slot del pool.
  *   Después: bun run shots:publish   (= bash scripts/publish-pr-shots.sh .pr-shots)
  *
  * `.pr-shots.json` lo escribe el agente para su unidad (y va en .gitignore):
@@ -44,8 +46,13 @@
  * verificación ya la hizo midiendo el DOM. Las capturas son para quien revisa el PR.
  */
 
-import { mkdir, readFile } from "node:fs/promises";
-import { chromium, type Page } from "@playwright/test";
+import { mkdir, readdir, readFile, rm } from "node:fs/promises";
+import type { Page } from "@playwright/test";
+import { BROWSER_HINT, prepareBrowsersPath } from "./lib/windows-env.ts";
+
+// Antes de importar Playwright: lee la carpeta de navegadores al cargar (ver windows-env.ts).
+prepareBrowsersPath();
+const { chromium } = await import("@playwright/test");
 
 type Step =
   | { click: string }
@@ -76,6 +83,9 @@ const config = JSON.parse(await readFile(configPath, "utf8")) as {
   shots: Shot[];
 };
 await mkdir(OUT, { recursive: true });
+// Solo los PNG de la carpeta: nada fuera de .pr-shots/ ni de otro tipo.
+for (const name of await readdir(OUT))
+  if (name.toLowerCase().endsWith(".png")) await rm(`${OUT}/${name}`);
 
 async function runSteps(page: Page, steps: Step[]) {
   for (const step of steps) {
@@ -97,7 +107,12 @@ async function runSteps(page: Page, steps: Step[]) {
   }
 }
 
-const browser = await chromium.launch({ args: ["--disable-gpu"] });
+const browser = await chromium
+  .launch({ args: ["--disable-gpu"] })
+  .catch((error: Error) => {
+    console.error(`${error.message.split("\n")[0]}\n${BROWSER_HINT}`);
+    process.exit(1);
+  });
 const written: string[] = [];
 const failed: string[] = [];
 

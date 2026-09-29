@@ -11,7 +11,7 @@
 | D003 | Arquitectura | Backend-first: reglas en Postgres/RLS y Edge Functions; web y nativas son clientes | `decisions/03-arquitectura.md` | Pendiente |
 | D004 | Arquitectura | Supabase (DB, Auth, Storage, Functions, Realtime) + Vercel | `decisions/03-arquitectura.md` | Pendiente |
 | D005 | Arquitectura | Móvil: Kotlin y Swift nativos después; docs/spec es el contrato; sin Capacitor/Expo | `decisions/03-arquitectura.md` | Pendiente |
-| D006 | Arquitectura | shadcn/ui + Tailwind v4 | `decisions/03-arquitectura.md` | Pendiente |
+| D006 | Arquitectura | shadcn/ui + Tailwind v4 | `decisions/03-arquitectura.md` | Implementado |
 | D007 | Colores | Dark mode completo desde v1; la práctica siempre en modo escenario | `decisions/01-colores.md` | Aprobado (handoff) |
 | D008 | Tipografía | Fraunces en titulares, Geist Sans (cifras tabulares) en UI y cuentas | `decisions/02-tipografia.md` | Aprobado (handoff) |
 | D009 | Producto | Catálogo propio con permiso de uso; streaming (Spotify/YouTube) fuera de la v1 | `decisions/04-producto.md` | Pendiente |

@@ -43,7 +43,7 @@ pantallas, API, motor de ritmo, vectores de prueba), `design/tokens.json` y
 **Por qué:** diseño propio y específico; accesibilidad de Radix; sin look impuesto.
 **Alternativa descartada:** Hero UI (look propio difícil de quitar), MUI (sin Tailwind, look
 Material).
-**Estado:** Pendiente
+**Estado:** Implementado (#16: primitivos con las clases de los tokens, D046)
 
 ## D018 — Tokens en JSON y textos en catálogo, reutilizables por las apps nativas
 **Decisión:** tokens en `design/tokens.json` (W3C Design Tokens; Style Dictionary genera el

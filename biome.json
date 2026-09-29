@@ -14,7 +14,8 @@
       "!dist",
       "!build",
       "!app/tokens.css",
-      "!supabase/functions/_shared/database.types.ts"
+      "!supabase/functions/_shared/database.types.ts",
+      "!supabase/templates"
     ]
   },
   "formatter": {

@@ -27,8 +27,12 @@ Ninguna regla vive solo en el cliente: la contraseña la valida Supabase y los p
   manda Google). Si el proyecto exige confirmar el correo, no hay sesión hasta abrir el enlace;
   con la confirmación activa, un correo ya registrado vuelve como usuario **sin identidades**
   (se trata como "correo en uso").
-- **Contraseña (D075):** mínimo 8 caracteres, al menos una letra y un dígito ASCII
-  (Supabase › Auth › Email: longitud 8 + "letters and digits"). La UI solo refleja la regla.
+- **Contraseña (D075):** mínimo 8 caracteres, con al menos una minúscula, una mayúscula (ASCII),
+  un dígito y un símbolo de `` !@#$%^&*()_+-=[]{};'\:"|<>?,./`~ `` (Supabase › Auth › Email:
+  longitud 8 + "Lowercase, uppercase letters, digits and symbols"). La UI solo refleja la regla.
+- **Correos (D078):** confirmación y recuperación en español, en `supabase/templates/` (el
+  proyecto real los recibe pegados en Supabase › Auth › Emails). El enlace es
+  `{{ .ConfirmationURL }}` y termina en `/auth/callback`.
 - **Entrar:** `signInWithPassword` o `signInWithOAuth({ provider: "google" })`.
 - **Recuperar:** `resetPasswordForEmail(email, redirectTo = callback?next=/reset-password)`; el
   aviso es el mismo exista o no la cuenta. **Restablecer:** `updateUser({ password })` con la

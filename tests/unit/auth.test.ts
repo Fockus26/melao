@@ -167,12 +167,17 @@ describe("validación de formularios", () => {
       true,
       true,
       false,
+      false,
+      false,
     ]);
-    expect(checkPassword("12345678").valid).toBe(false);
-    expect(checkPassword("salsa2026").valid).toBe(true);
-    expect(checkPassword("abc1").valid).toBe(false);
-    // Como `letters_digits` de Supabase: una "ñ" sola no es letra.
-    expect(checkPassword("ññññññ12").valid).toBe(false);
+    expect(checkPassword("salsa2026").valid).toBe(false);
+    expect(checkPassword("Salsa2026").valid).toBe(false);
+    expect(checkPassword("Salsa2026!").valid).toBe(true);
+    expect(checkPassword("Sa1!").valid).toBe(false);
+    // Como Supabase: letras ASCII; "Ñ" y "ñ" no cuentan como mayúscula ni minúscula.
+    expect(checkPassword("ÑÑññ2026!").valid).toBe(false);
+    // Un símbolo fuera del conjunto de Supabase no cuenta.
+    expect(checkPassword("Salsa2026¡").valid).toBe(false);
   });
 
   test("correo y nombre", () => {

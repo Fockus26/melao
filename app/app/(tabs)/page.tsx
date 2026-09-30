@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
+import { HomeView } from "@/components/app/home-view";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { getOwnProfile, requireOnboardedUser } from "@/lib/auth/session";
+import { pickCurrentStyle, summarizeCourse } from "@/lib/course/path";
+import {
+  getCoursePath,
+  getDueSteps,
+  getHardestSteps,
+  getStyleOptions,
+  hasActiveSubscription,
+} from "@/lib/course/queries";
 
 export const metadata: Metadata = {
   title: "Inicio",
@@ -8,33 +17,50 @@ export const metadata: Metadata = {
 };
 
 /**
- * Inicio **provisional** (CONTENT_CHECKLIST fila 43): solo confirma la sesión y deja cerrar
- * sesión, hasta que llegue la pantalla de Inicio de 07b.
+ * Inicio (App-Inicio). Exige sesión y Bienvenida hecha (D081). Estilo actual =
+ * `profiles.default_style_id` (o el primero elegido). Todo lo que tiene reglas (lección actual,
+ * vencidos, lo que más cuesta) sale de las funciones SQL de `20260930120000_course_path.sql`.
  */
 export default async function AppHomePage() {
   const user = await requireOnboardedUser("/app");
-  const profile = await getOwnProfile(user.id);
-  const name = profile?.display_name;
+  const [profile, styles, subscribed] = await Promise.all([
+    getOwnProfile(user.id),
+    getStyleOptions(),
+    hasActiveSubscription(),
+  ]);
+  const style = pickCurrentStyle(styles, profile?.default_style_id);
+  const [path, due, hardest] = style
+    ? await Promise.all([
+        getCoursePath(style.id),
+        getDueSteps(style.id),
+        getHardestSteps(style.id),
+      ])
+    : [null, [], []];
 
   return (
-    <div className="flex flex-col gap-8">
-      <header className="flex flex-col gap-2">
-        <p className="type-eyebrow text-text-secondary">
-          Inicio · próximamente
-        </p>
-        <h1 className="type-display">{name ? `Hola, ${name}` : "Hola"}</h1>
-        <p className="type-body text-text-secondary">
-          Ya tienes tu cuenta. Aquí vas a ver tus repasos del día, la lección
-          que sigue y tus prácticas.
-        </p>
-      </header>
-      {user.email ? (
-        <p className="type-small text-text-secondary">
-          Sesión iniciada como{" "}
-          <strong className="font-medium text-text">{user.email}</strong>
-        </p>
-      ) : null}
-      <SignOutButton />
-    </div>
+    <HomeView
+      name={profile?.display_name ?? null}
+      now={new Date()}
+      styles={styles}
+      currentStyle={style}
+      role={profile?.dance_role ?? null}
+      userId={user.id}
+      subscribed={subscribed}
+      course={path ? summarizeCourse(path) : null}
+      due={due}
+      hardest={hardest}
+      // Cerrar sesión vive aquí hasta que exista Perfil (pantallas.md).
+      footer={
+        <div className="flex flex-col items-start gap-3 border-t border-divider pt-6">
+          {user.email ? (
+            <p className="type-small text-text-secondary">
+              Sesión iniciada como{" "}
+              <strong className="font-medium text-text">{user.email}</strong>
+            </p>
+          ) : null}
+          <SignOutButton />
+        </div>
+      }
+    />
   );
 }

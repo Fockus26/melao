@@ -4,17 +4,9 @@ import { Check } from "lucide-react";
 import { ICON_STROKE } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import type { SrsRating } from "@/supabase/functions/_shared/core/srs";
+import { RATING_LABELS, RATINGS } from "./rating-labels";
 
-/** Orden fijo del handoff; el valor es la calificación FSRS (srs.md: 1 Again … 4 Easy). */
-export const RATINGS = [1, 2, 3, 4] as const satisfies readonly SrsRating[];
-
-/** Etiquetas del handoff (provisionales, CONTENT_CHECKLIST fila 36). */
-export const RATING_LABELS: Record<SrsRating, string> = {
-  1: "Muy difícil",
-  2: "Difícil",
-  3: "Bien",
-  4: "Fácil",
-};
+export { RATING_LABELS, RATINGS };
 
 /**
  * RatingButtons (handoff §2): la calificación de un paso en el repaso. `<fieldset>` +

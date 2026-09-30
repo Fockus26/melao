@@ -47,6 +47,11 @@ const SAMPLES = [
     title: "Bienvenida",
     text: "Los 3 pasos de /welcome (estilos, rol y nivel) en su columna de 560, sin sesión ni base.",
   },
+  {
+    href: "/layouts/home",
+    title: "Inicio · estados",
+    text: "Inicio con datos de ejemplo: con repasos, primer día, sin repasos, curso terminado, sin suscripción y estilo sin curso.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

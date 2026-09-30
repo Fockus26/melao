@@ -1099,6 +1099,31 @@ export type Database = {
         }
         Returns: undefined
       }
+      course_path: {
+        Args: { p_style_id: string }
+        Returns: {
+          course_id: string
+          lesson_count: number
+          lesson_id: string
+          lesson_number: number
+          lesson_position: number
+          lesson_title: string
+          status: string
+          step_count: number
+          unit_id: string
+          unit_position: number
+          unit_title: string
+        }[]
+      }
+      due_steps: {
+        Args: { p_style_id: string }
+        Returns: {
+          due_at: string
+          name: string
+          slug: string
+          step_id: string
+        }[]
+      }
       ef_activate_subscription: {
         Args: { p_plan_slug: string; p_user: string }
         Returns: Json
@@ -1124,6 +1149,18 @@ export type Database = {
         Args: { p_payload: Json; p_user: string }
         Returns: Json
       }
+      hardest_steps: {
+        Args: { p_limit?: number; p_style_id: string }
+        Returns: {
+          difficulty: number
+          lapses: number
+          last_rating: number
+          last_reviewed_at: string
+          name: string
+          slug: string
+          step_id: string
+        }[]
+      }
       has_active_subscription: { Args: never; Returns: boolean }
       set_app_role: {
         Args: {
@@ -1146,6 +1183,18 @@ export type Database = {
           appearances_30d: number
           percentile: number
           step_id: string
+        }[]
+      }
+      style_progress: {
+        Args: never
+        Returns: {
+          chosen: boolean
+          completed_count: number
+          has_course: boolean
+          has_roles: boolean
+          lesson_count: number
+          name: string
+          style_id: string
         }[]
       }
     }

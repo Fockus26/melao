@@ -1,0 +1,5 @@
+# D092 · Datos · Estados del camino del curso: `completed` · `current` · `available` · `locked`, calculados en `course_path` · Implementado
+
+**Decisión:** `public.course_path(style)` devuelve el estado de cada lección: `completed` (tiene `lesson_progress`, se puede repetir), `current` (la primera no completada, siempre desbloqueada), `available` (desbloqueada por `private.lesson_unlocked` pero ni completada ni actual) y `locked`. Mapeo al spec: completada · actual · disponible · bloqueada. La regla de desbloqueo es la misma de `ef_plan_session_state` (primera del curso, o la anterior o ella misma completadas), extraída a `private.lesson_unlocked`; la función de plan-session no se tocó.
+**Por qué:** con desbloqueo lineal, "disponible" solo aparece con huecos (una lección completada saltándose otra, p. ej. por el admin); tenerla como estado propio evita que Android/iOS rearmen la regla y coincide con los 5 estados de PathNode (el quinto, repaso, no es una lección).
+**Alternativa descartada:** solo tres estados (sin `available`): una lección desbloqueada por un hueco se vería bloqueada aunque plan-session la acepte.

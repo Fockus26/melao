@@ -1,4 +1,4 @@
-import { Check, Lock, Repeat } from "lucide-react";
+import { Check, ChevronRight, Lock, Repeat } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ICON_STROKE } from "@/components/ui/icon";
@@ -84,6 +84,9 @@ function Marker({ state, number }: { state: PathNodeState; number: number }) {
  * - Actual: fila con bg gold-tint y un enlace "Continuar" (el único enfocable de la fila).
  * - Completada, disponible y repaso: la fila entera es el enlace (48 de alto como mínimo).
  * - Bloqueada: texto en text-muted, sin enlace ni foco; el estado se lee en la segunda línea.
+ * - `compactAction` (Curso): la acción de la actual y del repaso es un botón circular de 48 con
+ *   ícono y `aria-label` por debajo de 1024 px, y un botón con texto desde 1024. El repaso deja
+ *   de ser fila-enlace y lleva su propio botón (outline, ícono de repetir).
  */
 export function PathNode({
   state,
@@ -93,6 +96,8 @@ export function PathNode({
   href,
   stateLabel,
   actionLabel = pathNodeActionLabel,
+  compactAction = false,
+  actionAriaLabel,
   className,
 }: {
   state: PathNodeState;
@@ -106,8 +111,12 @@ export function PathNode({
   href?: string;
   /** Reemplaza el estado en texto por defecto. */
   stateLabel?: string;
-  /** Texto del botón de la fila actual. */
+  /** Texto del botón de la fila actual (y del repaso con `compactAction`). */
   actionLabel?: string;
+  /** Acción circular de 48 en móvil y con texto desde 1024 (ver arriba). */
+  compactAction?: boolean;
+  /** Nombre accesible de la acción compacta: "Continuar lección 3: Enchufla". */
+  actionAriaLabel?: string;
   className?: string;
 }) {
   const status = pathNodeStatusLine(
@@ -137,16 +146,43 @@ export function PathNode({
   );
   const row = "flex min-h-12 items-center gap-4 rounded-md";
 
-  if (state === "current") {
+  if (state === "current" || (compactAction && state === "review" && href)) {
+    const review = state === "review";
     return (
       <div
         data-slot="path-node"
         data-state={state}
-        className={cn(row, "bg-gold-tint p-3", className)}
+        className={cn(row, "p-3", !review && "bg-gold-tint", className)}
       >
         {marker}
         {text}
-        {href ? (
+        {href && compactAction ? (
+          <Button
+            asChild
+            variant={review ? "outline" : "primary"}
+            className="size-12 rounded-pill px-0 lg:w-auto lg:rounded-md lg:px-5"
+          >
+            <Link
+              href={href}
+              aria-label={actionAriaLabel ?? `${actionLabel}: ${title}`}
+            >
+              {review ? (
+                <Repeat
+                  strokeWidth={ICON_STROKE}
+                  aria-hidden="true"
+                  className="lg:hidden"
+                />
+              ) : (
+                <ChevronRight
+                  strokeWidth={ICON_STROKE}
+                  aria-hidden="true"
+                  className="lg:hidden"
+                />
+              )}
+              <span className="max-lg:sr-only">{actionLabel}</span>
+            </Link>
+          </Button>
+        ) : href ? (
           <Button asChild className="shrink-0">
             <Link href={href}>
               {actionLabel}

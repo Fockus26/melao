@@ -1,5 +1,12 @@
 # melao
 
+## 0.5.0
+
+### Minor Changes
+
+- 24f5f90: Curso: tu camino por unidades y lecciones
+- 4cc0f6f: Lección: intro, video, práctica con el coach, calificación y resumen
+
 ## 0.4.0
 
 ### Minor Changes

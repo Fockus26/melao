@@ -1,5 +1,15 @@
 # melao
 
+## 0.4.0
+
+### Minor Changes
+
+- a6b3b58: Inicio: repasos del día, lección para continuar y pasos que más cuestan
+
+### Patch Changes
+
+- e1fa14d: Arreglos: permisos del perfil y flechas en opciones.
+
 ## 0.3.0
 
 ### Minor Changes

@@ -220,3 +220,52 @@ describe("user_styles", () => {
     ).rejects.toThrow(/permission denied/);
   });
 });
+
+// 20260930100000_onboarded_at_grant.sql: onboarded_at sale del permiso de columna.
+describe("permisos de columna de profiles", () => {
+  test("el alumno no se marca la Bienvenida con un update directo", async () => {
+    await expect(
+      asUser(db, beto, async (tx) =>
+        tx.query(
+          "update public.profiles set onboarded_at = now() where id = $1",
+          [beto],
+        ),
+      ),
+    ).rejects.toThrow(/permission denied/);
+  });
+
+  test("ni un admin escribe onboarded_at directo", async () => {
+    await expect(
+      asUser(db, cesar, async (tx) =>
+        tx.query(
+          "update public.profiles set onboarded_at = null where id = $1",
+          [ana],
+        ),
+      ),
+    ).rejects.toThrow(/permission denied/);
+  });
+
+  test("sigue editando display_name y default_style_id", async () => {
+    const row = await asUser(db, beto, async (tx) => {
+      await tx.query(
+        "update public.profiles set display_name = 'Beto R.', default_style_id = $1 where id = $2",
+        [SALSA, beto],
+      );
+      return (
+        await tx.query<{ display_name: string; default_style_id: string }>(
+          "select display_name, default_style_id from public.profiles where id = $1",
+          [beto],
+        )
+      ).rows[0];
+    });
+    expect(row).toEqual({ display_name: "Beto R.", default_style_id: SALSA });
+  });
+
+  test("complete_onboarding sigue marcando onboarded_at", async () => {
+    const onboarded = await asUser(db, cesar, async (tx) => {
+      await complete(tx, [SALSA]);
+      return (await profile(tx, cesar)).onboarded;
+    });
+    expect(onboarded).toBe(true);
+  });
+});

@@ -52,6 +52,11 @@ const SAMPLES = [
     title: "Inicio · estados",
     text: "Inicio con datos de ejemplo: con repasos, primer día, sin repasos, curso terminado, sin suscripción y estilo sin curso.",
   },
+  {
+    href: "/layouts/course",
+    title: "Curso · estados",
+    text: "El camino por unidades con el título-selector de estilo: con repaso, sin repasos, primer día, lección disponible, terminado, sin suscripción y sin curso.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

@@ -1,6 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
+import { useId } from "react";
 import { ICON_STROKE } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import type { SrsRating } from "@/supabase/functions/_shared/core/srs";
@@ -14,12 +15,14 @@ export { RATING_LABELS, RATINGS };
  * da el grupo de una sola elección, las flechas y "1 de 4" sin ARIA a mano (D057). Grilla 2 × 2 por debajo de 768 y
  * 4 columnas desde 768. Sin rojo ni verde: el significado lo da el texto; el seleccionado se
  * invierte (bg primary) y lleva un check, así no depende solo del color.
- * No calcula FSRS: los intervalos ("< 1 día", "3 días"…) llegan del backend por props.
+ * No calcula FSRS: los intervalos ("< 1 día", "3 días"…) llegan del backend por props; sin
+ * ellos (la lección, que no tiene de dónde leerlos: D099) solo va la etiqueta.
  */
 export function RatingButtons({
   name,
   legend,
   intervals,
+  hint,
   value,
   defaultValue,
   onValueChange,
@@ -31,8 +34,10 @@ export function RatingButtons({
   name: string;
   /** Nombre del paso: "Enchufla". */
   legend: string;
-  /** Intervalo que resulta de cada calificación. */
-  intervals: Record<SrsRating, string>;
+  /** Intervalo que resulta de cada calificación; sin él, solo la etiqueta. */
+  intervals?: Record<SrsRating, string>;
+  /** Debajo de la leyenda (p. ej. "No vence hoy"). */
+  hint?: React.ReactNode;
   /** Controlado: la calificación elegida o `null`. */
   value?: SrsRating | null;
   /** No controlado: calificación inicial. */
@@ -43,13 +48,20 @@ export function RatingButtons({
   className?: string;
 }) {
   const controlled = value !== undefined;
+  const hintId = useId();
   return (
     <fieldset
       data-slot="rating-buttons"
       disabled={disabled}
+      aria-describedby={hint ? hintId : undefined}
       className={cn("min-w-0", className)}
     >
       <legend className="mb-3 type-h4 text-text">{legend}</legend>
+      {hint ? (
+        <p id={hintId} className="-mt-1 mb-3 type-small text-text-secondary">
+          {hint}
+        </p>
+      ) : null}
       <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
         {RATINGS.map((rating) => (
           <label
@@ -78,9 +90,11 @@ export function RatingButtons({
               className="absolute top-1.5 right-1.5 hidden size-4 peer-checked:block"
             />
             <span className="type-h5">{labels[rating]}</span>
-            <span className="type-caption text-text-secondary peer-checked:text-on-primary peer-disabled:text-text-muted">
-              {intervals[rating]}
-            </span>
+            {intervals ? (
+              <span className="type-caption text-text-secondary peer-checked:text-on-primary peer-disabled:text-text-muted">
+                {intervals[rating]}
+              </span>
+            ) : null}
           </label>
         ))}
       </div>

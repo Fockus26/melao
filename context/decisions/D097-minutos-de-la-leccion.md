@@ -1,0 +1,5 @@
+# D097 · Producto · "unos m minutos" de la lección = videos + mini prácticas + canción final · Implementado
+
+**Decisión:** la intro de la lección estima `m` = duración de los videos del rol del alumno + una mini práctica por paso ((`lead_in_phrases` + `practice_phrases`) frases × tiempos por frase al BPM de la canción de práctica, o al de sus anclas si no tiene BPM) + la canción final hasta `dance_end_ms`, redondeado hacia arriba (mínimo 1). Si alguna de las dos canciones no es visible para quien llama (RLS: al alumno, solo las publicadas con licencia) o no tiene ritmo, se omite y queda "2 pasos nuevos". "nuevos" solo si ningún paso tiene tarjeta del rol. `estimateMinutes` en `lib/lesson/lesson.ts`, especificado en `pantallas.md` para Android/iOS.
+**Por qué:** el handoff pide "unos 8 minutos" sin decir de dónde sale; las piezas que más pesan son la canción final y las mini prácticas, y todas están en la base. Es una estimación de texto, no una regla (no cambia qué se puede hacer).
+**Alternativa descartada:** un número fijo por paso (≈ 4 min) — miente con canciones largas; una función SQL — sin reglas que proteger, solo suma lo que el cliente ya lee.

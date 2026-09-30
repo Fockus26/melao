@@ -57,6 +57,11 @@ const SAMPLES = [
     title: "Curso · estados",
     text: "El camino por unidades con el título-selector de estilo: con repaso, sin repasos, primer día, lección disponible, terminado, sin suscripción y sin curso.",
   },
+  {
+    href: "/layouts/lesson",
+    title: "Lección · etapas",
+    text: "Las 6 etapas de /app/lessons/[id] con un backend falso: intro, video, mini práctica y práctica final en el escenario, calificación y resumen; también bloqueada y práctica disponible pronto.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

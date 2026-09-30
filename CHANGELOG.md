@@ -1,5 +1,18 @@
 # melao
 
+## 0.3.0
+
+### Minor Changes
+
+- 00e798a: Planes y checkout: elige un plan y actívalo. `/plans` muestra los planes con su precio y lo que
+  incluye cada uno, y `/checkout` activa el plan elegido (por ahora sin cobro, US$0 hoy).
+- 04d8316: Bienvenida: elige estilos, rol y nivel al empezar.
+
+### Patch Changes
+
+- 7fc04ac: Imagen al compartir enlaces, íconos de la app y mapa del sitio.
+- 2674d56: Los enlaces a Términos y Privacidad del pie de página y del registro ya abren sus páginas (texto provisional).
+
 ## 0.2.0
 
 ### Minor Changes

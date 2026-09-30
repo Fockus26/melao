@@ -169,10 +169,12 @@ que exigen suscripción activa. El cliente solo escribe lo marcado.
 | `lesson_progress` | `user_id` · `lesson_id` · `completed_at` | — |
 | `user_song_favorites` | `user_id` · `song_id` | agregar y quitar (canciones visibles) |
 
-Consultas típicas del cliente:
-- "Para hoy" = `srs_cards` con `due_at ≤ ahora`.
-- "Los que más cuestan" = `srs_cards` por `stability` ascendente.
-- Siguiente lección = la primera sin fila en `lesson_progress`, en orden de unidad y posición.
+Consultas del cliente: las que llevan reglas van por funciones SQL (abajo), no se rearman en
+cada cliente (D003).
+- "Para hoy" = `due_steps(style)`.
+- "Lo que más te cuesta" = `hardest_steps(style)` (D093).
+- Camino y siguiente lección = `course_path(style)`: la actual es la primera sin fila en
+  `lesson_progress`, en orden de unidad y posición.
 
 Funciones (alumno y admin; anónimo no):
 - `public.song_popularity()` → `(song_id, sessions_30d, percentile)`: sesiones de los últimos
@@ -180,6 +182,21 @@ Funciones (alumno y admin; anónimo no):
 - `public.step_popularity(style)` → `(step_id, appearances_30d, percentile)`: apariciones en
   sesiones de los últimos 30 días, solo pasos visibles del estilo. Alimenta el peso
   `popular(1 + percentil)` de `combinaciones.md`.
+
+Inicio y Curso (`20260930120000_course_path.sql`): `security invoker` (RLS decide lo visible),
+el alumno sale de `auth.uid()`. Las tarjetas que cuentan son las del rol del perfil, o `leader`
+si el estilo no tiene roles (D051).
+
+| Función | Devuelve |
+|---|---|
+| `public.course_path(p_style_id)` | una fila por lección del curso **publicado** del estilo, en orden: `course_id, unit_id, unit_position, unit_title, lesson_id, lesson_position, lesson_number` (1…N en el curso), `lesson_title, step_count, status, lesson_count`. `status` (D092): `completed` (tiene `lesson_progress`; se puede repetir) · `current` (la primera no completada) · `available` (desbloqueada, no completada ni actual: solo con huecos) · `locked`. Sin curso publicado: ninguna fila |
+| `private.lesson_unlocked(p_user, p_lesson)` | la regla de desbloqueo lineal: primera del curso, o la anterior o ella misma completadas (la misma de `ef_plan_session_state`) |
+| `public.style_progress()` | estilos publicados en orden de catálogo: `style_id, name, has_roles, chosen` (en `user_styles`), `has_course, lesson_count, completed_count` |
+| `public.due_steps(p_style_id)` | `step_id, slug, name, due_at` de las tarjetas con `due_at ≤ now()`, las más atrasadas primero |
+| `public.hardest_steps(p_style_id, p_limit = 3)` | `step_id, slug, name, difficulty` (del paso, 1–5), `last_rating, last_reviewed_at, lapses`: tarjetas cuya última calificación fue 1–2 o con `lapses > 0`, por última calificación ↑, `lapses` ↓, dificultad FSRS ↓, más reciente primero (D093). Límite máx. 20 |
+
+Estilo por defecto: el alumno escribe `profiles.default_style_id` directo (grant de columna,
+RLS: su fila); el cliente filtra por su `id`.
 
 ## Edge Functions
 

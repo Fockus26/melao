@@ -2,12 +2,8 @@ import type { Metadata } from "next";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { ADMIN_NAV } from "@/components/layout/nav-items";
 import { Button } from "@/components/ui/button";
-import {
-  firstParam,
-  PlaceholderCard,
-  pickItem,
-  SampleControls,
-} from "../sample";
+import { firstParam } from "@/lib/search-params";
+import { PlaceholderCard, pickItem, SampleControls } from "../sample";
 
 export const metadata: Metadata = {
   title: "AdminShell · Layouts",

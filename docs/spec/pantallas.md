@@ -31,6 +31,7 @@ error con reintento · sin conexión · sin suscripción activa (lleva a Planes)
 | Registro (`/register`) | Google · "o con tu correo" · nombre, email, contraseña con requisitos visibles (8+, minúscula, mayúscula, número y símbolo) · Crear cuenta (deshabilitado hasta cumplir, con el motivo en texto) · aviso de aceptación de términos y privacidad (vale también para Google, D074) · enlace a entrar | email en uso, contraseña débil, enviando, **revisa tu correo** (si el proyecto exige confirmar) |
 | Recuperar (`/forgot-password`) | Email → aviso "si hay una cuenta, te enviamos un enlace" (igual exista o no la cuenta) | enviando, enlace vencido / abierto en otro navegador (llega del callback) |
 | Restablecer (`/reset-password`) | Nueva contraseña con requisitos → Guardar → Inicio | sin sesión de recuperación = enlace vencido (→ pedir otro), enviando (campos deshabilitados + botón cargando), misma contraseña |
+| Bienvenida (`/welcome`) | Logo + "Paso n de 3" + barra de 3 segmentos · 1 Estilo(s): los publicados, uno o varios (D082) → 2 Rol (líder/seguidor, uno para todos; se pide siempre, D080) → 3 Nivel (desde cero / ya sé pasos) · Atrás / Siguiente (deshabilitado hasta elegir, con el motivo en texto) · Empezar → `complete_onboarding` → Inicio (también "ya sé pasos" mientras no haya catálogo, D083). Exige sesión; con el onboarding hecho, a Inicio. Preselecciona lo que ya tenga el perfil. El foco va al título en cada paso | guardando, error al guardar (banner), estilo que dejó de estar publicado, estilos sin cargar |
 
 **Flujo de acceso (todas las plataformas):** mismos proveedores (correo + contraseña y Google) y
 mismos estados. Tras entrar o registrarse con sesión, al destino pedido (`next`, solo rutas
@@ -39,7 +40,6 @@ cualquier pantalla de la app a Bienvenida (D081). Con sesión, Entrar y Registro
 directo a Inicio. Sin sesión, cualquier pantalla de la app o del admin lleva a Entrar y vuelve
 después a la pantalla pedida. Admin sin rol `admin`: "no encontrado" (D073). Cerrar sesión:
 desde Inicio (provisional) y, cuando exista, Perfil. Contrato en `docs/spec/api.md` § Acceso.
-| Bienvenida (`/welcome`) | Logo + "Paso n de 3" + barra de 3 segmentos · 1 Estilo(s): los publicados, uno o varios (D082) → 2 Rol (líder/seguidor, uno para todos; se pide siempre, D080) → 3 Nivel (desde cero / ya sé pasos) · Atrás / Siguiente (deshabilitado hasta elegir, con el motivo en texto) · Empezar → `complete_onboarding` → Inicio (también "ya sé pasos" mientras no haya catálogo, D083). Exige sesión; con el onboarding hecho, a Inicio. Preselecciona lo que ya tenga el perfil. El foco va al título en cada paso | guardando, error al guardar (banner), estilo que dejó de estar publicado, estilos sin cargar |
 
 ## App
 | Pantalla | Bloques en orden | Estados propios |

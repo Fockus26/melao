@@ -83,7 +83,7 @@ En las tablas de acceso: **L** = leer, **C** = crear, **E** = editar, **B** = bo
 
 | Tabla | Campos | Anónimo | Alumno | Admin |
 |---|---|---|---|---|
-| `profiles` | `id` (= usuario de Auth) · `display_name` · `app_role` (`student\|teacher\|admin`) · `dance_role` (`leader\|follower`, null hasta el onboarding) · `theme` (`system\|light\|dark`) · `coach_voice_volume` (0–100) · `coach_spoken_count` · `onboarded_at` | — | L y E del suyo (todo menos `app_role`) | L y E de todos; `app_role` solo con `set_app_role` |
+| `profiles` | `id` (= usuario de Auth) · `display_name` · `app_role` (`student\|teacher\|admin`) · `dance_role` (`leader\|follower`, null hasta el onboarding) · `theme` (`system\|light\|dark`) · `coach_voice_volume` (0–100) · `coach_spoken_count` · `onboarded_at` | — | L del suyo; E de `display_name`, `dance_role`, `theme`, `coach_voice_volume`, `coach_spoken_count` y `default_style_id` | L de todos, E de las mismas columnas; `app_role` solo con `set_app_role` |
 | `audio_latency` | `user_id` · `platform` (`web\|android\|ios`) · `device_key` · `device_label` · `offset_ms` (−200…1000) · `sd_ms` · `taps` · `measured_at`; único por (usuario, plataforma, dispositivo) | — | L C E B de los suyos | igual que alumno |
 | `plans` | `slug` · `name` · `price_cents` · `currency` · `billing_interval` · `includes_coaching` · `is_active` · `sort_order` | L de activos | L de activos | L de todos, C, E |
 | `subscriptions` | `user_id` · `plan_id` · `status` (`active\|past_due\|canceled\|expired`) · `provider` (`placeholder\|stripe\|google_play\|app_store`) · `provider_ref` · `current_period_start/end` · `canceled_at`; una vigente (`active`/`past_due`) por alumno | — | L de la suya | L de todas |
@@ -98,7 +98,8 @@ Nadie escribe `subscriptions` desde un cliente: solo Edge Functions con la clave
   publicados (si no, error `22023`; sin sesión, `42501`). Reemplaza `user_styles`, pone
   `dance_role` y `experience_level`, conserva `default_style_id` si sigue entre los elegidos
   (si no, el primero por `sort_order`) y `onboarded_at = now()`. Idempotente. Es la única vía
-  para escribir `user_styles` y `experience_level` (D080–D083). Los clientes desvían a
+  para escribir `user_styles`, `experience_level` y `onboarded_at` (D080–D083; `onboarded_at`
+  sin permiso de columna desde `20260930100000_onboarded_at_grant.sql`). Los clientes desvían a
   Bienvenida mientras `onboarded_at` sea null.
 - `public.has_active_subscription()`: `true` si el usuario tiene una suscripción `active` con
   el periodo vigente. Es la regla de acceso al contenido (D036) y los clientes la pueden

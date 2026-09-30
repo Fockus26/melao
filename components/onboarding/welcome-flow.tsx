@@ -2,7 +2,7 @@
 
 import { Check, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Checkbox, RadioGroup } from "radix-ui";
+import { Checkbox } from "radix-ui";
 import { useId, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { FormErrorBanner } from "@/components/auth/form-banner";
@@ -10,6 +10,7 @@ import { Logo } from "@/components/layout/logo";
 import { MAIN_ID, SkipLink } from "@/components/layout/skip-link";
 import { Button } from "@/components/ui/button";
 import { ICON_STROKE } from "@/components/ui/icon";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   DEFAULT_AFTER_AUTH,
   signInPathFor,
@@ -71,7 +72,6 @@ export function WelcomeFlow({
   const router = useRouter();
   const id = useId();
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const arrowKey = useRef(false);
   const available = styles.filter((s) => s.available !== false);
   const [step, setStep] = useState<WelcomeStep>(initialStep);
   const [styleIds, setStyleIds] = useState<string[]>(() =>
@@ -276,33 +276,18 @@ export function WelcomeFlow({
                 </fieldset>
               )
             ) : (
-              <RadioGroup.Root
+              <RadioGroup
                 aria-labelledby={titleId}
                 value={step === 2 ? role : level}
                 onValueChange={choose}
-                // Patrón radio de WAI-ARIA: la flecha mueve el foco y elige. Radix mueve el foco
-                // en un setTimeout y solo elige si la tecla sigue abajo: con una pulsación
-                // rápida no elige (se midió). Aquí la flecha deja el aviso hasta el foco siguiente.
-                onKeyDownCapture={(e) => {
-                  arrowKey.current = e.key.startsWith("Arrow");
-                }}
-                onPointerDownCapture={() => {
-                  arrowKey.current = false;
-                }}
                 disabled={pending}
-                className="flex flex-col gap-3"
               >
                 {(step === 2 ? ROLE_OPTIONS : LEVEL_OPTIONS).map((option) => (
-                  <RadioGroup.Item
+                  <RadioGroupItem
                     key={option.value}
                     value={option.value}
                     aria-labelledby={`${id}-${option.value}`}
                     aria-describedby={`${id}-${option.value}-texto`}
-                    onFocus={() => {
-                      if (!arrowKey.current) return;
-                      arrowKey.current = false;
-                      choose(option.value);
-                    }}
                     className={cn(CARD, "group/card min-h-24")}
                   >
                     <span className="flex grow flex-col gap-1">
@@ -318,9 +303,9 @@ export function WelcomeFlow({
                     </span>
                     {/* Círculo de 24: anillo de 2 en reposo (el 1,5 del tablero no está en la escala), de 7 en primary elegido. */}
                     <span className="size-6 shrink-0 rounded-pill border-2 border-border-input group-data-[state=checked]/card:border-7 group-data-[state=checked]/card:border-primary" />
-                  </RadioGroup.Item>
+                  </RadioGroupItem>
                 ))}
-              </RadioGroup.Root>
+              </RadioGroup>
             )}
 
             {step === 2 ? (

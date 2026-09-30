@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { AppShell } from "@/components/layout/app-shell";
 import { SIDE_NAV } from "@/components/layout/nav-items";
-import {
-  firstParam,
-  PlaceholderCard,
-  pickItem,
-  SampleControls,
-} from "../sample";
+import { firstParam } from "@/lib/search-params";
+import { PlaceholderCard, pickItem, SampleControls } from "../sample";
 
 export const metadata: Metadata = {
   title: "AppShell · Layouts",

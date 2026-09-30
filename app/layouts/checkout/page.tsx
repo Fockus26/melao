@@ -6,7 +6,7 @@ import { PlanActivated } from "@/components/plans/plan-activated";
 import { ThemeSwitch } from "@/components/theme/theme-switch";
 import type { InvokeResult } from "@/lib/plans/activation";
 import { getActivePlans } from "@/lib/plans/queries";
-import { firstParam } from "../sample";
+import { firstParam } from "@/lib/search-params";
 
 export const metadata: Metadata = {
   title: "Checkout · Layouts · Melao",

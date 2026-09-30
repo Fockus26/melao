@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PublicShell } from "@/components/layout/public-shell";
 import { ThemeSwitch } from "@/components/theme/theme-switch";
 import { Button } from "@/components/ui/button";
-import { firstParam } from "../sample";
+import { firstParam } from "@/lib/search-params";
 
 export const metadata: Metadata = {
   title: "PublicShell · Layouts",

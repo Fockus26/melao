@@ -52,6 +52,11 @@ const SAMPLES = [
     title: "Inicio · estados",
     text: "Inicio con datos de ejemplo: con repasos, primer día, sin repasos, curso terminado, sin suscripción y estilo sin curso.",
   },
+  {
+    href: "/layouts/lesson",
+    title: "Lección · etapas",
+    text: "Las 6 etapas de /app/lessons/[id] con un backend falso: intro, video, mini práctica y práctica final en el escenario, calificación y resumen; también bloqueada y práctica disponible pronto.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

@@ -1,0 +1,5 @@
+# D099 · Producto · Calificación de la lección sin intervalos; saltar solo lo que no vence; al menos un paso calificado · Implementado
+
+**Decisión:** la etapa 5 muestra un RatingButtons por paso **sin** el intervalo de cada botón (`intervals` pasa a ser opcional). Los pasos con tarjeta del rol que no vence (`due_at` > ahora) dicen "No vence hoy" y tienen "Saltar este paso" (`aria-pressed`); los saltados no van en `review-steps` y en el resumen conservan su fecha. "Terminar lección" exige cada paso calificado o saltado y al menos uno calificado. El resumen muestra la fecha de regreso de `cards[].dueAt` de la respuesta.
+**Por qué:** ningún cliente calcula FSRS (D013) y no hay endpoint que previsualice intervalos; la fecha real llega en la respuesta y se muestra en el resumen. Sin ningún repaso, `review-steps` no registra `lesson_progress`: la lección no se completaría.
+**Alternativa descartada:** calcular los intervalos con el core en el cliente (rompe D013); un endpoint de previsualización (backend nuevo, fuera de esta tanda); permitir saltarlo todo.

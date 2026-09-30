@@ -1,5 +1,7 @@
 /**
- * Motor FALSO del escenario: solo para la muestra `/stage` y los tests. No suena nada y
+ * Motor FALSO del escenario: para la muestra `/stage`, los tests y, mientras las canciones no
+ * tengan audio (D009), la práctica de la lección con la sesión de `plan-session`
+ * (`session-source.ts`). No suena nada y
  * avanza el tiempo con `requestAnimationFrame` y `performance.now()`, que es justo lo que el
  * motor real NO debe hacer: el real programa contra el reloj de Web Audio (D030) y deriva la
  * vista de `AudioContext.currentTime`. Lo que sí es real es el plan y la línea de tiempo: salen
@@ -89,6 +91,10 @@ export function fakeSession(
 
 export interface FakeStageOptions {
   steps?: readonly FakeStep[];
+  /** Sesión ya armada (p. ej. la de `plan-session`); reemplaza `steps` y `bpm`. */
+  session?: FakeSession;
+  /** Punto de partida y de "Reiniciar" (ms del audio); por defecto, 0. */
+  startAtMs?: number;
   bpm?: number;
   status?: StageStatus["kind"];
   /** Empieza en este beat de la rejilla (para llegar a un momento concreto de la muestra). */
@@ -109,7 +115,8 @@ const hasWindow = () => typeof requestAnimationFrame === "function";
 export function createFakeStageSource(
   options: FakeStageOptions = {},
 ): StageSource {
-  const { timeline, plan } = fakeSession(options.steps, options.bpm);
+  const { timeline, plan } =
+    options.session ?? fakeSession(options.steps, options.bpm);
   const { style, anchors, durationMs } = timeline;
   const silentBeats = silentBeatsOf(style);
   const now = options.now ?? (() => performance.now());
@@ -123,10 +130,11 @@ export function createFakeStageSource(
     });
   const prepareMs = options.prepareMs ?? PREPARE_MS;
 
+  const originMs = Math.min(Math.max(options.startAtMs ?? 0, 0), durationMs);
   // Un poco dentro del beat pedido para no caer justo en el borde del redondeo.
   let baseMs =
     options.startAtBeat === undefined
-      ? 0
+      ? originMs
       : roundMs(beatToMs(anchors, options.startAtBeat)) + 10;
   let startedAt = now();
   let frozen = options.frozen ?? false;
@@ -233,7 +241,7 @@ export function createFakeStageSource(
     play: () =>
       command(() => {
         if (statusKind === "preparing" || statusKind === "playing") return;
-        if (statusKind === "ended") baseMs = 0;
+        if (statusKind === "ended") baseMs = originMs;
         startedAt = now();
         statusKind = "playing";
       }),
@@ -246,7 +254,7 @@ export function createFakeStageSource(
     restart: () =>
       command(() => {
         if (statusKind === "preparing" || statusKind === "blocked") return;
-        baseMs = 0;
+        baseMs = originMs;
         startedAt = now();
         if (statusKind === "ended") statusKind = "playing";
       }),

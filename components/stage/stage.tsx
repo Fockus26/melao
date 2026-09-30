@@ -42,6 +42,11 @@ export function Stage({
   bpm,
   onExit,
   defaultExitOpen = false,
+  bar,
+  exitCopy,
+  footer,
+  title = stageCopy.title,
+  titleId,
 }: {
   source: StageSource;
   /** "Salsa casino". */
@@ -50,6 +55,20 @@ export function Stage({
   /** Tras confirmar la salida. */
   onExit: () => void;
   defaultExitOpen?: boolean;
+  /**
+   * Barra propia en lugar de StageHeader (la lección pone la suya en versión oscura). Recibe
+   * con qué envolver su botón de salir para que abra la confirmación.
+   */
+  bar?: (
+    exitButton: (button: React.ReactElement) => React.ReactNode,
+  ) => React.ReactNode;
+  /** Textos de la confirmación de salida (la lección dice "¿Salir de la lección?"). */
+  exitCopy?: { title: string; text: string; stay: string; leave: string };
+  /** Debajo de los controles (la lección: "Continuar"). */
+  footer?: React.ReactNode;
+  /** Título (solo lector de pantalla); con `titleId` puede recibir el foco. */
+  title?: string;
+  titleId?: string;
 }) {
   const snapshot = useSyncExternalStore(
     source.subscribe,
@@ -73,22 +92,40 @@ export function Stage({
     setExitOpen(open);
   };
 
+  const wrapExit = (button: React.ReactElement) => (
+    <AlertDialogTrigger asChild>{button}</AlertDialogTrigger>
+  );
+  const exit = exitCopy ?? {
+    title: stageCopy.exitTitle,
+    text: stageCopy.exitText,
+    stay: stageCopy.exitStay,
+    leave: stageCopy.exitLeave,
+  };
+
   return (
     <AlertDialog open={exitOpen} onOpenChange={onExitOpenChange}>
       <FullscreenShell
         variant="stage"
         bar={
-          <StageHeader
-            styleLabel={styleLabel}
-            bpm={bpm}
-            view={view}
-            exitButton={(button) => (
-              <AlertDialogTrigger asChild>{button}</AlertDialogTrigger>
-            )}
-          />
+          bar ? (
+            bar(wrapExit)
+          ) : (
+            <StageHeader
+              styleLabel={styleLabel}
+              bpm={bpm}
+              view={view}
+              exitButton={wrapExit}
+            />
+          )
         }
       >
-        <h1 className="sr-only">{stageCopy.title}</h1>
+        <h1
+          id={titleId}
+          tabIndex={titleId ? -1 : undefined}
+          className="sr-only"
+        >
+          {title}
+        </h1>
         <p aria-live="polite" className="sr-only">
           {stageAnnouncement(snapshot)}
         </p>
@@ -158,20 +195,25 @@ export function Stage({
             onVoice={source.setVoice}
           />
         </div>
+        {footer ? (
+          <div className="mx-auto mt-6 w-full max-w-120 stage-landscape:max-w-none">
+            {footer}
+          </div>
+        ) : null}
       </FullscreenShell>
       {/* Portal fuera del subárbol `dark` del escenario: se lo vuelve a poner (handoff §2). */}
       <AlertDialogContent className="dark border-divider bg-stage-panel">
-        <AlertDialogTitle>{stageCopy.exitTitle}</AlertDialogTitle>
-        <AlertDialogDescription>{stageCopy.exitText}</AlertDialogDescription>
+        <AlertDialogTitle>{exit.title}</AlertDialogTitle>
+        <AlertDialogDescription>{exit.text}</AlertDialogDescription>
         <AlertDialogFooter>
-          <AlertDialogCancel>{stageCopy.exitStay}</AlertDialogCancel>
+          <AlertDialogCancel>{exit.stay}</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
               resumeOnClose.current = false;
               onExit();
             }}
           >
-            {stageCopy.exitLeave}
+            {exit.leave}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

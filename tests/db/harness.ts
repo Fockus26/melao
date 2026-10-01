@@ -3,12 +3,13 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { PGlite, type Transaction } from "@electric-sql/pglite";
+import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
 
 const root = join(import.meta.dir, "..", "..");
 const migrationsDir = join(root, "supabase", "migrations");
 
 export async function createDb(): Promise<PGlite> {
-  const db = new PGlite();
+  const db = new PGlite({ extensions: { pgcrypto } });
   await db.exec(
     readFileSync(join(import.meta.dir, "supabase-stub.sql"), "utf8"),
   );

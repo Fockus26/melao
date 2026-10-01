@@ -1,6 +1,7 @@
 -- Stub mínimo de Supabase para correr las migraciones en PGlite (D037).
 -- Replica solo lo que las migraciones usan: roles de la API, esquema auth con
--- auth.users y auth.uid()/auth.jwt(), y los permisos por defecto del esquema public.
+-- auth.users (con encrypted_password) y auth.uid()/auth.jwt(), pgcrypto en `extensions`, y
+-- los permisos por defecto del esquema public.
 -- No es Supabase: Auth, Storage y PostgREST quedan fuera.
 
 create role anon nologin noinherit;
@@ -9,9 +10,14 @@ create role service_role nologin noinherit bypassrls;
 
 create schema auth;
 
+-- pgcrypto en `extensions`, como en Supabase (el arnés carga la extensión de PGlite).
+create schema extensions;
+create extension pgcrypto with schema extensions;
+
 create table auth.users (
   id uuid primary key default gen_random_uuid(),
   email text unique,
+  encrypted_password text,
   raw_user_meta_data jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now()
 );

@@ -1128,6 +1128,10 @@ export type Database = {
         Args: { p_plan_slug: string; p_user: string }
         Returns: Json
       }
+      ef_password_recently_used: {
+        Args: { p_candidate: string; p_user: string }
+        Returns: boolean
+      }
       ef_plan_session: {
         Args: { p_payload: Json; p_user: string }
         Returns: Json

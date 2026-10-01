@@ -110,3 +110,23 @@ export function callbackUrl(origin: string, next?: string): string {
   if (target !== DEFAULT_AFTER_AUTH) url.searchParams.set("next", target);
   return url.toString();
 }
+
+/** ¿El callback viene de recuperar la contraseña? Por `type=recovery` o por `next`. */
+export function isRecoveryCallback(
+  type: string | null | undefined,
+  next: string,
+): boolean {
+  return type === "recovery" || next === AUTH_ROUTES.reset;
+}
+
+/**
+ * A dónde vuelve un callback fallido: a `/forgot-password` si era recuperación (ahí se pide
+ * otro enlace) y a `/login` en todo lo demás, con el motivo en `?error=`.
+ */
+export function callbackFailurePath(
+  recovering: boolean,
+  reason: string,
+): string {
+  const base = recovering ? AUTH_ROUTES.forgot : AUTH_ROUTES.signIn;
+  return `${base}?error=${encodeURIComponent(reason)}`;
+}

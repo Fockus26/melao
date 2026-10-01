@@ -1,15 +1,22 @@
 import { describe, expect, test } from "bun:test";
 import {
+  FIELD_ERROR_DELAY_MS,
+  scheduleReveal,
+  visibleError,
+} from "@/lib/auth/deferred-error";
+import {
   authErrorCopy,
   CALLBACK_ERRORS,
   callbackErrorReason,
   isCallbackErrorReason,
 } from "@/lib/auth/errors";
 import {
+  callbackFailurePath,
   callbackUrl,
   DEFAULT_AFTER_AUTH,
   isGuestOnlyPath,
   isProtectedPath,
+  isRecoveryCallback,
   needsOnboarding,
   safeNext,
   signInPathFor,
@@ -17,6 +24,8 @@ import {
 } from "@/lib/auth/redirect";
 import {
   checkPassword,
+  EMAIL_FORMAT_ERROR,
+  emailFormatError,
   isValidEmail,
   isValidName,
   PASSWORD_MIN_LENGTH,
@@ -167,9 +176,27 @@ describe("errores de Supabase en español", () => {
   test("motivos del callback", () => {
     expect(callbackErrorReason("otp_expired")).toBe("link-expired");
     expect(callbackErrorReason("bad_oauth_state")).toBe("google");
+    // D101: un motivo por tipo de enlace, para mostrar solo la frase que aplica.
     expect(callbackErrorReason("pkce_code_verifier_not_found")).toBe(
-      "other-browser",
+      "other-browser-signup",
     );
+    expect(
+      callbackErrorReason("pkce_code_verifier_not_found", { recovering: true }),
+    ).toBe("other-browser-recovery");
+    expect(callbackErrorReason("otp_expired", { recovering: true })).toBe(
+      "link-expired",
+    );
+    // Alias de los enlaces ya enviados: sigue siendo un motivo válido.
+    expect(isCallbackErrorReason("other-browser")).toBe(true);
+    expect(CALLBACK_ERRORS["other-browser"]).toBe(
+      CALLBACK_ERRORS["other-browser-signup"],
+    );
+    // Cada mensaje dice una sola cosa: el de confirmación no habla de contraseñas y viceversa.
+    expect(CALLBACK_ERRORS["other-browser-signup"]).not.toContain(
+      "contraseña nueva",
+    );
+    expect(CALLBACK_ERRORS["other-browser-signup"]).not.toContain("Si ");
+    expect(CALLBACK_ERRORS["other-browser-recovery"]).not.toContain("confirm");
     expect(callbackErrorReason(null)).toBe("access-failed");
     expect(isCallbackErrorReason("missing-code")).toBe(true);
     expect(isCallbackErrorReason("toString")).toBe(false);
@@ -208,5 +235,103 @@ describe("validación de formularios", () => {
     expect(isValidName("  ")).toBe(false);
     expect(isValidName("María")).toBe(true);
     expect(isValidName("a".repeat(81))).toBe(false);
+  });
+});
+
+describe("callback: a dónde vuelve según el tipo de enlace (D101)", () => {
+  test("recuperación por type=recovery o por next=/reset-password", () => {
+    expect(isRecoveryCallback("recovery", "/app")).toBe(true);
+    expect(isRecoveryCallback(null, "/reset-password")).toBe(true);
+    expect(isRecoveryCallback("signup", "/app")).toBe(false);
+    expect(isRecoveryCallback(null, "/app/course")).toBe(false);
+  });
+
+  test("recuperación vuelve a /forgot-password; lo demás, a /login", () => {
+    expect(callbackFailurePath(true, "other-browser-recovery")).toBe(
+      "/forgot-password?error=other-browser-recovery",
+    );
+    expect(callbackFailurePath(false, "other-browser-signup")).toBe(
+      "/login?error=other-browser-signup",
+    );
+    expect(callbackFailurePath(false, "link-expired")).toBe(
+      "/login?error=link-expired",
+    );
+  });
+});
+
+describe("error del correo con retraso (D100)", () => {
+  // Temporizadores falsos: se avanza el reloj a mano.
+  function fakeTimers() {
+    let now = 0;
+    let seq = 0;
+    const queue = new Map<number, { at: number; run: () => void }>();
+    return {
+      timers: {
+        set: (run: () => void, ms: number) => {
+          seq += 1;
+          queue.set(seq, { at: now + ms, run });
+          return seq;
+        },
+        clear: (handle: unknown) => {
+          queue.delete(handle as number);
+        },
+      },
+      advance(ms: number) {
+        now += ms;
+        for (const [key, { at, run }] of [...queue])
+          if (at <= now) {
+            queue.delete(key);
+            run();
+          }
+      },
+    };
+  }
+
+  test("emailFormatError: vacío y válido no son error; a medio escribir sí", () => {
+    expect(FIELD_ERROR_DELAY_MS).toBe(600);
+    expect(emailFormatError("")).toBeNull();
+    expect(emailFormatError("   ")).toBeNull();
+    expect(emailFormatError("ana")).toBe(EMAIL_FORMAT_ERROR);
+    expect(emailFormatError("ana@correo")).toBe(EMAIL_FORMAT_ERROR);
+    expect(emailFormatError("ana@correo.com")).toBeNull();
+  });
+
+  test("se revela tras la pausa, no antes", () => {
+    const { timers, advance } = fakeTimers();
+    let revealed = false;
+    scheduleReveal(true, () => (revealed = true), 600, timers);
+    advance(599);
+    expect(revealed).toBe(false);
+    advance(1);
+    expect(revealed).toBe(true);
+  });
+
+  test("cada tecla reinicia la espera (la limpieza cancela la anterior)", () => {
+    const { timers, advance } = fakeTimers();
+    let reveals = 0;
+    let cleanup = scheduleReveal(true, () => reveals++, 600, timers);
+    advance(400);
+    cleanup?.();
+    cleanup = scheduleReveal(true, () => reveals++, 600, timers);
+    advance(400);
+    expect(reveals).toBe(0);
+    advance(200);
+    expect(reveals).toBe(1);
+  });
+
+  test("sin error pendiente no se programa nada", () => {
+    const { timers, advance } = fakeTimers();
+    let revealed = false;
+    expect(
+      scheduleReveal(false, () => (revealed = true), 600, timers),
+    ).toBeUndefined();
+    advance(1000);
+    expect(revealed).toBe(false);
+  });
+
+  test("quitar es inmediato: sin candidato no se pinta nada aunque estuviera revelado", () => {
+    expect(visibleError(EMAIL_FORMAT_ERROR, false)).toBeNull();
+    expect(visibleError(EMAIL_FORMAT_ERROR, true)).toBe(EMAIL_FORMAT_ERROR);
+    expect(visibleError(null, true)).toBeNull();
   });
 });

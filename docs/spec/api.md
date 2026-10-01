@@ -30,12 +30,17 @@ Ninguna regla vive solo en el cliente: la contraseña la valida Supabase y los p
 - **Contraseña (D075):** mínimo 8 caracteres, con al menos una minúscula, una mayúscula (ASCII),
   un dígito y un símbolo de `` !@#$%^&*()_+-=[]{};'\:"|<>?,./`~ `` (Supabase › Auth › Email:
   longitud 8 + "Lowercase, uppercase letters, digits and symbols"). La UI solo refleja la regla.
+- **Error del correo en los formularios (D100):** el de formato ("le falta la @ o el dominio")
+  aparece tras 600 ms sin teclear, al salir del campo o al enviar; nunca mientras se escribe.
+  Quitarlo es inmediato en cuanto el valor es válido o se vacía. "Escribe tu correo" solo al
+  enviar. Igual en Entrar, Registro y Recuperar.
 - **Correos (D078):** confirmación y recuperación en español, en `supabase/templates/` (el
   proyecto real los recibe pegados en Supabase › Auth › Emails). El enlace es
   `{{ .ConfirmationURL }}` y termina en `/auth/callback`.
 - **Entrar:** `signInWithPassword` o `signInWithOAuth({ provider: "google" })`.
 - **Recuperar:** `resetPasswordForEmail(email, redirectTo = callback?next=/reset-password)`; el
-  aviso es el mismo exista o no la cuenta. **Restablecer (D106):** Edge Function
+  aviso es el mismo exista o no la cuenta. Es neutro: no afirma el envío ("Revisa tu correo: si
+  {correo} tiene una cuenta, te llegará un enlace…", D102). **Restablecer (D106):** Edge Function
   `change-password` `{ password }` con la sesión de recuperación; la nueva cumple D075 y no es
   ninguna de las **últimas 3** (la actual + 2 anteriores) → si no, 422 `password_reused`. Nunca
   `updateUser({ password })` directo: salta el historial (Supabase no deja bloquearlo; el
@@ -44,8 +49,13 @@ Ninguna regla vive solo en el cliente: la contraseña la valida Supabase y los p
   recuperación) o `token_hash` + `type` (plantillas de correo con token) y guarda la sesión;
   luego redirige a `next`. Errores → `/login?error=<motivo>` (o `/forgot-password?error=…` si
   venía de recuperar). Motivos estables, compartidos por las tres plataformas:
-  `link-expired` · `other-browser` (PKCE sin verificador: el correo ya quedó confirmado) ·
-  `missing-code` · `google` · `access-failed`. Las nativas usan deep link al mismo flujo.
+  `link-expired` · `other-browser-signup` (PKCE sin verificador en un enlace de confirmación:
+  el correo ya quedó confirmado, basta con entrar; va a `/login`) · `other-browser-recovery`
+  (PKCE sin verificador en un enlace de recuperación: hay que pedir otro y abrirlo en el mismo
+  navegador; va a `/forgot-password`) · `missing-code` · `google` · `access-failed`. El tipo de
+  enlace sale de `type=recovery` o de `next=/reset-password`; lo demás cuenta como confirmación
+  (D101). `other-browser` queda como alias de `other-browser-signup` para los enlaces ya
+  enviados. Las nativas usan deep link al mismo flujo.
 - **`next`:** solo rutas internas (`/…`, nunca `//`, `\`, esquemas ni las propias
   pantallas de auth); cualquier otra cosa cae en Inicio (`/app`). Sin open redirect.
 - **Rutas protegidas:** todo `/app/**` exige sesión; `/admin/**` además `app_role = admin`,

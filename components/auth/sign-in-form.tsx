@@ -11,13 +11,14 @@ import {
   authErrorCopy,
 } from "@/lib/auth/errors";
 import { AUTH_ROUTES } from "@/lib/auth/redirect";
-import { isValidEmail } from "@/lib/auth/validation";
+import { EMAIL_EMPTY_ERROR, emailFormatError } from "@/lib/auth/validation";
 import { createClient } from "@/lib/supabase/client";
 import { AUTH_LINK, OrDivider } from "./auth-panel";
 import { Field } from "./field";
 import { FormErrorBanner } from "./form-banner";
 import { GoogleButton } from "./google-button";
 import { PasswordInput } from "./password-input";
+import { useDeferredError } from "./use-deferred-error";
 
 type FieldErrors = { email?: string; password?: string };
 
@@ -39,7 +40,11 @@ export function SignInForm({
   const submitRef = useRef<HTMLButtonElement>(null);
   const [pending, setPending] = useState(false);
   const [banner, setBanner] = useState<string | null>(initialError ?? null);
+  const [email, setEmail] = useState("");
+  // Errores del envío (campo vacío). El de formato del correo va aparte, con retraso (D100).
   const [errors, setErrors] = useState<FieldErrors>({});
+  const emailFormat = useDeferredError(email, emailFormatError(email));
+  const emailError = errors.email ?? emailFormat.error;
   // Campo que el banner señala (credenciales, correo sin confirmar): se marca sin repetir texto.
   const [marked, setMarked] = useState<AuthErrorField>(null);
   const bannerId = `${id}-banner`;
@@ -50,7 +55,9 @@ export function SignInForm({
   }
 
   const invalid = (field: "email" | "password") =>
-    errors[field] || marked === field ? true : undefined;
+    (field === "email" ? emailError : errors.password) || marked === field
+      ? true
+      : undefined;
   const describedBy = (field: "email" | "password", own?: string) =>
     [own, marked === field ? bannerId : undefined].filter(Boolean).join(" ") ||
     undefined;
@@ -59,19 +66,19 @@ export function SignInForm({
     event.preventDefault();
     if (pending) return;
     const form = new FormData(event.currentTarget);
-    const email = String(form.get("email") ?? "").trim();
+    const address = email.trim();
     const password = String(form.get("password") ?? "");
 
     const found: FieldErrors = {};
-    if (!email) found.email = "Escribe tu correo.";
-    else if (!isValidEmail(email))
-      found.email = "Revisa el correo: le falta la @ o el dominio.";
+    if (!address) found.email = EMAIL_EMPTY_ERROR;
+    const formatError = emailFormatError(address);
+    if (formatError) emailFormat.reveal();
     if (!password) found.password = "Escribe tu contraseña.";
     setErrors(found);
     setMarked(null);
-    if (found.email || found.password) {
+    if (found.email || formatError || found.password) {
       setBanner(null);
-      (found.email ? emailRef : passwordRef).current?.focus();
+      (found.email || formatError ? emailRef : passwordRef).current?.focus();
       return;
     }
 
@@ -80,7 +87,7 @@ export function SignInForm({
     setPending(true);
     setBanner(null);
     const { error } = await createClient().auth.signInWithPassword({
-      email,
+      email: address,
       password,
     });
     if (error) {
@@ -100,7 +107,7 @@ export function SignInForm({
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
         <fieldset disabled={pending} className="flex flex-col gap-4">
           <legend className="sr-only">Entrar con tu correo</legend>
-          <Field id={`${id}-email`} label="Correo" error={errors.email}>
+          <Field id={`${id}-email`} label="Correo" error={emailError}>
             {(own) => (
               <Input
                 ref={emailRef}
@@ -111,6 +118,13 @@ export function SignInForm({
                 inputMode="email"
                 spellCheck={false}
                 required
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errors.email)
+                    setErrors((prev) => ({ ...prev, email: undefined }));
+                }}
+                onBlur={emailFormat.reveal}
                 aria-invalid={invalid("email")}
                 aria-describedby={describedBy("email", own)}
               />

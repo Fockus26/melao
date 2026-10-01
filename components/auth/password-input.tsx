@@ -32,7 +32,16 @@ export function PasswordInput({
         aria-controls={props.id}
         disabled={disabled}
         onClick={() => setVisible((v) => !v)}
-        className="absolute inset-y-0 right-0 rounded-sm"
+        className={cn(
+          // El botón (48 × 48, el objetivo táctil) se apoya sobre el borde del input; el fondo
+          // de hover va en ::before, 1 px hacia adentro y con el radio del input menos ese borde:
+          // no tapa el borde ni deja esquinas cortadas. El foco se dibuja por dentro del input.
+          "absolute inset-y-0 right-0 rounded-l-none rounded-r-sm hover:bg-transparent",
+          "before:pointer-events-none before:absolute before:inset-px before:rounded-l-none before:rounded-r-[calc(var(--radius-sm)-1px)]",
+          "before:transition-[background-color] before:duration-hover before:ease-standard motion-reduce:before:transition-none",
+          "hover:before:bg-hover disabled:hover:before:bg-transparent [&_svg]:relative",
+          "focus-visible:-outline-offset-4",
+        )}
       >
         <Icon aria-hidden="true" strokeWidth={ICON_STROKE} />
       </IconButton>

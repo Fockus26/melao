@@ -1,8 +1,6 @@
 "use client";
 
-import { Check } from "lucide-react";
 import { useId } from "react";
-import { ICON_STROKE } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import type { SrsRating } from "@/supabase/functions/_shared/core/srs";
 import { RATING_LABELS, RATINGS } from "./rating-labels";
@@ -12,9 +10,10 @@ export { RATING_LABELS, RATINGS };
 /**
  * RatingButtons (handoff §2): la calificación de un paso en el repaso. `<fieldset>` +
  * `<legend>` = nombre del paso; cada opción es un radio nativo del mismo `name`: el navegador ya
- * da el grupo de una sola elección, las flechas y "1 de 4" sin ARIA a mano (D057). Grilla 2 × 2 por debajo de 768 y
- * 4 columnas desde 768. Sin rojo ni verde: el significado lo da el texto; el seleccionado se
- * invierte (bg primary) y lleva un check, así no depende solo del color.
+ * da el grupo de una sola elección, las flechas y "1 de 4" sin ARIA a mano (D057). Grilla 2 × 2
+ * por debajo de 768 y 4 columnas desde 768. Sin rojo ni verde: el significado lo da el texto; el
+ * seleccionado se invierte (bg primary) y lleva un filete interior de 2 px, sin check: no depende
+ * solo del color (D105).
  * No calcula FSRS: los intervalos ("< 1 día", "3 días"…) llegan del backend por props; sin
  * ellos (la lección, que no tiene de dónde leerlos: D099) solo va la etiqueta.
  */
@@ -68,10 +67,12 @@ export function RatingButtons({
             key={rating}
             className={cn(
               "relative flex min-h-16 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-md border border-border-input px-1.5 py-2 text-center text-text",
-              "transition-[background-color,border-color,color] duration-hover ease-standard motion-reduce:transition-none",
-              "hover:bg-hover has-checked:border-primary has-checked:bg-primary has-checked:text-on-primary",
+              "transition-[background-color,border-color,color,box-shadow] duration-hover ease-standard motion-reduce:transition-none",
+              // Elegido: relleno invertido + filete interior de 2 px en on-primary (forma, no solo
+              // color: se distingue en escala de grises; D105). Sin check.
+              "hover:bg-hover has-checked:border-primary has-checked:bg-primary has-checked:text-on-primary has-checked:ring-2 has-checked:ring-on-primary has-checked:ring-inset",
               "has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus-ring",
-              "has-disabled:cursor-not-allowed has-disabled:border-divider has-disabled:bg-surface-sunken has-disabled:text-text-muted",
+              "has-disabled:cursor-not-allowed has-disabled:border-divider has-disabled:bg-surface-sunken has-disabled:text-text-muted has-disabled:ring-text-muted",
             )}
           >
             <input
@@ -83,11 +84,6 @@ export function RatingButtons({
                 : { defaultChecked: defaultValue === rating })}
               onChange={() => onValueChange?.(rating)}
               className="peer sr-only"
-            />
-            <Check
-              aria-hidden="true"
-              strokeWidth={ICON_STROKE}
-              className="absolute top-1.5 right-1.5 hidden size-4 peer-checked:block"
             />
             <span className="type-h5">{labels[rating]}</span>
             {intervals ? (

@@ -1,0 +1,5 @@
+# D105 · Componentes · RatingButtons sin check: el elegido es relleno invertido + filete interior de 2 px · Implementado
+
+**Decisión:** se quita el check de la opción elegida (pedido de César). El elegido se marca con el relleno invertido de siempre (bg primary, texto on-primary) más un filete interior de 2 px en on-primary (`ring-2 ring-inset`), y sigue siendo un radio nativo con `checked` (los lectores dicen "seleccionado"). Deshabilitado y elegido: filete en text-muted.
+**Por qué:** WCAG 1.4.1 — el estado no puede ser solo color. El relleno invertido es un cambio de luminancia (#111 sobre blanco, 18,9:1; en oscuro #D6B25E sobre fondo oscuro) que se lee en escala de grises, y el filete agrega una forma que no depende del color. Sin cambiar el alto ni el borde de 1 px del handoff (sin salto de layout).
+**Alternativa descartada:** borde de 2 px (cambia el tamaño al elegir o engrosa todos los botones); solo el relleno (cumple por luminancia pero queda sin señal de forma); un punto o marca en la esquina (es otro ícono, lo que César pidió quitar).

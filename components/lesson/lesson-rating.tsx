@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import { RatingButtons } from "@/components/indicators/rating-buttons";
 import { Alert, AlertContent, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/ui/reveal";
 import type { LessonPorts } from "@/lib/lesson/invoke";
 import {
   buildReviewRequest,
@@ -125,15 +126,18 @@ export function LessonRating({
         })}
       </div>
 
-      {problem ? (
-        <Alert variant="error">
-          <AlertContent>
-            <AlertDescription>
-              {lessonCopy.ratingError[problem]}
-            </AlertDescription>
-          </AlertContent>
-        </Alert>
-      ) : null}
+      {/* Error y pista entran y salen con la altura animada (D103). */}
+      <Reveal show={Boolean(problem)}>
+        {problem ? (
+          <Alert variant="error">
+            <AlertContent>
+              <AlertDescription>
+                {lessonCopy.ratingError[problem]}
+              </AlertDescription>
+            </AlertContent>
+          </Alert>
+        ) : null}
+      </Reveal>
 
       <div className="flex flex-col gap-2">
         <Button
@@ -147,11 +151,11 @@ export function LessonRating({
         >
           {lessonCopy.finish}
         </Button>
-        {ready ? null : (
+        <Reveal show={!ready}>
           <p id={hintId} className="type-small text-text-secondary">
             {lessonCopy.finishHint}
           </p>
-        )}
+        </Reveal>
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FieldMessage } from "@/components/ui/field-message";
 import { ICON_STROKE } from "@/components/ui/icon";
+import { Reveal } from "@/components/ui/reveal";
 import { signInPathFor } from "@/lib/auth/redirect";
 import {
   ACTIVATION_COPY,
@@ -185,21 +186,24 @@ export function CheckoutFlow({
                 .
               </label>
             </div>
-            {termsError ? (
+            {/* Error y aviso entran y salen con la altura animada (D103). */}
+            <Reveal show={termsError}>
               <FieldMessage tone="error" id={termsErrorId}>
                 Acepta los términos para activar tu plan.
               </FieldMessage>
-            ) : null}
+            </Reveal>
           </div>
 
-          {copy ? (
-            <Alert variant={failure?.kind === "error" ? "error" : "warning"}>
-              <AlertContent>
-                <AlertTitle>{copy.title}</AlertTitle>
-                <AlertDescription>{copy.body}</AlertDescription>
-              </AlertContent>
-            </Alert>
-          ) : null}
+          <Reveal show={Boolean(copy)}>
+            {copy ? (
+              <Alert variant={failure?.kind === "error" ? "error" : "warning"}>
+                <AlertContent>
+                  <AlertTitle>{copy.title}</AlertTitle>
+                  <AlertDescription>{copy.body}</AlertDescription>
+                </AlertContent>
+              </Alert>
+            ) : null}
+          </Reveal>
 
           {nextStep ? (
             <Button asChild size="lg" variant="outline" className="w-full">

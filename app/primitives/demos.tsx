@@ -2,6 +2,7 @@
 
 import { ArrowRight, Heart, Pause, Play, Repeat } from "lucide-react";
 import { useId, useState } from "react";
+import { Alert, AlertContent, AlertDescription } from "@/components/ui/alert";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +18,7 @@ import { FieldMessage } from "@/components/ui/field-message";
 import { ICON_STROKE } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Reveal } from "@/components/ui/reveal";
 import {
   Select,
   SelectContent,
@@ -326,5 +328,60 @@ export function LinkButtonDemo() {
         <ArrowRight strokeWidth={ICON_STROKE} aria-hidden="true" />
       </a>
     </Button>
+  );
+}
+
+/**
+ * Mensajes que entran y salen (D103): un botón alterna el error del campo y otro el banner;
+ * lo de abajo se desliza en vez de saltar. Con reduced-motion, instantáneo.
+ */
+export function RevealDemo() {
+  const id = useId();
+  const [error, setError] = useState(false);
+  const [banner, setBanner] = useState(false);
+  return (
+    <div className="flex max-w-sm flex-col gap-4">
+      <Reveal show={banner}>
+        <Alert variant="error">
+          <AlertContent>
+            <AlertDescription>
+              No pudimos guardar tu práctica. Revisa tu conexión e inténtalo de
+              nuevo.
+            </AlertDescription>
+          </AlertContent>
+        </Alert>
+      </Reveal>
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor={id}>Correo</Label>
+        <Input
+          id={id}
+          type="email"
+          defaultValue="ana@correo"
+          aria-invalid={error || undefined}
+          aria-describedby={error ? `${id}-msg` : undefined}
+        />
+        <Reveal show={error}>
+          <FieldMessage id={`${id}-msg`} tone="error">
+            Escribe un correo completo, como ana@correo.com.
+          </FieldMessage>
+        </Reveal>
+      </div>
+      <div className="flex flex-wrap gap-3">
+        <Button
+          variant="outline"
+          aria-pressed={error}
+          onClick={() => setError((v) => !v)}
+        >
+          Alternar error
+        </Button>
+        <Button
+          variant="outline"
+          aria-pressed={banner}
+          onClick={() => setBanner((v) => !v)}
+        >
+          Alternar banner
+        </Button>
+      </div>
+    </div>
   );
 }

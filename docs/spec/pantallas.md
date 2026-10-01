@@ -16,6 +16,12 @@ filete o fondo, nunca solo con color (D062).
 **Estados comunes a toda pantalla con datos:** cargando (esqueleto por bloque) · vacío ·
 error con reintento · sin conexión · sin suscripción activa (lleva a Planes).
 
+**Mensajes que aparecen y desaparecen** (error bajo un campo, banner de error, aviso, motivo de
+un botón deshabilitado): entran y salen animando su altura y opacidad (200 ms, curva estándar);
+lo de alrededor se desliza en vez de saltar, y el que sale se desvanece con su último texto. Si
+el mensaje ya está al abrir la pantalla, aparece sin animación. Con movimiento reducido del
+sistema, el cambio es instantáneo (D103).
+
 ## Público
 | Pantalla | Bloques en orden | Acciones |
 |---|---|---|

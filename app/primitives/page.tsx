@@ -31,6 +31,7 @@ import {
   LinkButtonDemo,
   LoadingButtonDemo,
   PendingFieldDemo,
+  RevealDemo,
   SegmentedDemo,
   SelectDemo,
   SheetDemo,
@@ -342,6 +343,9 @@ export default function PrimitivosPage() {
 
       <Section id="banners" title="Banner (Alert)">
         <Banners />
+        <Demo title="Mensajes que entran y salen (altura animada)">
+          <RevealDemo />
+        </Demo>
       </Section>
 
       <Section id="cards" title="Card">

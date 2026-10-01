@@ -1,10 +1,16 @@
-import type { NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import {
   isGuestOnlyPath,
   isProtectedPath,
   safeNext,
   signInPathFor,
 } from "@/lib/auth/redirect";
+import {
+  MAINTENANCE_PATH,
+  maintenanceUntil,
+  retryAfterSeconds,
+  shouldServeMaintenance,
+} from "@/lib/maintenance";
 import { redirectWithSession, updateSession } from "@/lib/supabase/proxy";
 
 /**
@@ -13,8 +19,13 @@ import { redirectWithSession, updateSession } from "@/lib/supabase/proxy";
  * en RLS: el proxy solo evita pintar una pantalla que igual iba a rechazar.
  */
 export async function proxy(request: NextRequest) {
-  const { response, userId } = await updateSession(request);
   const { pathname, search } = request.nextUrl;
+
+  // Mantenimiento (D111): antes que la sesión, para no tocar Supabase mientras está parado.
+  if (shouldServeMaintenance(pathname, process.env))
+    return maintenance(request);
+
+  const { response, userId } = await updateSession(request);
 
   if (!userId && isProtectedPath(pathname))
     return redirectWithSession(
@@ -27,6 +38,21 @@ export async function proxy(request: NextRequest) {
     return redirectWithSession(new URL(next, request.url), response);
   }
 
+  return response;
+}
+
+/** Reescribe a `/maintenance` (la URL del navegador no cambia) con 503 y, si hay hora, `Retry-After`. */
+function maintenance(request: NextRequest): NextResponse {
+  const response = NextResponse.rewrite(
+    new URL(MAINTENANCE_PATH, request.url),
+    { status: 503 },
+  );
+  response.headers.set("Cache-Control", "no-store");
+  const retryAfter = retryAfterSeconds(
+    maintenanceUntil(process.env),
+    new Date(),
+  );
+  if (retryAfter) response.headers.set("Retry-After", retryAfter);
   return response;
 }
 

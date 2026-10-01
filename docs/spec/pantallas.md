@@ -79,7 +79,16 @@ cuyo nombre se muestra al enfocar o al pasar el puntero (D062).
 | Usuarios (`/admin/users`) | Lista con plan y estado de suscripción (solo lectura) |
 
 ## Sistema
-404 · error inesperado · sin conexión.
+Pantallas de estado (D109–D111): página entera sin navegación, logo arriba, contenido centrado
+en vertical. Copy provisional (CONTENT_CHECKLIST filas 61–62). La cuenta `1 2 3 4 5 6 7 ·` es
+decorativa (oculta a lectores de pantalla); el mensaje lo dan el eyebrow y el título.
+
+| Pantalla | Bloques en orden | Acciones y estados |
+|---|---|---|
+| No encontrada (cualquier ruta inexistente, y cada recurso inexistente o sin permiso: lección, admin sin rol) | Logo (enlace al inicio) · cuenta con el 4 grande · filete · "Error 404" · título · texto · acciones. Desde 1024 px, dos columnas: cuenta \| texto | Con sesión: "Ir al inicio" (`/app`) y "Ver mi curso" (`/app/course`). Sin sesión: "Ir al inicio" (`/`) y "Entrar" (`/login`). Estado HTTP 404, no indexable |
+| Error inesperado | Logo · cuenta "desacompasada" (sin el 4) · filete · "Error 500" · título · texto · "Código" con el identificador del error (solo si existe) · acciones | "Reintentar" (vuelve a pedir y pintar la pantalla que falló) · "Ir al inicio" (`/`). Si el dispositivo no tiene red en ese momento, muestra **Sin conexión** en su lugar, y cambia en vivo al volver la red |
+| Sin conexión | Logo · ícono wifi tachado · filete · título · texto · aviso "si estabas en una práctica…" | Solo "Reintentar". Una copia sin conexión de la app (service worker) queda pendiente (D110) |
+| Mantenimiento (cualquier ruta mientras dure) | Logo sin enlace · "Un momento…" · filete · título · texto · "Volvemos aproximadamente" + fecha y hora en la zona del dispositivo (solo si hay hora estimada) | Sin acciones. Estado HTTP 503 con `Retry-After` si hay hora; los enlaces de correo de auth siguen funcionando. En web: `MAINTENANCE_MODE=1` y `MAINTENANCE_UNTIL` (ISO) en el servidor; sin el modo, `/maintenance` es 404 |
 
 **Indexación y compartir (D088):** se indexan solo las pantallas públicas (`/`, `/plans`,
 `/login`, `/register`, `/legal/*`); la app, el admin, auth, Bienvenida y Checkout no. Un enlace

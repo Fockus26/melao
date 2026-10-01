@@ -5,8 +5,8 @@
  *    canción, lección, pasos del estilo con el estado del alumno, tarjetas y popularidad).
  * 2. Aplica las reglas: contenido visible para quien llama (el admin ve lo no publicado,
  *    D063), lección desbloqueada, canción con rejilla.
- * 3. Arma el `PlanInput` (pasos permitidos, base, targets y pesos; D065), genera el plan con
- *    la semilla recibida o una nueva del servidor (D064) y la línea de tiempo.
+ * 3. Arma el `PlanInput` (pasos permitidos, base, targets, pesos y criterio; D065, D115),
+ *    genera el plan con la semilla recibida o una nueva del servidor (D064) y la línea de tiempo.
  * 4. Registra la sesión en una llamada atómica (`createSession` → `ef_plan_session`).
  */
 
@@ -15,8 +15,10 @@ import {
   type PlanItem as ComboPlanItem,
   type ComboStep,
   generatePlan,
+  PLAN_ORDERS,
   PlanError,
   type PlanInput,
+  type PlanOrder,
   type StepWeightFactors,
 } from "../_shared/core/combinaciones.ts";
 import { type Anchor, assertAnchors } from "../_shared/core/grid.ts";
@@ -55,6 +57,8 @@ export interface StepFilters {
   favoritesOnly?: boolean;
   /** Incluir los pasos en "aprendiendo" además de los "me lo sé" (por defecto sí). */
   includeLearning?: boolean;
+  /** Criterio de los pesos (D115); por defecto `review`. */
+  order?: PlanOrder;
 }
 
 export interface Input {
@@ -88,6 +92,7 @@ function parseFilters(value: unknown): StepFilters {
     includeLearning: optional(f.includeLearning, (v) =>
       boolean(v, "stepFilters.includeLearning"),
     ),
+    order: optional(f.order, (v) => oneOf(v, PLAN_ORDERS, "stepFilters.order")),
   };
   if (
     filters.minDifficulty !== undefined &&
@@ -359,6 +364,8 @@ export function planSession(
 
   // Contenido visible para quien llama: publicado, o todo para el admin (como la RLS).
   const visible = state.steps.filter((s) => s.published || admin);
+  // Criterio de los pesos: solo la práctica libre lo elige (en una lección, `review`).
+  const order: PlanOrder = input.stepFilters?.order ?? "review";
   const byId = new Map(visible.map((s) => [s.id, s]));
   const baseSteps = visible.filter(
     (s) => s.category === "base" && s.startPosition === s.endPosition,
@@ -388,14 +395,18 @@ export function planSession(
         "Ningún paso que sepas cumple los filtros: marca pasos en el catálogo.",
       );
     }
-    // Vencidos, del más atrasado al menos; como mucho N (no caben más).
+    // Solo el criterio "según repaso" obliga a los vencidos (D115); los demás no tienen targets.
     const nowMs = now.getTime();
-    targets = allowed
-      .filter((s) => s.card && new Date(s.card.dueAt).getTime() <= nowMs)
-      .map((s, i) => ({ id: s.id, due: new Date(s.card?.dueAt ?? 0), i }))
-      .sort((a, b) => a.due.getTime() - b.due.getTime() || a.i - b.i)
-      .slice(0, phrases)
-      .map((t) => t.id);
+    targets =
+      order !== "review"
+        ? []
+        : // Vencidos, del más atrasado al menos; como mucho N (no caben más).
+          allowed
+            .filter((s) => s.card && new Date(s.card.dueAt).getTime() <= nowMs)
+            .map((s, i) => ({ id: s.id, due: new Date(s.card?.dueAt ?? 0), i }))
+            .sort((a, b) => a.due.getTime() - b.due.getTime() || a.i - b.i)
+            .slice(0, phrases)
+            .map((t) => t.id);
   }
 
   const weights: Record<string, StepWeightFactors> = {};
@@ -407,6 +418,8 @@ export function planSession(
     if (s.card?.difficulty != null) w.difficulty = s.card.difficulty;
     if (s.favorite) w.favorite = true;
     if (s.popularity != null) w.popularity = s.popularity;
+    // Sin repaso todavía, el criterio "dificultad" usa la del catálogo (D115).
+    if (order === "difficulty") w.catalogDifficulty = s.difficulty;
     if (Object.keys(w).length > 0) weights[s.id] = w;
   }
 
@@ -419,6 +432,7 @@ export function planSession(
     weights,
     seed,
     startPhrase: win.startPhrase,
+    order,
   };
   let result: ReturnType<typeof generatePlan>;
   try {

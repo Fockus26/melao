@@ -273,7 +273,9 @@ desplegar, Supabase empaqueta cada función con el `deno.json` **de su carpeta**
 
 ### `plan-session`
 Entrada: `{ styleId, songId, mode: "lesson"|"free", lessonId?, focusStepId?, stepFilters?, seed? }`
-- `stepFilters` (solo `free`): `{ minDifficulty?, maxDifficulty? (1–5), favoritesOnly?, includeLearning? (por defecto true) }`.
+- `stepFilters` (solo `free`): `{ minDifficulty?, maxDifficulty? (1–5), favoritesOnly?, includeLearning? (por defecto true), order? }`.
+  `order`: criterio de los pasos, `"review"` (por defecto: según repaso) | `"random"` | `"popular"` | `"difficulty"`
+  (`combinaciones.md` § Criterio, D115); otro valor → 400 `invalid_input` en `stepFilters.order`.
 - `focusStepId` (solo `lesson`): mini práctica de ese paso de la lección.
 - `seed`: entero 0–4294967295 (uint32). Si no viene, la genera el servidor (D064).
 
@@ -294,8 +296,9 @@ Reglas: `motor-de-ritmo.md` y `combinaciones.md` (D063–D066). Exige suscripci�
   orden de catálogo (`sort_order`, `slug`). `baseSteps` = base con misma posición de
   inicio y fin.
   - `free`: pasos en `known` (y `learning` salvo `includeLearning: false`) que cumplen los
-    filtros; ninguno → 409 `no_steps`. Targets = los vencidos (`due_at ≤ ahora`), del más
-    atrasado al menos, como mucho `N`.
+    filtros; ninguno → 409 `no_steps`. Con `order: "review"` (o sin `order`), targets = los
+    vencidos (`due_at ≤ ahora`), del más atrasado al menos, como mucho `N`; con `random`,
+    `popular` o `difficulty`, sin targets (D115).
   - `lesson`: pasos de la lección, de las lecciones anteriores del curso y los `known`;
     targets = pasos de la lección en su orden.
   - `lesson` + `focusStepId`: ese paso y los de las lecciones anteriores (para llegar a su
@@ -303,9 +306,11 @@ Reglas: `motor-de-ritmo.md` y `combinaciones.md` (D063–D066). Exige suscripci�
   - Pesos: `due` (tarjeta vencida), `difficulty` (FSRS, si ya tuvo un repaso), `favorite`,
     `popularity` (`step_popularity`). Tarjeta = la del `dance_role` del perfil (estilo sin
     roles: `leader`; perfil sin rol: la más urgente y la más difícil de los dos roles).
+    Con `order: "difficulty"` cada paso lleva además `catalogDifficulty` (la de `steps`, 1–5)
+    para los que todavía no tienen repaso. `PlanInput.order` = el criterio (`lesson`: `review`).
 - Sin plan posible → 409 `no_plan`. En los errores no se registra nada.
 - **Registro.** Una llamada atómica a `ef_plan_session`: `practice_sessions` (`seed`,
-  `filters` = `stepFilters` más `focusStepId`, `phrases_available` = `N`, `plan`) y un
+  `filters` = `stepFilters` tal como llegó, con su `order` si vino (ausente = `review`), más `focusStepId`, `phrases_available` = `N`, `plan`) y un
   `practice_session_steps` por paso distinto con la suma de sus frases. La línea de tiempo
   no se guarda: se recalcula del plan y la rejilla.
 

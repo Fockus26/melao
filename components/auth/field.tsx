@@ -1,5 +1,6 @@
 import { FieldMessage } from "@/components/ui/field-message";
 import { Label } from "@/components/ui/label";
+import { Reveal } from "@/components/ui/reveal";
 
 type FieldProps = {
   id: string;
@@ -25,13 +26,16 @@ export function Field({ id, label, error, help, aside, children }: FieldProps) {
         {aside}
       </div>
       {children(hasMessage ? messageId : undefined)}
-      {error ? (
-        <FieldMessage id={messageId} tone="error">
-          {error}
-        </FieldMessage>
-      ) : help ? (
-        <FieldMessage id={messageId}>{help}</FieldMessage>
-      ) : null}
+      {/* El mensaje entra y sale con la altura animada (D103). */}
+      <Reveal show={hasMessage}>
+        {error ? (
+          <FieldMessage id={messageId} tone="error">
+            {error}
+          </FieldMessage>
+        ) : (
+          <FieldMessage id={messageId}>{help}</FieldMessage>
+        )}
+      </Reveal>
     </div>
   );
 }

@@ -70,6 +70,12 @@ const BY_CODE: Record<string, AuthErrorCopy> = {
     message: "La nueva contraseña debe ser distinta de la anterior.",
     field: "password",
   },
+  // Edge Function change-password (D106). Copy provisional: CONTENT_CHECKLIST fila 60.
+  password_reused: {
+    message:
+      "Esa contraseña ya la usaste hace poco. Elige una distinta a las últimas tres.",
+    field: "password",
+  },
   email_address_invalid: {
     message: "Ese correo no es válido. Revisa que esté bien escrito.",
     field: "email",

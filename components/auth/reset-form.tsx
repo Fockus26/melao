@@ -4,10 +4,10 @@ import { useRouter } from "next/navigation";
 import { useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FieldMessage } from "@/components/ui/field-message";
-import { type AuthErrorCopy, authErrorCopy } from "@/lib/auth/errors";
+import { changePassword } from "@/lib/auth/change-password";
+import type { AuthErrorCopy } from "@/lib/auth/errors";
 import { DEFAULT_AFTER_AUTH } from "@/lib/auth/redirect";
 import { checkPassword } from "@/lib/auth/validation";
-import { createClient } from "@/lib/supabase/client";
 import { Field } from "./field";
 import { FormErrorBanner } from "./form-banner";
 import { PasswordInput } from "./password-input";
@@ -15,7 +15,8 @@ import { PasswordRequirements } from "./password-requirements";
 
 /**
  * Restablecer: nueva contraseña con la sesión de recuperación que dejó `/auth/callback`.
- * Enviando: campos deshabilitados + botón cargando (handoff P-Auth). Al guardar, a la app.
+ * Se guarda por la Edge Function `change-password` (D106). Enviando: campos deshabilitados +
+ * botón cargando (handoff P-Auth). Al guardar, a la app.
  * Copy provisional (CONTENT_CHECKLIST fila 42).
  */
 export function ResetForm() {
@@ -36,12 +37,11 @@ export function ResetForm() {
     submitRef.current?.focus();
     setPending(true);
     setError(null);
-    const { error: updateError } = await createClient().auth.updateUser({
-      password,
-    });
-    if (updateError) {
+    // Por la Edge Function: la nueva no puede ser ninguna de las últimas 3 (D106).
+    const failure = await changePassword(password);
+    if (failure) {
       setPending(false);
-      setError(authErrorCopy(updateError));
+      setError(failure);
       return;
     }
     router.replace(DEFAULT_AFTER_AUTH);

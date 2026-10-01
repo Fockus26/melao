@@ -212,6 +212,14 @@ si el estilo no tiene roles (D051).
 Estilo por defecto: el alumno escribe `profiles.default_style_id` directo (grant de columna,
 RLS: su fila); el cliente filtra por su `id`.
 
+Práctica libre (`20261001130000_practice_songs.sql`): `security invoker`; los favoritos son
+siempre los de `auth.uid()` (aunque un admin lea los de todos por RLS).
+
+| Función | Devuelve |
+|---|---|
+| `public.practice_songs(p_style)` | una fila por canción **visible** del estilo (publicada con licencia vigente; un admin ve también las sin publicar), por título: `song_id, title, artist, bpm, duration_ms, dance_end_ms, beat_grid, difficulty` (1–5 o null), `favorite` (de quien llama), `sessions_30d, popularity` (percentil 0–1, de `song_popularity()`), `ready` (rejilla ≥ 2 anclas y `dance_end_ms`: lo que `plan-session` exige). La usan el configurador y Canciones; el modo de canción (D117) se aplica sobre esta lista |
+| `private.song_difficulty(override, bpm, bands)` | `difficulty_override` si la hay; si no, por `dance_styles.difficulty_bpm_bands`: el primer tope con BPM ≤ tope (nivel 1…), por encima del último el siguiente nivel (máx. 5); sin bandas o sin BPM, null |
+
 ## Edge Functions
 
 Código en `supabase/functions/` (Deno en Supabase). Contrato común a todas:
@@ -265,7 +273,9 @@ desplegar, Supabase empaqueta cada función con el `deno.json` **de su carpeta**
 
 ### `plan-session`
 Entrada: `{ styleId, songId, mode: "lesson"|"free", lessonId?, focusStepId?, stepFilters?, seed? }`
-- `stepFilters` (solo `free`): `{ minDifficulty?, maxDifficulty? (1–5), favoritesOnly?, includeLearning? (por defecto true) }`.
+- `stepFilters` (solo `free`): `{ minDifficulty?, maxDifficulty? (1–5), favoritesOnly?, includeLearning? (por defecto true), order? }`.
+  `order`: criterio de los pasos, `"review"` (por defecto: según repaso) | `"random"` | `"popular"` | `"difficulty"`
+  (`combinaciones.md` § Criterio, D115); otro valor → 400 `invalid_input` en `stepFilters.order`.
 - `focusStepId` (solo `lesson`): mini práctica de ese paso de la lección.
 - `seed`: entero 0–4294967295 (uint32). Si no viene, la genera el servidor (D064).
 
@@ -286,8 +296,9 @@ Reglas: `motor-de-ritmo.md` y `combinaciones.md` (D063–D066). Exige suscripci�
   orden de catálogo (`sort_order`, `slug`). `baseSteps` = base con misma posición de
   inicio y fin.
   - `free`: pasos en `known` (y `learning` salvo `includeLearning: false`) que cumplen los
-    filtros; ninguno → 409 `no_steps`. Targets = los vencidos (`due_at ≤ ahora`), del más
-    atrasado al menos, como mucho `N`.
+    filtros; ninguno → 409 `no_steps`. Con `order: "review"` (o sin `order`), targets = los
+    vencidos (`due_at ≤ ahora`), del más atrasado al menos, como mucho `N`; con `random`,
+    `popular` o `difficulty`, sin targets (D115).
   - `lesson`: pasos de la lección, de las lecciones anteriores del curso y los `known`;
     targets = pasos de la lección en su orden.
   - `lesson` + `focusStepId`: ese paso y los de las lecciones anteriores (para llegar a su
@@ -295,9 +306,11 @@ Reglas: `motor-de-ritmo.md` y `combinaciones.md` (D063–D066). Exige suscripci�
   - Pesos: `due` (tarjeta vencida), `difficulty` (FSRS, si ya tuvo un repaso), `favorite`,
     `popularity` (`step_popularity`). Tarjeta = la del `dance_role` del perfil (estilo sin
     roles: `leader`; perfil sin rol: la más urgente y la más difícil de los dos roles).
+    Con `order: "difficulty"` cada paso lleva además `catalogDifficulty` (la de `steps`, 1–5)
+    para los que todavía no tienen repaso. `PlanInput.order` = el criterio (`lesson`: `review`).
 - Sin plan posible → 409 `no_plan`. En los errores no se registra nada.
 - **Registro.** Una llamada atómica a `ef_plan_session`: `practice_sessions` (`seed`,
-  `filters` = `stepFilters` más `focusStepId`, `phrases_available` = `N`, `plan`) y un
+  `filters` = `stepFilters` tal como llegó, con su `order` si vino (ausente = `review`), más `focusStepId`, `phrases_available` = `N`, `plan`) y un
   `practice_session_steps` por paso distinto con la suma de sus frases. La línea de tiempo
   no se guarda: se recalcula del plan y la rejilla.
 

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FieldMessage } from "@/components/ui/field-message";
+import { Reveal } from "@/components/ui/reveal";
 import { changePassword } from "@/lib/auth/change-password";
 import type { AuthErrorCopy } from "@/lib/auth/errors";
 import { DEFAULT_AFTER_AUTH } from "@/lib/auth/redirect";
@@ -92,11 +93,12 @@ export function ResetForm() {
           >
             Guardar contraseña
           </Button>
-          {ready ? null : (
+          {/* El motivo entra y sale con altura animada (D103); el botón deja de referenciarlo en cuanto está listo. */}
+          <Reveal show={!ready}>
             <FieldMessage id={reasonId}>
               Cumple los requisitos de la contraseña para guardarla.
             </FieldMessage>
-          )}
+          </Reveal>
         </div>
       </form>
     </>

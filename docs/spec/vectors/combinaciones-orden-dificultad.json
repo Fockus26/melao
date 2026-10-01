@@ -1,0 +1,213 @@
+{
+  "descripcion": "Criterio difficulty: sin targets, peso 1 + 9 × dificultad normalizada (FSRS si hay, si no catálogo)",
+  "entrada": {
+    "phrases": 12,
+    "steps": [
+      {
+        "id": "guapea",
+        "startPosition": "guapea",
+        "endPosition": "guapea",
+        "phrases": 1,
+        "canStart": true,
+        "canEnd": true,
+        "repeatable": true
+      },
+      {
+        "id": "dile-que-no",
+        "startPosition": "guapea",
+        "endPosition": "cerrada",
+        "phrases": 1,
+        "canStart": true,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "enchufla",
+        "startPosition": "cerrada",
+        "endPosition": "guapea",
+        "phrases": 1,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "exhibela",
+        "startPosition": "guapea",
+        "endPosition": "guapea",
+        "phrases": 2,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "vacilala",
+        "startPosition": "cerrada",
+        "endPosition": "cerrada",
+        "phrases": 2,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "sombrero",
+        "startPosition": "cerrada",
+        "endPosition": "cerrada",
+        "phrases": 2,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "setenta",
+        "startPosition": "cerrada",
+        "endPosition": "guapea",
+        "phrases": 3,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "dame",
+        "startPosition": "cerrada",
+        "endPosition": "cerrada",
+        "phrases": 1,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": true
+      },
+      {
+        "id": "abanico",
+        "startPosition": "cerrada",
+        "endPosition": "abierta",
+        "phrases": 1,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "paseala",
+        "startPosition": "abierta",
+        "endPosition": "abierta",
+        "phrases": 1,
+        "canStart": false,
+        "canEnd": true,
+        "repeatable": false
+      },
+      {
+        "id": "cierre",
+        "startPosition": "abierta",
+        "endPosition": "cerrada",
+        "phrases": 1,
+        "canStart": false,
+        "canEnd": false,
+        "repeatable": false
+      }
+    ],
+    "baseSteps": [
+      {
+        "id": "guapea",
+        "startPosition": "guapea",
+        "endPosition": "guapea",
+        "phrases": 1,
+        "canStart": true,
+        "canEnd": true,
+        "repeatable": true
+      }
+    ],
+    "startPosition": "guapea",
+    "weights": {
+      "guapea": {
+        "catalogDifficulty": 1
+      },
+      "dile-que-no": {
+        "catalogDifficulty": 1
+      },
+      "enchufla": {
+        "popularity": 1,
+        "catalogDifficulty": 2
+      },
+      "exhibela": {
+        "popularity": 0.25,
+        "catalogDifficulty": 3
+      },
+      "vacilala": {
+        "catalogDifficulty": 3
+      },
+      "sombrero": {
+        "due": true,
+        "difficulty": 9,
+        "catalogDifficulty": 4
+      },
+      "setenta": {
+        "popularity": 0.5,
+        "catalogDifficulty": 5
+      },
+      "dame": {
+        "favorite": true,
+        "catalogDifficulty": 2
+      },
+      "abanico": {
+        "catalogDifficulty": 2
+      },
+      "paseala": {
+        "catalogDifficulty": 3
+      },
+      "cierre": {
+        "catalogDifficulty": 1
+      }
+    },
+    "seed": 21,
+    "targets": [],
+    "order": "difficulty"
+  },
+  "salida": {
+    "plan": [
+      {
+        "stepId": "guapea",
+        "startPhrase": 0,
+        "phrases": 1
+      },
+      {
+        "stepId": "exhibela",
+        "startPhrase": 1,
+        "phrases": 2
+      },
+      {
+        "stepId": "guapea",
+        "startPhrase": 3,
+        "phrases": 1
+      },
+      {
+        "stepId": "exhibela",
+        "startPhrase": 4,
+        "phrases": 2
+      },
+      {
+        "stepId": "dile-que-no",
+        "startPhrase": 6,
+        "phrases": 1
+      },
+      {
+        "stepId": "dame",
+        "startPhrase": 7,
+        "phrases": 1
+      },
+      {
+        "stepId": "dame",
+        "startPhrase": 8,
+        "phrases": 1
+      },
+      {
+        "stepId": "sombrero",
+        "startPhrase": 9,
+        "phrases": 2
+      },
+      {
+        "stepId": "dame",
+        "startPhrase": 11,
+        "phrases": 1
+      }
+    ],
+    "unplaced": []
+  }
+}

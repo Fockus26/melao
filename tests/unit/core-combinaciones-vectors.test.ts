@@ -10,6 +10,7 @@ import {
   generatePlan,
   PlanError,
   type PlanInput,
+  type PlanOrder,
   type StepWeightFactors,
   stepWeight,
   validateCatalog,
@@ -26,6 +27,8 @@ interface PesoCaso {
   factores: StepWeightFactors;
   objetivoPendiente: boolean;
   repeticionInmediata: boolean;
+  /** Criterio (por defecto `review`). */
+  orden?: PlanOrder;
 }
 
 describe("vectores combinaciones-*", () => {
@@ -48,6 +51,7 @@ describe("vectores combinaciones-*", () => {
           stepWeight(c.factores, {
             pendingTarget: c.objetivoPendiente,
             immediateRepeat: c.repeticionInmediata,
+            order: c.orden,
           }),
         );
         expect(got).toEqual(v.salida.pesos);

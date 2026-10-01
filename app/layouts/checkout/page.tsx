@@ -9,7 +9,7 @@ import { getActivePlans } from "@/lib/plans/queries";
 import { firstParam } from "@/lib/search-params";
 
 export const metadata: Metadata = {
-  title: "Checkout · Layouts · Melao",
+  title: "Checkout · Layouts",
   robots: { index: false, follow: false },
 };
 

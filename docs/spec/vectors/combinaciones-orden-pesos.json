@@ -1,0 +1,95 @@
+{
+  "descripcion": "Peso por criterio: random 1; popular 1 + 9 × percentil; difficulty 1 + 9 × dificultad normalizada (FSRS (D − 1)/9, si no catálogo (c − 1)/4); review ignora catalogDifficulty. Luego × objetivoPendiente(5) × repetición(0.2)",
+  "entrada": {
+    "casos": [
+      {
+        "factores": {},
+        "orden": "random",
+        "objetivoPendiente": false,
+        "repeticionInmediata": false
+      },
+      {
+        "factores": {
+          "due": true,
+          "difficulty": 9,
+          "favorite": true,
+          "popularity": 1
+        },
+        "orden": "random",
+        "objetivoPendiente": false,
+        "repeticionInmediata": true
+      },
+      {
+        "factores": {
+          "popularity": 1
+        },
+        "orden": "popular",
+        "objetivoPendiente": false,
+        "repeticionInmediata": false
+      },
+      {
+        "factores": {
+          "popularity": 0.5,
+          "due": true,
+          "favorite": true
+        },
+        "orden": "popular",
+        "objetivoPendiente": true,
+        "repeticionInmediata": false
+      },
+      {
+        "factores": {},
+        "orden": "popular",
+        "objetivoPendiente": false,
+        "repeticionInmediata": false
+      },
+      {
+        "factores": {
+          "difficulty": 10,
+          "catalogDifficulty": 1
+        },
+        "orden": "difficulty",
+        "objetivoPendiente": false,
+        "repeticionInmediata": false
+      },
+      {
+        "factores": {
+          "difficulty": 1,
+          "catalogDifficulty": 5
+        },
+        "orden": "difficulty",
+        "objetivoPendiente": false,
+        "repeticionInmediata": false
+      },
+      {
+        "factores": {
+          "catalogDifficulty": 3
+        },
+        "orden": "difficulty",
+        "objetivoPendiente": false,
+        "repeticionInmediata": true
+      },
+      {
+        "factores": {},
+        "orden": "difficulty",
+        "objetivoPendiente": false,
+        "repeticionInmediata": false
+      },
+      {
+        "factores": {
+          "due": true,
+          "difficulty": 7.5,
+          "favorite": true,
+          "popularity": 0.5,
+          "catalogDifficulty": 5
+        },
+        "orden": "review",
+        "objetivoPendiente": true,
+        "repeticionInmediata": true
+      }
+    ]
+  },
+  "salida": {
+    "pesos": [1, 0.2, 10, 27.5, 1, 10, 1, 1.1, 1, 15.75]
+  }
+}

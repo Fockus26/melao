@@ -5,12 +5,34 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Aviso de la raíz a sus opciones: la última tecla fue una flecha y todavía no llegó el foco.
  * Patrón radio de WAI-ARIA: la flecha mueve el foco **y** elige. Radix mueve el foco en un
  * setTimeout y solo elige si la tecla sigue abajo en ese momento; con una pulsación rápida
- * mueve el foco pero no elige (se midió en la Bienvenida). Aquí la flecha deja el aviso hasta
- * el foco siguiente, y ese foco hace clic en la opción (el mismo camino que usa Radix).
+ * mueve el foco pero no elige (se midió en la Bienvenida). Aquí la flecha deja un aviso
+ * armado hasta el foco siguiente, y ese foco hace clic en la opción (el mismo camino que usa
+ * Radix). Un clic o que el foco salga del grupo lo desarma: volver con Tab no elige nada.
  */
+export type RadioArrowEvent =
+  | { type: "keyDown"; key: string }
+  | { type: "pointerDown" }
+  | { type: "focusOut" }
+  | { type: "itemFocus" };
+
+/** Paso puro del aviso (se prueba sin DOM): el aviso siguiente y si este foco elige. */
+export function radioArrowStep(
+  armed: boolean,
+  event: RadioArrowEvent,
+): { armed: boolean; select: boolean } {
+  switch (event.type) {
+    case "keyDown":
+      return { armed: event.key.startsWith("Arrow"), select: false };
+    case "pointerDown":
+    case "focusOut":
+      return { armed: false, select: false };
+    case "itemFocus":
+      return { armed: false, select: armed };
+  }
+}
+
 const ArrowKeyContext = React.createContext<React.RefObject<boolean> | null>(
   null,
 );
@@ -24,21 +46,31 @@ function RadioGroup({
   className,
   onKeyDownCapture,
   onPointerDownCapture,
+  onBlurCapture,
   ...props
 }: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
   const arrowKey = React.useRef(false);
+  const step = (event: RadioArrowEvent) => {
+    arrowKey.current = radioArrowStep(arrowKey.current, event).armed;
+  };
   return (
     <ArrowKeyContext.Provider value={arrowKey}>
       <RadioGroupPrimitive.Root
         data-slot="radio-group"
         className={cn("flex flex-col gap-3", className)}
         onKeyDownCapture={(e) => {
-          arrowKey.current = e.key.startsWith("Arrow");
+          step({ type: "keyDown", key: e.key });
           onKeyDownCapture?.(e);
         }}
         onPointerDownCapture={(e) => {
-          arrowKey.current = false;
+          step({ type: "pointerDown" });
           onPointerDownCapture?.(e);
+        }}
+        onBlurCapture={(e) => {
+          // Solo si el foco se va fuera del grupo (entre opciones también hay blur).
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null))
+            step({ type: "focusOut" });
+          onBlurCapture?.(e);
         }}
         {...props}
       />
@@ -73,8 +105,12 @@ function RadioGroupItem({
       )}
       onFocus={(e) => {
         onFocus?.(e);
-        if (!arrowKey?.current) return;
-        arrowKey.current = false;
+        if (!arrowKey) return;
+        const { armed, select } = radioArrowStep(arrowKey.current, {
+          type: "itemFocus",
+        });
+        arrowKey.current = armed;
+        if (!select) return;
         // Clic y no `onValueChange`: vale igual con el grupo controlado o sin controlar.
         e.currentTarget.click();
       }}

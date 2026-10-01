@@ -223,15 +223,39 @@ describe("activate-subscription", () => {
       currency: "USD",
       billingInterval: "month",
     });
+    // Fin = inicio + el período del plan, de calendario. Restar dos timestamptz da días
+    // (`31 days`), que no es igual a interval '1 month' (30 días): se suma, no se resta.
     const { rows } = await db.query<{ provider: string; mes: boolean }>(
-      `select provider,
-              (current_period_end - current_period_start) = interval '1 month' as mes
-         from public.subscriptions where user_id = $1`,
+      `select s.provider,
+              s.current_period_end = s.current_period_start
+                + case p.billing_interval when 'year' then interval '1 year' else interval '1 month' end as mes
+         from public.subscriptions s join public.plans p on p.id = s.plan_id
+        where s.user_id = $1`,
       [user],
     );
     expect(rows).toHaveLength(1);
     expect(rows[0].provider).toBe("placeholder");
     expect(rows[0]).toMatchObject({ mes: true });
+  });
+
+  test("el período de un mes es de calendario, sea cual sea el día de inicio", async () => {
+    const { rows } = await db.query<{ start: string; end: string }>(
+      `select to_char(s, 'YYYY-MM-DD') as start,
+              to_char(s + interval '1 month', 'YYYY-MM-DD') as end
+         from unnest($1::timestamptz[]) as s order by s`,
+      [
+        [
+          "2026-01-31T15:00:00Z",
+          "2026-09-30T15:00:00Z",
+          "2026-10-01T15:00:00Z",
+        ],
+      ],
+    );
+    expect(rows).toEqual([
+      { start: "2026-01-31", end: "2026-02-28" },
+      { start: "2026-09-30", end: "2026-10-30" },
+      { start: "2026-10-01", end: "2026-11-01" },
+    ]);
   });
 
   test("idempotente: el mismo plan devuelve la activa sin crear otra", async () => {

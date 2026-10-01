@@ -38,6 +38,8 @@ export const stageCopy = {
   exitStay: "Seguir bailando",
   exitLeave: "Salir",
   ended: "Práctica terminada.",
+  // PROVISIONAL (CONTENT_CHECKLIST fila 67): sesión de práctica libre.
+  finish: "Terminar",
   blocked: "Audio listo. Toca para empezar.",
 } as const;
 

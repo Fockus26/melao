@@ -8,12 +8,12 @@ import { stageCopy } from "./copy";
  * Botones propios del escenario (no el Button de la app, handoff §2): tema fijo sobre negro.
  * Hover inmediato con movimiento reducido; presionado `scale(.98)`.
  */
-const base =
+export const stageButtonBase =
   "inline-flex shrink-0 items-center justify-center gap-2 transition-[background-color,scale] duration-hover ease-standard active:scale-98 active:duration-press motion-reduce:transition-none motion-reduce:active:scale-100";
 
 /** Botón cuadrado de 56 con borde (reiniciar, voz). */
 export const stageSquareButton = cn(
-  base,
+  stageButtonBase,
   "size-14 rounded-md border border-stage-control-border text-stage-current hover:bg-stage-panel",
 );
 
@@ -65,7 +65,7 @@ export function StageControls({
         type="button"
         onClick={onToggle}
         className={cn(
-          base,
+          stageButtonBase,
           "h-14 min-w-0 flex-1 rounded-md bg-stage-button px-5 type-button-lg text-stage-on-button hover:bg-stage-button-hover",
           "stage-landscape:w-14 stage-landscape:flex-none stage-landscape:px-0",
         )}

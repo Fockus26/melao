@@ -35,8 +35,11 @@ Ninguna regla vive solo en el cliente: la contraseña la valida Supabase y los p
   `{{ .ConfirmationURL }}` y termina en `/auth/callback`.
 - **Entrar:** `signInWithPassword` o `signInWithOAuth({ provider: "google" })`.
 - **Recuperar:** `resetPasswordForEmail(email, redirectTo = callback?next=/reset-password)`; el
-  aviso es el mismo exista o no la cuenta. **Restablecer:** `updateUser({ password })` con la
-  sesión de recuperación.
+  aviso es el mismo exista o no la cuenta. **Restablecer (D106):** Edge Function
+  `change-password` `{ password }` con la sesión de recuperación; la nueva cumple D075 y no es
+  ninguna de las **últimas 3** (la actual + 2 anteriores) → si no, 422 `password_reused`. Nunca
+  `updateUser({ password })` directo: salta el historial (Supabase no deja bloquearlo; el
+  trigger igual registra el cambio). Detalle en § Edge Functions › `change-password`.
 - **Vuelta (web `/auth/callback`):** recibe `code` (PKCE: Google, confirmación y
   recuperación) o `token_hash` + `type` (plantillas de correo con token) y guarda la sesión;
   luego redirige a `next`. Errores → `/login?error=<motivo>` (o `/forgot-password?error=…` si
@@ -217,6 +220,7 @@ CORS abierto (`*`, sin cookies); el preflight `OPTIONS` responde 204.
 | 404 | no existe (o no es del alumno, o no la ve) | `plan_not_found` · `user_not_found` · `session_not_found` · `lesson_not_found` · `step_not_found` · `style_not_found` · `song_not_found` |
 | 405 | método distinto de `POST` | `method_not_allowed` |
 | 409 | choca con el estado actual | `subscription_exists` · `style_not_ready` · `song_not_ready` · `song_too_short` · `no_steps` · `no_plan` |
+| 422 | la contraseña no se acepta (`change-password`) | `weak_password` (no cumple D075) · `password_reused` (una de las últimas 3) |
 | 500 | cualquier otro fallo (se registra; sin detalles al cliente) | `internal` |
 
 Una sesión de otro alumno responde 404, igual que una inexistente: no se revela.
@@ -233,6 +237,7 @@ Una sesión de otro alumno responde 404, igual que una inexistente: no se revela
 | `ef_review_steps(p_user, p_payload)` | `review-steps` | escribe repasos, tarjetas, estado y progreso en una transacción |
 | `ef_plan_session_state(p_user, p_style, p_song, p_lesson?)` | `plan-session` | lee suscripción, admin, estilo, canción, lección (desbloqueo, pasos, anteriores) y pasos del estilo con estado, favorito, tarjeta y popularidad (migración `20260929180000_plan_session.sql`) |
 | `ef_plan_session(p_user, p_payload)` | `plan-session` | registra `practice_sessions` + `practice_session_steps` en una transacción |
+| `ef_password_recently_used(p_user, p_candidate)` | `change-password` | `true` si la candidata es la contraseña actual o una de las 2 anteriores; puente a `private.password_recently_used` (D108, migración `20260930160000_password_history.sql`) |
 
 **Variables** (las inyecta Supabase al desplegar; no se configuran a mano): `SUPABASE_URL` y
 la clave secreta, de `SUPABASE_SECRET_KEYS` (JSON, clave `default`) o, si no está, de la
@@ -241,7 +246,8 @@ heredada `SUPABASE_SERVICE_ROLE_KEY`. Nunca en un cliente.
 **Estructura (D052).** Por función: `handler.ts` (lógica, recibe sus puertos: auth, datos,
 reloj; se prueba con bun), `supabase.ts` (el puerto de datos con supabase-js) e `index.ts`
 (arma el cliente y llama a `Deno.serve`). Compartido en `_shared/`: `http.ts`, `auth.ts`,
-`client.ts`, `validate.ts`, `sql-errors.ts`, `runtime.ts`. Las dependencias usan el mismo
+`client.ts`, `validate.ts`, `sql-errors.ts`, `runtime.ts`; reglas puras en `_shared/core/`
+(p. ej. `password.ts`, D107). Las dependencias usan el mismo
 especificador en Deno (`deno.json`) y en bun (`package.json`), con la misma versión. Al
 desplegar, Supabase empaqueta cada función con el `deno.json` **de su carpeta** (el global de
 `supabase/functions/` solo vale en local): cada función trae una copia con los mismos imports
@@ -311,6 +317,24 @@ Reglas (`srs.md`, D051). Exige suscripción activa.
   lección (`session_lesson_mismatch`). Registra `lesson_progress` (desbloquea la siguiente)
   cuando hay repasos y la sesión es la **práctica final**: su canción es `final_song_id` de
   la lección, o la lección no fija una.
+
+### `change-password`
+Entrada: `{ password }` · Salida: `{ ok: true }`. No exige suscripción: vale cualquier sesión del
+alumno, también la de recuperación (D106–D108).
+- `password`: texto de 1 a 72 bytes (bcrypt solo mira 72) → si no, 400 `invalid_input`.
+- No cumple D075 (`_shared/core/password.ts`, vectores `password-reglas.json`) → 422
+  `weak_password`, sin tocar la base.
+- Es la actual o una de las 2 anteriores (`ef_password_recently_used`: `crypt` de pgcrypto
+  contra los hashes de Auth) → 422 `password_reused`.
+- Si no: `auth.admin.updateUserById(uid, { password })`. Si Auth la rechaza por débil → 422
+  `weak_password`; cualquier otro fallo → 500. La sesión actual sigue valiendo.
+- **Historial.** `private.password_history (user_id, hash, created_at)`, sin acceso para ningún
+  rol de la API. Lo llena el trigger `on_auth_user_password_changed` (`after update of
+  encrypted_password on auth.users`): guarda el hash anterior si había uno (una cuenta solo de
+  Google no tiene) y conserva los 2 más recientes. Registra cualquier cambio (función, panel,
+  `updateUser`); borrar la cuenta borra su historial.
+- La contraseña nunca se registra ni vuelve en la respuesta. Clientes: mensaje por `code` con la
+  tabla de `lib/auth/errors.ts`; 401 → "tu sesión terminó".
 
 ### `activate-subscription`
 Entrada: `{ planSlug }`

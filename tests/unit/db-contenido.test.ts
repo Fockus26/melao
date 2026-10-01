@@ -1,6 +1,12 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import type { PGlite } from "@electric-sql/pglite";
-import { asAnon, asUser, createDb, createUser } from "../db/harness";
+import {
+  asAnon,
+  asUser,
+  createDb,
+  createUser,
+  DB_BOOT_TIMEOUT_MS,
+} from "../db/harness";
 
 let db: PGlite;
 let ana: string; // alumna sin suscripción (vitrina)
@@ -102,7 +108,7 @@ beforeAll(async () => {
   await db.query(
     "insert into storage.objects (bucket_id, name) values ('songs', 'x.m4a'), ('step-videos', 'salsa/enchufla-leader.mp4'), ('song-licenses', 'lic.pdf')",
   );
-}, 30_000);
+}, DB_BOOT_TIMEOUT_MS);
 
 const names = (uid: string, sql: string) =>
   asUser(db, uid, async (tx) =>

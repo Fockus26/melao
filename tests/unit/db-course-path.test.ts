@@ -2,7 +2,13 @@
 // due_steps, hardest_steps y private.lesson_unlocked, contra PGlite con el seed.
 import { beforeAll, describe, expect, test } from "bun:test";
 import type { PGlite, Transaction } from "@electric-sql/pglite";
-import { applySeed, asAnon, createDb, createUser } from "../db/harness";
+import {
+  applySeed,
+  asAnon,
+  createDb,
+  createUser,
+  DB_BOOT_TIMEOUT_MS,
+} from "../db/harness";
 
 const SALSA = "a0000000-0000-4000-8000-000000000001";
 const MERENGUE = "a0000000-0000-4000-8000-000000000002";
@@ -154,7 +160,7 @@ beforeAll(async () => {
               'a3000000-0000-4000-8000-000000000001', 'a3000000-0000-4000-8000-000000000001', true);
     commit;
   `);
-}, 30_000);
+}, DB_BOOT_TIMEOUT_MS);
 
 describe("course_path", () => {
   test("una fila por lección, en orden de unidad y posición, con número y total", async () => {

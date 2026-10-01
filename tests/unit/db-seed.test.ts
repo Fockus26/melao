@@ -18,7 +18,7 @@ import {
   SALSA_CASINO,
   type StyleConfig,
 } from "@/supabase/functions/_shared/core/style.ts";
-import { applySeed, createDb } from "../db/harness";
+import { applySeed, createDb, DB_BOOT_TIMEOUT_MS } from "../db/harness";
 
 let db: PGlite;
 
@@ -49,7 +49,7 @@ async function counts(): Promise<Record<string, number>> {
 beforeAll(async () => {
   db = await createDb();
   await applySeed(db);
-});
+}, DB_BOOT_TIMEOUT_MS);
 
 describe("seed", () => {
   test("es idempotente: una segunda corrida no cambia nada", async () => {

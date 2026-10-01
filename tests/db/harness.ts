@@ -8,6 +8,14 @@ import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
 const root = join(import.meta.dir, "..", "..");
 const migrationsDir = join(root, "supabase", "migrations");
 
+/**
+ * Tiempo límite para el `beforeAll` que arranca la base con `createDb` (y siembra/prepara
+ * usuarios). Arrancar PGlite y aplicar todas las migraciones tarda ~4–8 s según la máquina,
+ * por encima del límite de 5 s que bun:test pone a los hooks; cada migración nueva lo
+ * acerca. Holgado para no dar falsos fallos, acotado para que un cuelgue real sí falle.
+ */
+export const DB_BOOT_TIMEOUT_MS = 30_000;
+
 export async function createDb(): Promise<PGlite> {
   const db = new PGlite({ extensions: { pgcrypto } });
   await db.exec(

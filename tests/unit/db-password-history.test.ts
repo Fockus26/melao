@@ -3,7 +3,14 @@
 // Los hashes son bcrypt de pgcrypto (como los de Supabase Auth), con coste bajo para ir rápido.
 import { beforeAll, describe, expect, test } from "bun:test";
 import type { PGlite, Transaction } from "@electric-sql/pglite";
-import { asAnon, asService, asUser, createDb, createUser } from "../db/harness";
+import {
+  asAnon,
+  asService,
+  asUser,
+  createDb,
+  createUser,
+  DB_BOOT_TIMEOUT_MS,
+} from "../db/harness";
 
 let db: PGlite;
 
@@ -35,7 +42,7 @@ const historyCount = async (id: string) =>
 
 beforeAll(async () => {
   db = await createDb();
-});
+}, DB_BOOT_TIMEOUT_MS);
 
 describe("password_history: trigger", () => {
   test("una cuenta sin contraseña (Google) no deja historial al poner la primera", async () => {

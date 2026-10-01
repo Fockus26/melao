@@ -1,6 +1,13 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import type { PGlite } from "@electric-sql/pglite";
-import { asAnon, asService, asUser, createDb, createUser } from "../db/harness";
+import {
+  asAnon,
+  asService,
+  asUser,
+  createDb,
+  createUser,
+  DB_BOOT_TIMEOUT_MS,
+} from "../db/harness";
 
 let db: PGlite;
 let ana: string; // alumna sin suscripción
@@ -21,7 +28,7 @@ beforeAll(async () => {
      select $1, id, 'active', 'placeholder', now() + interval '30 days' from public.plans where slug = 'basico'`,
     [beto],
   );
-}, 30_000);
+}, DB_BOOT_TIMEOUT_MS);
 
 describe("profiles", () => {
   test("el trigger crea el perfil al registrarse, con el nombre de Auth", async () => {

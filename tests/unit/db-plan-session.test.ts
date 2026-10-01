@@ -10,7 +10,13 @@ import {
   type PlanSessionPort,
   type PlanSessionState,
 } from "../../supabase/functions/plan-session/handler";
-import { applySeed, asUser, createDb, createUser } from "../db/harness";
+import {
+  applySeed,
+  asUser,
+  createDb,
+  createUser,
+  DB_BOOT_TIMEOUT_MS,
+} from "../db/harness";
 
 const SALSA = "a0000000-0000-4000-8000-000000000001";
 const MERENGUE = "a0000000-0000-4000-8000-000000000002";
@@ -122,7 +128,7 @@ beforeAll(async () => {
             ($1, $2, 'leader', 'review', 3, 9, now() + interval '9 days', now() - interval '5 days', 2)`,
     [ids.ana, enchufla],
   );
-});
+}, DB_BOOT_TIMEOUT_MS);
 
 describe("permisos", () => {
   for (const fn of [

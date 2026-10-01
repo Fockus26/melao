@@ -1,7 +1,14 @@
 // Bienvenida (20260929200000_onboarding.sql, D080–D083): complete_onboarding y user_styles.
 import { beforeAll, describe, expect, test } from "bun:test";
 import type { PGlite, Transaction } from "@electric-sql/pglite";
-import { applySeed, asAnon, asUser, createDb, createUser } from "../db/harness";
+import {
+  applySeed,
+  asAnon,
+  asUser,
+  createDb,
+  createUser,
+  DB_BOOT_TIMEOUT_MS,
+} from "../db/harness";
 
 const SALSA = "a0000000-0000-4000-8000-000000000001";
 const MERENGUE = "a0000000-0000-4000-8000-000000000002";
@@ -63,7 +70,7 @@ beforeAll(async () => {
     "update public.profiles set app_role = 'admin' where id = $1",
     [cesar],
   );
-}, 30_000);
+}, DB_BOOT_TIMEOUT_MS);
 
 describe("complete_onboarding", () => {
   test("guarda estilos, rol, nivel, estilo por defecto y onboarded_at", async () => {

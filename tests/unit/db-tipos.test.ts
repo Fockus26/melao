@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { PGlite } from "@electric-sql/pglite";
 import { Constants } from "../../supabase/functions/_shared/database.types";
-import { createDb } from "../db/harness";
+import { createDb, DB_BOOT_TIMEOUT_MS } from "../db/harness";
 
 const typesSource = readFileSync(
   join(
@@ -46,7 +46,7 @@ let db: PGlite;
 
 beforeAll(async () => {
   db = await createDb();
-});
+}, DB_BOOT_TIMEOUT_MS);
 
 afterAll(async () => {
   await db.close();

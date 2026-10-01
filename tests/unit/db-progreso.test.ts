@@ -1,6 +1,13 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import type { PGlite } from "@electric-sql/pglite";
-import { asAnon, asService, asUser, createDb, createUser } from "../db/harness";
+import {
+  asAnon,
+  asService,
+  asUser,
+  createDb,
+  createUser,
+  DB_BOOT_TIMEOUT_MS,
+} from "../db/harness";
 
 let db: PGlite;
 let ana: string;
@@ -90,7 +97,7 @@ beforeAll(async () => {
      values ($1, $2, 'follower', 2, 'practice', $3)`,
     [ana, ids.enchufla, ids.sesionAna],
   );
-}, 30_000);
+}, DB_BOOT_TIMEOUT_MS);
 
 const rows = (uid: string, sql: string, params: unknown[] = []) =>
   asUser(

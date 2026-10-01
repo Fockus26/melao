@@ -16,7 +16,13 @@ import {
   type ReviewStepsPort,
   createHandler as reviewHandler,
 } from "../../supabase/functions/review-steps/handler";
-import { asService, asUser, createDb, createUser } from "../db/harness";
+import {
+  asService,
+  asUser,
+  createDb,
+  createUser,
+  DB_BOOT_TIMEOUT_MS,
+} from "../db/harness";
 
 let db: PGlite;
 const ids: Record<string, string> = {};
@@ -179,7 +185,7 @@ beforeAll(async () => {
   await svc("select public.ef_activate_subscription($1, 'basico') as r", [
     ids.beto,
   ]);
-});
+}, DB_BOOT_TIMEOUT_MS);
 
 describe("permisos", () => {
   for (const fn of [

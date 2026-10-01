@@ -178,6 +178,9 @@ describe("plan-session: entrada", () => {
       "favoritesOnly no booleano",
       { ...free, stepFilters: { favoritesOnly: "sí" } },
     ],
+    ["order desconocido", { ...free, stepFilters: { order: "favorites" } }],
+    ["order no texto", { ...free, stepFilters: { order: 1 } }],
+    ["order en mode lesson", { ...lesson, stepFilters: { order: "random" } }],
   ];
   for (const [name, body] of bad) {
     test(`${name} → invalid_input`, () => {
@@ -430,6 +433,92 @@ describe("plan-session: plan", () => {
     expect(r.phrasesAvailable).toBe(11);
     const first = r.timeline[0];
     expect(first).toMatchObject({ beat: 0, kind: "count", stepId: null });
+  });
+
+  describe("criterio (stepFilters.order, D115)", () => {
+    const due = { dueAt: "2026-09-28T00:00:00Z", difficulty: 6 };
+    const st = state({
+      steps: [
+        GUAPEA,
+        BASICO_CERRADA,
+        DILE_QUE_SI,
+        DILE_QUE_NO,
+        { ...ENCHUFLA, card: due, favorite: true, popularity: 0.25 },
+        { ...SETENTA, status: "known", popularity: 0.9 },
+      ],
+    });
+    const withOrder = (order: string) =>
+      ({ ...free, stepFilters: { order } }) as Input;
+
+    test("la ruta de la validación es stepFilters.order", () => {
+      try {
+        parseInput(withOrder("favorites"));
+      } catch (error) {
+        expect(String((error as Error).message)).toContain("stepFilters.order");
+        return;
+      }
+      throw new Error("debió fallar");
+    });
+
+    test("review explícito = sin order (el comportamiento de antes)", () => {
+      for (let seed = 0; seed < 20; seed++) {
+        expect(planSession(withOrder("review"), st, NOW, seed).plan).toEqual(
+          planSession(free, st, NOW, seed).plan,
+        );
+      }
+    });
+
+    test("random, popular y difficulty no obligan a los vencidos y guardan el order", () => {
+      for (const order of ["random", "popular", "difficulty"]) {
+        let missing = 0;
+        for (let seed = 0; seed < 40; seed++) {
+          const r = planSession(withOrder(order), st, NOW, seed);
+          expect(r.unplaced).toEqual([]);
+          if (!r.plan.some((p) => p.stepId === ENCHUFLA.id)) missing++;
+          expect(r.write.filters).toEqual({ order });
+        }
+        // Con review la enchufla vencida sale siempre; aquí no hay targets.
+        expect(missing).toBeGreaterThan(0);
+      }
+    });
+
+    test("los pesos llegan al generador con el criterio (y la dificultad de catálogo)", () => {
+      const combo = (s: StepState) => ({
+        id: s.id,
+        startPosition: s.startPosition,
+        endPosition: s.endPosition,
+        phrases: s.phrases,
+        canStart: s.canStart,
+        canEnd: s.canEnd,
+        repeatable: s.repeatable,
+      });
+      const r = planSession(withOrder("difficulty"), st, NOW, 9);
+      const expected = generatePlan({
+        phrases: 12,
+        steps: st.steps.map(combo),
+        baseSteps: [GUAPEA, BASICO_CERRADA].map(combo),
+        startPosition: G,
+        targets: [],
+        weights: {
+          [GUAPEA.id]: { catalogDifficulty: 1 },
+          [BASICO_CERRADA.id]: { catalogDifficulty: 1 },
+          [DILE_QUE_SI.id]: { catalogDifficulty: 2 },
+          [DILE_QUE_NO.id]: { catalogDifficulty: 2 },
+          [ENCHUFLA.id]: {
+            due: true,
+            difficulty: 6,
+            favorite: true,
+            popularity: 0.25,
+            catalogDifficulty: 3,
+          },
+          [SETENTA.id]: { popularity: 0.9, catalogDifficulty: 4 },
+        },
+        seed: 9,
+        startPhrase: 0,
+        order: "difficulty",
+      });
+      expect(r.plan).toEqual(expected.plan);
+    });
   });
 
   test("el registro suma las frases por paso distinto", () => {

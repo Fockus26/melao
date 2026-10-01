@@ -31,8 +31,8 @@ function noiseBuffer(ctx: BaseAudioContext, seconds: number): AudioBuffer {
   return buf;
 }
 
-/** Golpe con envolvente exponencial. */
-function hit(
+/** Golpe con envolvente exponencial (también lo usa la pista sintética de `lib/player`). */
+export function hit(
   ctx: BaseAudioContext,
   out: AudioNode,
   src: AudioScheduledSourceNode,

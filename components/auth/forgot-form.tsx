@@ -12,11 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authErrorCopy } from "@/lib/auth/errors";
 import { AUTH_ROUTES, callbackUrl } from "@/lib/auth/redirect";
-import { isValidEmail } from "@/lib/auth/validation";
+import { EMAIL_EMPTY_ERROR, emailFormatError } from "@/lib/auth/validation";
 import { createClient } from "@/lib/supabase/client";
 import { siteOrigin } from "@/lib/supabase/env";
 import { Field } from "./field";
 import { FormErrorBanner } from "./form-banner";
+import { useDeferredError } from "./use-deferred-error";
 
 /**
  * Recuperar: pide el enlace de restablecimiento. El aviso de "enviado" es el mismo exista o no
@@ -29,22 +30,21 @@ export function ForgotForm({ initialError }: { initialError?: string | null }) {
   const submitRef = useRef<HTMLButtonElement>(null);
   const [pending, setPending] = useState(false);
   const [banner, setBanner] = useState<string | null>(initialError ?? null);
-  const [emailError, setEmailError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  // "Escribe tu correo" sale al enviar; el de formato, con retraso mientras escribe (D100).
+  const [emptyError, setEmptyError] = useState<string | null>(null);
+  const emailFormat = useDeferredError(email, emailFormatError(email));
+  const emailError = emptyError ?? emailFormat.error;
   const [sentTo, setSentTo] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (pending) return;
-    const email = String(
-      new FormData(event.currentTarget).get("email") ?? "",
-    ).trim();
-    const problem = !email
-      ? "Escribe tu correo."
-      : isValidEmail(email)
-        ? null
-        : "Revisa el correo: le falta la @ o el dominio.";
-    setEmailError(problem);
-    if (problem) {
+    const address = email.trim();
+    const formatError = emailFormatError(address);
+    setEmptyError(address ? null : EMAIL_EMPTY_ERROR);
+    if (formatError) emailFormat.reveal();
+    if (!address || formatError) {
       setBanner(null);
       emailRef.current?.focus();
       return;
@@ -53,7 +53,7 @@ export function ForgotForm({ initialError }: { initialError?: string | null }) {
     submitRef.current?.focus();
     setPending(true);
     setBanner(null);
-    const { error } = await createClient().auth.resetPasswordForEmail(email, {
+    const { error } = await createClient().auth.resetPasswordForEmail(address, {
       redirectTo: callbackUrl(
         siteOrigin(window.location.origin),
         AUTH_ROUTES.reset,
@@ -65,19 +65,22 @@ export function ForgotForm({ initialError }: { initialError?: string | null }) {
       setBanner(authErrorCopy(error).message);
       return;
     }
-    setSentTo(email);
+    setSentTo(address);
   }
 
   if (sentTo)
     return (
       <div className="flex flex-col gap-6">
-        <Alert variant="success">
+        {/* Aviso neutro (D102): ni el título ni el tono afirman que se envió nada, porque no
+            se revela si el correo tiene cuenta. Copy provisional (CONTENT_CHECKLIST fila 58). */}
+        <Alert variant="info">
           <AlertContent>
-            <AlertTitle>Te enviamos un enlace</AlertTitle>
+            <AlertTitle>Revisa tu correo</AlertTitle>
             <AlertDescription>
-              Si hay una cuenta con <strong>{sentTo}</strong>, te llegará un
-              correo con un enlace para crear una contraseña nueva. Ábrelo en
-              este mismo navegador; vence en una hora.
+              Si <strong>{sentTo}</strong> tiene una cuenta en Melao, te llegará
+              un enlace para crear una contraseña nueva; revisa también la
+              carpeta de spam. Ábrelo en este mismo navegador: vence en una
+              hora.
             </AlertDescription>
           </AlertContent>
         </Alert>
@@ -104,6 +107,12 @@ export function ForgotForm({ initialError }: { initialError?: string | null }) {
                 inputMode="email"
                 spellCheck={false}
                 required
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmptyError(null);
+                }}
+                onBlur={emailFormat.reveal}
                 aria-invalid={emailError ? true : undefined}
                 aria-describedby={own}
               />

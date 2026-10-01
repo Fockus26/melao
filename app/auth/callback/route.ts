@@ -4,7 +4,12 @@ import {
   type CallbackErrorReason,
   callbackErrorReason,
 } from "@/lib/auth/errors";
-import { AUTH_ROUTES, safeNext } from "@/lib/auth/redirect";
+import {
+  AUTH_ROUTES,
+  callbackFailurePath,
+  isRecoveryCallback,
+  safeNext,
+} from "@/lib/auth/redirect";
 import { createClient } from "@/lib/supabase/server";
 
 const OTP_TYPES: readonly EmailOtpType[] = [
@@ -29,19 +34,18 @@ function isOtpType(value: string | null): value is EmailOtpType {
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const type = params.get("type");
-  const recovering = type === "recovery";
-  const next = recovering ? AUTH_ROUTES.reset : safeNext(params.get("next"));
+  const next =
+    type === "recovery" ? AUTH_ROUTES.reset : safeNext(params.get("next"));
+  // El tipo de enlace decide el motivo (D101): recuperación o confirmación del correo.
+  const recovering = isRecoveryCallback(type, next);
   const fail = (reason: CallbackErrorReason) =>
     NextResponse.redirect(
-      new URL(
-        `${next === AUTH_ROUTES.reset ? AUTH_ROUTES.forgot : AUTH_ROUTES.signIn}?error=${reason}`,
-        request.url,
-      ),
+      new URL(callbackFailurePath(recovering, reason), request.url),
     );
 
   // Supabase vuelve con ?error=…&error_code=… cuando el enlace venció o se canceló el acceso.
   if (params.has("error") || params.has("error_code"))
-    return fail(callbackErrorReason(params.get("error_code")));
+    return fail(callbackErrorReason(params.get("error_code"), { recovering }));
 
   const code = params.get("code");
   const tokenHash = params.get("token_hash");
@@ -54,7 +58,7 @@ export async function GET(request: NextRequest) {
         token_hash: tokenHash as string,
         type: type as EmailOtpType,
       });
-  if (error) return fail(callbackErrorReason(error.code));
+  if (error) return fail(callbackErrorReason(error.code, { recovering }));
 
   return NextResponse.redirect(new URL(next, request.url));
 }

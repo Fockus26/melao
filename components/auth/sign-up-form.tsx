@@ -21,6 +21,7 @@ import {
 import { AUTH_ROUTES, callbackUrl } from "@/lib/auth/redirect";
 import {
   checkPassword,
+  emailFormatError,
   isValidEmail,
   isValidName,
   NAME_MAX_LENGTH,
@@ -33,6 +34,7 @@ import { FormErrorBanner } from "./form-banner";
 import { GoogleButton } from "./google-button";
 import { PasswordInput } from "./password-input";
 import { PasswordRequirements } from "./password-requirements";
+import { useDeferredError } from "./use-deferred-error";
 
 /**
  * Registro (P-Auth): validación en vivo y CTA deshabilitado hasta cumplir. El nombre viaja en
@@ -48,7 +50,6 @@ export function SignUpForm({ next }: { next: string }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailTouched, setEmailTouched] = useState(false);
   const [pending, setPending] = useState(false);
   const [banner, setBanner] = useState<string | null>(null);
   const [marked, setMarked] = useState<AuthErrorField>(null);
@@ -58,10 +59,11 @@ export function SignUpForm({ next }: { next: string }) {
   const reasonId = `${id}-motivo`;
   const emailOk = isValidEmail(email);
   const ready = isValidName(name) && emailOk && checkPassword(password).valid;
-  const emailError =
-    emailTouched && email.trim() && !emailOk
-      ? "Revisa el correo: le falta la @ o el dominio."
-      : null;
+  // El error de formato espera a que deje de escribir (o salga del campo) y se quita al instante (D100).
+  const { error: emailError, reveal: revealEmailError } = useDeferredError(
+    email,
+    emailFormatError(email),
+  );
 
   function showError({ message, field }: AuthErrorCopy) {
     setBanner(message);
@@ -169,7 +171,7 @@ export function SignUpForm({ next }: { next: string }) {
                   setEmail(e.target.value);
                   if (marked === "email") setMarked(null);
                 }}
-                onBlur={() => setEmailTouched(true)}
+                onBlur={revealEmailError}
                 aria-invalid={
                   emailError || marked === "email" ? true : undefined
                 }

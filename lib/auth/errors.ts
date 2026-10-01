@@ -139,10 +139,17 @@ export const CALLBACK_ERRORS = {
   "missing-code":
     "El enlace está incompleto. Pide uno nuevo o entra con tu correo y contraseña.",
   google: "No pudimos completar el acceso con Google. Inténtalo de nuevo.",
-  // PKCE: el enlace se abrió en un navegador distinto del que lo pidió. Supabase ya confirmó
-  // el correo antes de volver, así que basta con entrar.
+  // PKCE: el enlace se abrió en un navegador distinto del que lo pidió. Un motivo por tipo de
+  // enlace (D101), para decir solo lo que aplica. Copy provisional (CONTENT_CHECKLIST fila 59).
+  // Confirmación: Supabase ya confirmó el correo antes de volver, así que basta con entrar.
+  "other-browser-signup":
+    "Abriste el enlace en otro navegador, pero tu correo ya quedó confirmado. Entra con tu correo y contraseña.",
+  // Recuperación: sin el verificador no hay sesión de recuperación; hace falta otro enlace.
+  "other-browser-recovery":
+    "Abriste el enlace en otro navegador. Pide uno nuevo aquí y ábrelo en este mismo navegador.",
+  // Alias de los enlaces enviados antes de D101: se lee como el de confirmación (va a /login).
   "other-browser":
-    "Abriste el enlace en otro navegador. Si confirmabas tu correo, ya quedó listo: entra con tu correo y contraseña. Si cambiabas la contraseña, pide otro enlace y ábrelo aquí.",
+    "Abriste el enlace en otro navegador, pero tu correo ya quedó confirmado. Entra con tu correo y contraseña.",
   "access-failed": GENERIC.message,
 } as const;
 
@@ -156,10 +163,13 @@ export function isCallbackErrorReason(
 
 /**
  * Motivo para la URL a partir del error del intercambio de código o de los parámetros
- * `error`/`error_code` con los que Supabase vuelve al callback.
+ * `error`/`error_code` con los que Supabase vuelve al callback. `recovering`: el enlace era de
+ * recuperación de contraseña (destino `/reset-password` o `type=recovery`); si no, se trata
+ * como confirmación del correo (D101).
  */
 export function callbackErrorReason(
   code: string | null | undefined,
+  { recovering = false }: { recovering?: boolean } = {},
 ): CallbackErrorReason {
   if (
     code === "otp_expired" ||
@@ -168,7 +178,8 @@ export function callbackErrorReason(
     code === "bad_code_verifier"
   )
     return "link-expired";
-  if (code === "pkce_code_verifier_not_found") return "other-browser";
+  if (code === "pkce_code_verifier_not_found")
+    return recovering ? "other-browser-recovery" : "other-browser-signup";
   if (code === "bad_oauth_state" || code === "bad_oauth_callback")
     return "google";
   return "access-failed";

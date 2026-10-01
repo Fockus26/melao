@@ -104,7 +104,12 @@ Reglas:
   calibrar al detectar audífonos o si el usuario lo pide desde el Perfil.
 - Calibrar: ≥ 16 toques sobre la pista sola, descartando los 2 primeros y los atípicos;
   si la desviación supera ~60 ms, se pide repetir.
-- Pausa, reanudar y salir sin desfasar la cuenta.
+- Pausa, reanudar y salir sin desfasar la cuenta. App en segundo plano (pestaña oculta) o
+  audio interrumpido por el sistema (llamada, otra app) → pausa en la posición exacta del
+  reloj; se reanuda a mano.
+- La calibración guardada que se usa es la del alumno en esa plataforma (`audio_latency`,
+  `platform`), la más reciente (D124); mientras no se distinga el dispositivo de salida, no se
+  filtra por `device_key`.
 - La UI (número grande, paso actual, siguiente, fila de tiempos) se actualiza con el mismo
   reloj; el tiempo activo se marca con color **y** subrayado.
 - Pantalla encendida durante la sesión (Wake Lock o equivalente); se vuelve a pedir al
@@ -113,6 +118,13 @@ Reglas:
   48 kHz) y se libera al salir de la sesión. Decodificar tarda segundos (~2.7 s para 5 min
   en Android): la canción se prepara antes de *Iniciar*, con estado de carga visible.
 - Ajustes del perfil que filtran eventos: cuenta hablada sí/no, volumen de la voz.
+- **Pista sintética (D121)**, mientras ninguna canción tiene audio con licencia (D009): el
+  reproductor toca, en el mismo reloj, una campana en cada tiempo entero de la rejilla
+  (`t ∈ [0, duración)`, también antes del primer ancla) y un bombo en el tiempo 1 (fuerte) y
+  en el `beatsPerPhrase/2 + 1` (suave), programados en la ventana del bucle como los clips.
+  Sin clips de voz, `count.<n>` suena como un tono por número y `step.<slug>` como dos tonos
+  de ~2 tiempos. La duración es la de la sesión del escenario (hasta 1.5 s después de `end`).
+  Web: `lib/player/` (`TrackSource`: hoy `SyntheticTrack`; `FileTrack` cuando haya audio).
 
 ### 6.1 Vista del escenario (qué pinta la UI)
 

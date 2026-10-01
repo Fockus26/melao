@@ -9,9 +9,6 @@ import { cn } from "@/lib/utils";
  * Copy de ejemplo: placeholder realista (CONTENT_CHECKLIST fila 39).
  */
 
-/** Reexportado para las muestras que ya lo importaban de aquí; vive en `lib/search-params`. */
-export { firstParam } from "@/lib/search-params";
-
 /** `?active=course` → el ítem cuyo último segmento es `course` (por defecto, el primero). */
 export function pickItem(
   items: readonly NavItem[],

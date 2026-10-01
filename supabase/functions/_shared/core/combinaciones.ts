@@ -31,6 +31,20 @@ export const WEIGHT_FAVORITE = 2;
 export const WEIGHT_PENDING_TARGET = 5;
 /** Mismo paso que el anterior (no base y no `repeatable`), regla 7. */
 export const WEIGHT_IMMEDIATE_REPEAT = 0.2;
+/** Peso del paso más popular / más difícil con `order` `popular` / `difficulty` (D115). */
+export const WEIGHT_ORDER_MAX = 10;
+
+/**
+ * Criterio de la práctica libre (combinaciones.md § Criterio, D115). `review` = los pesos de
+ * siempre; los demás reemplazan los factores del alumno por uno solo.
+ */
+export type PlanOrder = "review" | "random" | "popular" | "difficulty";
+export const PLAN_ORDERS: readonly PlanOrder[] = [
+  "review",
+  "random",
+  "popular",
+  "difficulty",
+];
 
 export interface ComboStep {
   id: string;
@@ -52,6 +66,8 @@ export interface StepWeightFactors {
   favorite?: boolean;
   /** Percentil de popularidad 0–1 (`step_popularity`). */
   popularity?: number;
+  /** Dificultad del catálogo (1–5); solo la usa `order: "difficulty"` sin tarjeta repasada. */
+  catalogDifficulty?: number;
 }
 
 export interface PlanInput {
@@ -68,6 +84,8 @@ export interface PlanInput {
   seed: number;
   /** Frase donde empieza el primer paso (por defecto 0; con intro corta, la de la ventana). */
   startPhrase?: number;
+  /** Criterio de los pesos (por defecto `review`). */
+  order?: PlanOrder;
 }
 
 export interface PlanItem {
@@ -101,18 +119,49 @@ interface PoolStep extends ComboStep {
   isBase: boolean;
 }
 
+/** Dificultad normalizada a [0, 1]: la FSRS (1–10) si la hay; si no, la del catálogo (1–5). */
+function normalizedDifficulty(f: StepWeightFactors | undefined): number {
+  if (f?.difficulty !== undefined) return (f.difficulty - 1) / 9;
+  if (f?.catalogDifficulty !== undefined) return (f.catalogDifficulty - 1) / 4;
+  return 0;
+}
+
+/** Factores del alumno según el criterio (sin objetivo pendiente ni repetición). */
+function orderFactor(
+  f: StepWeightFactors | undefined,
+  order: PlanOrder,
+): number {
+  switch (order) {
+    case "random":
+      return 1;
+    case "popular":
+      return 1 + (WEIGHT_ORDER_MAX - 1) * (f?.popularity ?? 0);
+    case "difficulty":
+      return 1 + (WEIGHT_ORDER_MAX - 1) * normalizedDifficulty(f);
+    case "review": {
+      let w = 1;
+      if (f?.due) w *= WEIGHT_DUE;
+      if (f?.difficulty !== undefined) {
+        w *= 1 + f.difficulty / WEIGHT_DIFFICULTY_DIVISOR;
+      }
+      if (f?.favorite) w *= WEIGHT_FAVORITE;
+      if (f?.popularity !== undefined) w *= 1 + f.popularity;
+      return w;
+    }
+  }
+}
+
 /** Peso de un paso candidato. El orden de los productos es parte del contrato (spec). */
 export function stepWeight(
   factors: StepWeightFactors | undefined,
-  opts: { pendingTarget: boolean; immediateRepeat: boolean },
+  opts: {
+    pendingTarget: boolean;
+    immediateRepeat: boolean;
+    /** Por defecto `review`. */
+    order?: PlanOrder;
+  },
 ): number {
-  let w = 1;
-  if (factors?.due) w *= WEIGHT_DUE;
-  if (factors?.difficulty !== undefined) {
-    w *= 1 + factors.difficulty / WEIGHT_DIFFICULTY_DIVISOR;
-  }
-  if (factors?.favorite) w *= WEIGHT_FAVORITE;
-  if (factors?.popularity !== undefined) w *= 1 + factors.popularity;
+  let w = orderFactor(factors, opts.order ?? "review");
   if (opts.pendingTarget) w *= WEIGHT_PENDING_TARGET;
   if (opts.immediateRepeat) w *= WEIGHT_IMMEDIATE_REPEAT;
   return w;
@@ -138,6 +187,12 @@ export function generatePlan(input: PlanInput): PlanResult {
   const n = input.phrases;
   if (!Number.isInteger(n) || n < 0) {
     throw new PlanError("invalid_input", "`phrases` debe ser un entero ≥ 0");
+  }
+  if (input.order !== undefined && !PLAN_ORDERS.includes(input.order)) {
+    throw new PlanError(
+      "invalid_input",
+      `Criterio desconocido: ${input.order}`,
+    );
   }
   const startPhrase = input.startPhrase ?? 0;
   const targets = [...new Set(input.targets ?? [])];
@@ -229,6 +284,7 @@ export function generatePlan(input: PlanInput): PlanResult {
       stepWeight(input.weights?.[s.id], {
         pendingTarget: pending.includes(s.id),
         immediateRepeat: s.id === prev && !s.repeatable && !s.isBase,
+        order: input.order,
       }),
     );
     const chosen = pick(cands, ws, rand());

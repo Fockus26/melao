@@ -14,6 +14,7 @@ frase de la canción.
 | `targets` | pasos que deben aparecer: los de la lección, o los vencidos en el repaso |
 | `weights` | factores por paso (ver abajo) |
 | `seed` | entero; misma entrada + misma semilla = mismo plan |
+| `order` | opcional (`review`): criterio de los pesos, `review` \| `random` \| `popular` \| `difficulty` (§ Criterio) |
 | `startPhrase` | opcional (0): frase donde empieza el primer paso; con intro corta, la de la ventana de frases (`motor-de-ritmo.md` §3). Los `startPhrase` del plan salen desplazados por ella |
 
 Cada paso trae: `id`, `startPosition`, `endPosition`, `phrases` (duración, entero ≥ 1),
@@ -49,6 +50,24 @@ condición se cumple. `weights[stepId]` trae `{ due?, difficulty?, favorite?, po
 `targets` comprometidos que aún no aparecen; `repeticiónInmediata`, al mismo paso que el
 anterior si no es base ni `repeatable`. Los factores se multiplican **en ese orden** (importa
 para reproducir el plan con aritmética de coma flotante en otra plataforma).
+
+### Criterio (`order`, D115)
+
+`order` (opcional, por defecto `review`) cambia **solo** los factores del alumno (los cuatro
+primeros de la fórmula); `objetivoPendiente` y `repeticiónInmediata` se multiplican después,
+igual en todos. Un valor desconocido → `invalid_input`. `M = 10` (`WEIGHT_ORDER_MAX`).
+
+| `order` | Factor del alumno | Targets en `plan-session` (práctica libre) |
+|---|---|---|
+| `review` | la fórmula de arriba (`vencido × dificultadRepaso × favorito × popular`) | los vencidos |
+| `random` | `1` (ignora vencido, dificultad, favorito y popularidad) | ninguno |
+| `popular` | `1 + (M − 1) × percentil` (sin fila de popularidad: percentil 0) | ninguno |
+| `difficulty` | `1 + (M − 1) × d`, con `d = (D − 1) / 9` si la tarjeta tiene dificultad FSRS; si no, `d = (c − 1) / 4` con `c` = `catalogDifficulty` (1–5); sin ninguna, `d = 0` | ninguno |
+
+`weights[stepId]` puede traer `catalogDifficulty?` (1–5): solo lo usa `difficulty`. Con
+`random`, `popular` y `difficulty` los vencidos **no** pesan: el alumno eligió otro criterio
+y el repaso es el de `review`. Así el paso más popular / más difícil pesa 10 veces el menos
+(en `review` el factor de popularidad va de 1 a 2 y no domina).
 
 ## Algoritmo (D042)
 
@@ -124,4 +143,6 @@ para todo `N` (p. ej. si todos los pasos duran 2 frases): ese caso lo reporta `g
 con `no_plan`.
 
 Vectores: `vectors/combinaciones-*.json` (07a). Tipos de vector según la `entrada`: plan
-(`PlanInput`; `salida` = plan exacto o `{ error }`), `prng`, `casos` (pesos) y `catalogo`.
+(`PlanInput`; `salida` = plan exacto o `{ error }`), `prng`, `casos` (pesos; `orden` opcional) y
+`catalogo`. Los `combinaciones-orden-*` fijan un plan por criterio con la misma semilla y los
+pesos de cada criterio.

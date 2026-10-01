@@ -6,6 +6,7 @@ import {
   isBaseStep,
   PlanError,
   type PlanInput,
+  type PlanOrder,
   type StepWeightFactors,
   validateCatalog,
 } from "@/supabase/functions/_shared/core/combinaciones.ts";
@@ -114,6 +115,10 @@ describe("generatePlan: casos límite", () => {
     );
     // Un paso base debe empezar y terminar en la misma posición.
     expect(bad({ ...input, baseSteps: [CASINO[2]] })).toBe("invalid_input");
+    // Criterio desconocido (otra plataforma que mande basura).
+    expect(bad({ ...input, order: "nuevo" as PlanOrder })).toBe(
+      "invalid_input",
+    );
   });
 
   test("sin paso canStart en la posición inicial → no_plan, sin colgarse", () => {
@@ -257,5 +262,79 @@ describe("validateCatalog", () => {
       };
       checkPlanInvariants(input, generatePlan(input));
     }
+  });
+});
+
+describe("generatePlan: criterio (order, D115)", () => {
+  const base = {
+    phrases: 16,
+    steps: CASINO,
+    baseSteps: BASE,
+    startPosition: "guapea",
+  };
+  const SEEDS = 300;
+  /** Frases que ocupa `id` en total sobre muchas semillas. */
+  const share = (input: Omit<PlanInput, "seed">, id: string): number => {
+    let hits = 0;
+    let total = 0;
+    for (let seed = 0; seed < SEEDS; seed++) {
+      const out = generatePlan({ ...input, seed });
+      checkPlanInvariants({ ...input, seed }, out);
+      for (const p of out.plan) {
+        total += p.phrases;
+        if (p.stepId === id) hits += p.phrases;
+      }
+    }
+    return hits / total;
+  };
+
+  test("sin `order` = review: mismo plan con y sin el campo", () => {
+    const weights = { sombrero: { due: true, difficulty: 8 } };
+    for (let seed = 0; seed < 20; seed++) {
+      expect(generatePlan({ ...base, weights, seed, order: "review" })).toEqual(
+        generatePlan({ ...base, weights, seed }),
+      );
+    }
+  });
+
+  test("random ignora vencido, dificultad, favorito y popularidad", () => {
+    const weights: Record<string, StepWeightFactors> = {
+      sombrero: { due: true, difficulty: 10, favorite: true, popularity: 1 },
+    };
+    for (let seed = 0; seed < 20; seed++) {
+      expect(generatePlan({ ...base, weights, seed, order: "random" })).toEqual(
+        generatePlan({ ...base, seed, order: "random" }),
+      );
+    }
+  });
+
+  test("popular: el paso más popular sale mucho más que sin criterio", () => {
+    const weights = { "vuelta-derecha": { popularity: 1 } };
+    const plain = share({ ...base, order: "random" }, "vuelta-derecha");
+    const popular = share(
+      { ...base, weights, order: "popular" },
+      "vuelta-derecha",
+    );
+    expect(popular).toBeGreaterThan(plain * 2);
+  });
+
+  test("difficulty: la dificultad (FSRS o de catálogo) manda", () => {
+    const fsrs = { "vuelta-derecha": { difficulty: 10, catalogDifficulty: 1 } };
+    const catalog = { "vuelta-derecha": { catalogDifficulty: 5 } };
+    const plain = share({ ...base, order: "random" }, "vuelta-derecha");
+    expect(
+      share({ ...base, weights: fsrs, order: "difficulty" }, "vuelta-derecha"),
+    ).toBeGreaterThan(plain * 2);
+    expect(
+      share(
+        { ...base, weights: catalog, order: "difficulty" },
+        "vuelta-derecha",
+      ),
+    ).toBeGreaterThan(plain * 2);
+    // La FSRS gana a la de catálogo: dificultad 1 de repaso = peso 1 aunque el catálogo diga 5.
+    const easy = { "vuelta-derecha": { difficulty: 1, catalogDifficulty: 5 } };
+    expect(
+      generatePlan({ ...base, weights: easy, seed: 4, order: "difficulty" }),
+    ).toEqual(generatePlan({ ...base, seed: 4, order: "random" }));
   });
 });

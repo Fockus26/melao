@@ -1,0 +1,5 @@
+# D126 · Datos · Sesión ya calificada = hay `step_reviews` con su `session_id`; se muestra lo guardado, sin recalificar · Implementado
+
+**Decisión:** el resultado lee `step_reviews` del alumno (`user_id = auth.uid()`) con `session_id` = la sesión; si hay alguno, la pantalla abre en "Ya calificaste esta práctica" con lo guardado y las fechas de las tarjetas actuales, sin formulario. Solo sesiones libres (`mode = free`): la de una lección, ajena o inexistente → 404. Sin columna ni migración nuevas.
+**Por qué:** `review-steps` ya es idempotente por `(sessionId, stepId, role)` (reenviar no cambia nada), así que recalificar engañaría al alumno; `step_reviews` ya guarda la sesión y RLS deja leer los propios. Android/iOS hacen la misma lectura con el SDK. La sesión de una lección se califica en la lección (context `lesson`, con `lessonId`).
+**Alternativa descartada:** marcar `practice_sessions.completed_at` o una columna `rated_at` (migración y escritura extra para un dato que ya existe); permitir calificar los pasos que quedaron sin nota (el servidor lo aceptaría, pero una práctica se califica una vez).

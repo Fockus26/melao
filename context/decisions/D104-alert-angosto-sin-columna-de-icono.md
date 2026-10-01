@@ -1,0 +1,5 @@
+# D104 · Componentes · Alert angosto (< 20rem de contenido): ícono 18 flotando en la primera línea, texto a todo el ancho · Implementado
+
+**Decisión:** el Alert es un `@container`. Con menos de 20rem (320 px) de contenido —teléfonos de 320 a 360— el ícono baja a 18, flota a la izquierda de la primera línea (el título, o la descripción si no hay título) y el resto del texto usa todo el ancho; `AlertAction` va debajo. Desde 20rem, el diseño del handoff (columna de ícono 24, gap 12).
+**Por qué:** a 320 la columna del ícono dejaba 216 px de texto; ahora la descripción mide 252 (360: 256 → 292). A 390 (diseño de referencia) el aviso mide 350 y conserva el layout del handoff. Container query y no `sm:`: depende del ancho del aviso, también dentro de columnas angostas en escritorio.
+**Alternativa descartada:** ícono arriba, en su propia línea (gana todo el ancho pero suma una línea de alto a cada aviso y separa el ícono del texto); umbral de 24rem (cambiaría también el diseño de referencia a 390).

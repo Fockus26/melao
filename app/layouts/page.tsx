@@ -28,6 +28,11 @@ const SAMPLES = [
     text: "Sesión de práctica en negro, igual en tema claro y oscuro.",
   },
   {
+    href: "/layouts/session",
+    title: "Sesión · con sonido",
+    text: "El reproductor real con una pista de prueba: suena la campana, la cuenta y los anuncios al ritmo de la rejilla.",
+  },
+  {
     href: "/layouts/public",
     title: "PublicShell",
     text: "Header de 72 y footer de la landing; variante con el correo de la sesión para Planes y Checkout.",

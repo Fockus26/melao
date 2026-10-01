@@ -11,7 +11,7 @@ import type { InvokeResult, PlanSessionRequest, ReviewRequest } from "./lesson";
  * `lib/plans/invoke.ts`, D086). Devuelven `{ status, body }` sin lanzar: 4xx/5xx con el cuerpo
  * `{ error: { code, message } }`; sin conexión, `status: 0`.
  */
-async function invoke(
+export async function invoke(
   name: string,
   body: Record<string, unknown>,
 ): Promise<InvokeResult> {

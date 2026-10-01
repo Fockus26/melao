@@ -63,6 +63,11 @@ const SAMPLES = [
     text: "Las 6 etapas de /app/lessons/[id] con un backend falso: intro, video, mini práctica y práctica final en el escenario, calificación y resumen; también bloqueada y práctica disponible pronto.",
   },
   {
+    href: "/layouts/songs",
+    title: "Canciones · estados",
+    text: "Practicar · canciones con datos de ejemplo: lista, con filtros, favoritas, sin favoritas, sin resultados, estilo sin canciones, sin estilos, cargando y error.",
+  },
+  {
     href: "/layouts/status",
     title: "Pantallas de estado",
     text: "404 con y sin sesión, error inesperado con y sin código, sin conexión y mantenimiento con y sin hora de vuelta.",

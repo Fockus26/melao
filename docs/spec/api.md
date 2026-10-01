@@ -212,6 +212,14 @@ si el estilo no tiene roles (D051).
 Estilo por defecto: el alumno escribe `profiles.default_style_id` directo (grant de columna,
 RLS: su fila); el cliente filtra por su `id`.
 
+Práctica libre (`20261001130000_practice_songs.sql`): `security invoker`; los favoritos son
+siempre los de `auth.uid()` (aunque un admin lea los de todos por RLS).
+
+| Función | Devuelve |
+|---|---|
+| `public.practice_songs(p_style)` | una fila por canción **visible** del estilo (publicada con licencia vigente; un admin ve también las sin publicar), por título: `song_id, title, artist, bpm, duration_ms, dance_end_ms, beat_grid, difficulty` (1–5 o null), `favorite` (de quien llama), `sessions_30d, popularity` (percentil 0–1, de `song_popularity()`), `ready` (rejilla ≥ 2 anclas y `dance_end_ms`: lo que `plan-session` exige). La usan el configurador y Canciones; el modo de canción (D117) se aplica sobre esta lista |
+| `private.song_difficulty(override, bpm, bands)` | `difficulty_override` si la hay; si no, por `dance_styles.difficulty_bpm_bands`: el primer tope con BPM ≤ tope (nivel 1…), por encima del último el siguiente nivel (máx. 5); sin bandas o sin BPM, null |
+
 ## Edge Functions
 
 Código en `supabase/functions/` (Deno en Supabase). Contrato común a todas:

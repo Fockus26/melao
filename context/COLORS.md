@@ -37,6 +37,9 @@
 | `warning-bg` | `#F8EFE0` | `#2A2112` | banner de aviso | text 16.56 · warning 5.55 — dark 14.17 · 7.60 |
 | `error-bg` | `#FBECEA` | `#2B1614` | banner de error, hover de peligro | text 16.44 · error 5.73 — dark 15.29 · 5.92 |
 | `skeleton` | `#EFEBE3` | `#1E1E1E` | bloques de carga | — |
+| `scrollbar-thumb` | = gold-600 `#A07D2C` | = gold-500 `#B8913A` | pulgar de la barra «Hilo» en reposo (D112) | 3.84 · 3.62 · 3.35 · tint 3.21 — dark 6.57 · 6.16 · 5.68 · 5.26 |
+| `scrollbar-thumb-hover` | = gold-700 `#80621C` | = gold-600 `#D6B25E` | pulgar al pasar o arrastrar (D112) | 5.70 · 5.38 · 4.97 · tint 4.76 — dark 9.55 · 8.95 · 8.25 · 7.64 |
+| `selection-bg` / `selection-text` | = primary / on-primary | = primary / on-primary | `::selection` «Tinta» (D113); sobre `bg-primary` se invierte | 18.88 · dark 9.34 |
 
 ## Escenario (`color.stage`) — idéntico en claro y oscuro (D007)
 
@@ -54,12 +57,16 @@
 | `rule` | `#B8913A` | filete 48×1 entre cuenta y siguiente | decorativo |
 | `button` / `on-button` / `button-hover` | `#FFFFFF` / `#0B0B0B` / `#E6E3DC` | botón pausa | 19.68 · hover 15.36 |
 | `warning-bg` / `warning` | `#2A2112` / `#E5A93B` | aviso "la pantalla puede apagarse" | current 14.17 |
+| `selection-bg` / `selection-text` | = next / = bg | `::selection` en el escenario (D113) | 9.74 |
 
 ## Notas de contraste
 
 - **Tres dorados (D002, D024):** 500 decora, 600 informa (≥ 3:1), 700 es texto (AA en las cinco
   superficies). Es fácil "unificar" al 500 y romper AA.
 - El escenario **no** usa los tokens del tema: no se implementa como `dark:`.
+- **Barra y selección (D112, D113):** el pulgar cuenta como componente (3:1 en las cuatro superficies);
+  `app/globals.css` los aplica fuera de `forced-colors`. En oscuro el reposo es gold-500: ahí sí
+  pasa 3:1 (6.57) y brilla menos que gold-600.
 - Detalle en D002, D007, D021 y D024 (`context/decisions/D0NN-*.md`).
 
 ## En código (fase 01)
@@ -78,6 +85,6 @@
   `--secondary`, `--muted`, `--accent`, `--destructive`, `--border` (= divider), `--input`
   (= border-input), `--ring` (= focus-ring), `--radius` (= radius-md). Mapa en
   `lib/tokens/css.ts` (`SHADCN_ALIASES`).
-- Contraste: `lib/tokens/contrast.ts` (`CONTRAST_PAIRS`) declara los 134 pares del handoff
-  (texto 4.5:1, gráficos/bordes/foco 3:1) y los tests los exigen. Todos pasan tal cual; ningún
+- Contraste: `lib/tokens/contrast.ts` (`CONTRAST_PAIRS`) declara los 134 pares del handoff más
+  19 de barra y selección (D112, D113) — texto 4.5:1, gráficos/bordes/foco 3:1 — y los tests los exigen. Todos pasan tal cual; ningún
   tono se ajustó. Referencia visual con ratios calculados: `/tokens` (noindex).

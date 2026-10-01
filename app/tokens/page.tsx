@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeSwitch } from "@/components/theme/theme-switch";
+import { Button } from "@/components/ui/button";
 import {
   CONTRAST_PAIRS,
   contrastRatio,
@@ -235,6 +236,68 @@ function StageColors() {
   );
 }
 
+// Figuras de casino para la muestra con scroll (nombres reales del repertorio, no contenido).
+const SCROLL_SAMPLE = [
+  "Guapea",
+  "Dile que no",
+  "Enchufla",
+  "Vacílala",
+  "Exhíbela",
+  "Sombrero",
+  "Setenta",
+  "Kentucky",
+  "Adiós con la hermana",
+  "Prima",
+];
+
+const SELECTION_SAMPLE =
+  "En el 1 el líder marca el paso atrás; en el 5 cierra el frente y abre la pareja a su derecha, sin soltar la mano.";
+
+/**
+ * Barra «Hilo» (D112) y selección «Tinta» (D113): un contenedor con scroll propio, un párrafo
+ * para seleccionar en el tema, sobre un botón primario y en el escenario.
+ */
+function Chrome() {
+  return (
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <section
+        aria-label="Lista con scroll"
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: contenedor con scroll sin controles; enfocable para desplazarse con teclado (axe scrollable-region-focusable).
+        tabIndex={0}
+        data-scroll-sample
+        className="max-h-72 overflow-y-auto rounded-md border border-divider bg-surface px-4"
+      >
+        <ol>
+          {SCROLL_SAMPLE.map((name, index) => (
+            <li
+              key={name}
+              className="border-b border-divider py-3 last:border-b-0"
+            >
+              <p className="type-eyebrow text-gold-700">Lección {index + 1}</p>
+              <p className="type-h2">{name}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <div className="flex flex-col gap-4">
+        <p data-selection-sample className="type-body">
+          {SELECTION_SAMPLE}
+        </p>
+        <Button className="self-start">Empezar práctica</Button>
+        <div className="rounded-md bg-stage-bg p-4 text-stage-current">
+          <p data-selection-stage className="type-body">
+            {SELECTION_SAMPLE}
+          </p>
+        </div>
+        <p className="type-small text-text-secondary">
+          Selecciona texto en cada bloque: tinta en el tema, invertida sobre el
+          botón y dorada en el escenario.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 const SAMPLE_TEXT = "Paso básico con vuelta";
 const SAMPLE_NUMBERS = "1 2 3 · 128";
 
@@ -401,6 +464,13 @@ export default function TokensPage() {
 
       <Section id="escenario" title="Color · escenario">
         <StageColors />
+      </Section>
+
+      <Section
+        id="barra-y-seleccion"
+        title="Barra de desplazamiento y selección"
+      >
+        <Chrome />
       </Section>
 
       <Section id="tipografia" title="Tipografía">

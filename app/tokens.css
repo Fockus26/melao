@@ -34,6 +34,10 @@
   --color-warning-bg: #F8EFE0;
   --color-error-bg: #FBECEA;
   --color-skeleton: #EFEBE3;
+  --color-scrollbar-thumb: #A07D2C;
+  --color-scrollbar-thumb-hover: #80621C;
+  --color-selection-bg: #111111;
+  --color-selection-text: #FFFFFF;
 
   /* Color: escenario, idéntico en claro y oscuro (D007) */
   --color-stage-bg: #0B0B0B;
@@ -53,6 +57,8 @@
   --color-stage-button-hover: #E6E3DC;
   --color-stage-warning-bg: #2A2112;
   --color-stage-warning: #E5A93B;
+  --color-stage-selection-bg: #D6B25E;
+  --color-stage-selection-text: #0B0B0B;
 
   /* Familias (next/font declara las variables en <html>) */
   --font-serif: var(--font-fraunces), Georgia, serif;
@@ -258,6 +264,10 @@
   --color-warning-bg: #2A2112;
   --color-error-bg: #2B1614;
   --color-skeleton: #1E1E1E;
+  --color-scrollbar-thumb: #B8913A;
+  --color-scrollbar-thumb-hover: #D6B25E;
+  --color-selection-bg: #D6B25E;
+  --color-selection-text: #111111;
 }
 
 /* Tipografía completa por rol: type-<rol> */

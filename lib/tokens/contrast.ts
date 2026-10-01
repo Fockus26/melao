@@ -110,6 +110,11 @@ function themePairs(scheme: "light" | "dark"): ContrastPair[] {
     ...on("error", [...SURFACES, "error-bg"]),
     ...on("info", SURFACES),
     ...on("text", ["success-bg", "warning-bg", "error-bg"]),
+    // Barra «Hilo» (D112): el pulgar es un componente, 3:1 sobre cada superficie con scroll.
+    ...on("scrollbar-thumb", SURFACES, "graphic"),
+    ...on("scrollbar-thumb-hover", SURFACES, "graphic"),
+    // Selección «Tinta» (D113).
+    ...on("selection-text", ["selection-bg"]),
   ];
 }
 
@@ -139,6 +144,7 @@ function stagePairs(): ContrastPair[] {
     on("on-button", "button-hover", "graphic"),
     on("current", "warning-bg"),
     on("warning", "warning-bg", "graphic"),
+    on("selection-text", "selection-bg"),
   ];
 }
 

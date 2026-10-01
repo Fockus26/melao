@@ -1166,6 +1166,23 @@ export type Database = {
         }[]
       }
       has_active_subscription: { Args: never; Returns: boolean }
+      practice_songs: {
+        Args: { p_style: string }
+        Returns: {
+          artist: string
+          beat_grid: Json
+          bpm: number
+          dance_end_ms: number
+          difficulty: number
+          duration_ms: number
+          favorite: boolean
+          popularity: number
+          ready: boolean
+          sessions_30d: number
+          song_id: string
+          title: string
+        }[]
+      }
       set_app_role: {
         Args: {
           new_role: Database["public"]["Enums"]["app_role"]

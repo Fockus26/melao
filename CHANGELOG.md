@@ -1,5 +1,18 @@
 # melao
 
+## 0.6.0
+
+### Minor Changes
+
+- 7086195: Pantallas de estado: página no encontrada, error inesperado, sin conexión y mantenimiento.
+- cc72b09: La contraseña nueva no puede repetir ninguna de las últimas tres: restablecer la contraseña pasa por la Edge Function `change-password`, con historial en la base.
+
+### Patch Changes
+
+- ae95d43: Acceso: el correo se valida al dejar de escribir, mensajes de enlace más precisos y ojo de contraseña corregido
+- c1b2cb4: Barra de desplazamiento dorada y selección de texto en tinta
+- aa8d1c3: Mensajes que entran y salen con movimiento suave, banners legibles a 320 px, segmentado que se desliza y calificación sin check
+
 ## 0.5.0
 
 ### Minor Changes

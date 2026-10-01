@@ -54,3 +54,64 @@
     outline-offset: 2px;
   }
 }
+
+/* Barra de desplazamiento «Hilo» dorada (D112): 10 px de ancho, riel transparente y pulgar
+   pill cuyo borde de 3 px es transparente con `background-clip: padding-box`, así el hilo
+   visible (4 px) se ve igual sobre bg, surface o cualquier contenedor. Se aplica a la página y
+   a todo contenedor con scroll. Con colores forzados no se personaliza nada: vuelve la barra
+   del sistema. */
+@layer base {
+  @media (forced-colors: none) {
+    ::-webkit-scrollbar {
+      width: calc(var(--spacing) * 2.5);
+      height: calc(var(--spacing) * 2.5);
+    }
+
+    ::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-corner {
+      background-color: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--color-scrollbar-thumb);
+      background-clip: padding-box;
+      border: calc(var(--spacing) * 0.75) solid transparent;
+      border-radius: var(--radius-pill);
+    }
+
+    ::-webkit-scrollbar-thumb:hover,
+    ::-webkit-scrollbar-thumb:active {
+      background-color: var(--color-scrollbar-thumb-hover);
+    }
+
+    /* Firefox no tiene los pseudo-elementos. Solo ahí: en Chrome ≥ 121 `scrollbar-color`
+       anula `::-webkit-scrollbar*` y perderíamos la forma. */
+    @supports not selector(::-webkit-scrollbar) {
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-scrollbar-thumb) transparent;
+      }
+    }
+
+    /* Selección «Tinta» (D113): invierte a primary / on-primary, como el botón primario. */
+    ::selection {
+      background-color: var(--color-selection-bg);
+      color: var(--color-selection-text);
+    }
+
+    /* Escenario, negro en ambos temas (D007): dorado del paso siguiente y texto negro. */
+    .bg-stage-bg::selection,
+    .bg-stage-bg *::selection {
+      background-color: var(--color-stage-selection-bg);
+      color: var(--color-stage-selection-text);
+    }
+
+    /* Sobre fondo primary (CTA, segmentado activo, calificación elegida) la tinta se confunde
+       con el fondo: ahí la selección se invierte. Va después del escenario para ganarle. */
+    .bg-primary::selection,
+    .bg-primary *::selection {
+      background-color: var(--color-on-primary);
+      color: var(--color-primary);
+    }
+  }
+}

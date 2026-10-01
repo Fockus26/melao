@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { PracticeSkeleton } from "@/components/practice/practice-skeleton";
 import { PracticeView } from "@/components/practice/practice-view";
 import { getOwnProfile, requireOnboardedUser } from "@/lib/auth/session";
 import { pickCurrentStyle } from "@/lib/course/path";
 import { getStyleOptions, hasActiveSubscription } from "@/lib/course/queries";
-import { initialConfig } from "@/lib/practice/config";
+import { initialConfig, type PracticeParams } from "@/lib/practice/config";
 import { getPracticeStyles } from "@/lib/practice/queries";
 import { firstParam } from "@/lib/search-params";
 
@@ -39,26 +41,38 @@ function visitSeed(): number {
  */
 export default async function PracticePage(props: PageProps<"/app/practice">) {
   const params = await props.searchParams;
+  const link = {
+    style: firstParam(params.style),
+    song: firstParam(params.song),
+    mode: firstParam(params.mode),
+  };
+  // Fuera del Suspense: sin sesión se redirige antes de empezar a transmitir.
   const user = await requireOnboardedUser(
-    practiceReturnPath(
-      firstParam(params.style),
-      firstParam(params.song),
-      firstParam(params.mode),
-    ),
+    practiceReturnPath(link.style, link.song, link.mode),
   );
+  return (
+    // Solo esta página (no Canciones, que cuelga de la misma carpeta): por eso no es loading.tsx.
+    <Suspense fallback={<PracticeSkeleton />}>
+      <PracticeContent userId={user.id} link={link} />
+    </Suspense>
+  );
+}
+
+async function PracticeContent({
+  userId,
+  link,
+}: {
+  userId: string;
+  link: PracticeParams;
+}) {
   const [profile, options, subscribed] = await Promise.all([
-    getOwnProfile(user.id),
+    getOwnProfile(userId),
     getStyleOptions(),
     hasActiveSubscription(),
   ]);
   const current = pickCurrentStyle(options, profile?.default_style_id);
   const styles = await getPracticeStyles(options, current?.id ?? null);
-  const mode = firstParam(params.mode);
-  const initial = initialConfig(styles, current?.id ?? null, {
-    style: firstParam(params.style),
-    song: firstParam(params.song),
-    mode,
-  });
+  const initial = initialConfig(styles, current?.id ?? null, link);
 
   return (
     <PracticeView
@@ -68,7 +82,7 @@ export default async function PracticePage(props: PageProps<"/app/practice">) {
       initial={initial}
       seed={visitSeed()}
       subscribed={subscribed}
-      review={mode === "review"}
+      review={link.mode === "review"}
     />
   );
 }

@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { FieldMessage } from "@/components/ui/field-message";
 import { Input } from "@/components/ui/input";
+import { Reveal } from "@/components/ui/reveal";
 import {
   type AuthErrorCopy,
   type AuthErrorField,
@@ -213,12 +214,13 @@ export function SignUpForm({ next }: { next: string }) {
           >
             Crear cuenta
           </Button>
-          {ready ? null : (
+          {/* El motivo entra y sale con altura animada (D103); el botón deja de referenciarlo en cuanto está listo. */}
+          <Reveal show={!ready}>
             <FieldMessage id={reasonId}>
               Completa tu nombre, un correo válido y los requisitos de la
               contraseña.
             </FieldMessage>
-          )}
+          </Reveal>
         </div>
       </form>
       {/* Aceptación de términos por aviso, también para Google (D074). */}

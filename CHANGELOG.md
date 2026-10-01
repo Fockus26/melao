@@ -1,5 +1,18 @@
 # melao
 
+## 0.7.0
+
+### Minor Changes
+
+- 5cc4b25: Nueva lista de canciones para practicar: busca, filtra y marca tus favoritas.
+- 04aeca7: Nueva pantalla Practicar: elige estilo, canción y cómo se escogen los pasos, y empieza una práctica libre.
+- c2aba64: La práctica libre ya suena: el coach marca el ritmo con una pista de prueba mientras llegan las canciones.
+- d0d18d0: La práctica libre puede elegir los pasos según el repaso, al azar, por popularidad o por dificultad.
+
+### Patch Changes
+
+- dbe0089: Los mensajes bajo el botón de registro y de nueva contraseña aparecen y desaparecen con suavidad; las opciones de la Bienvenida responden bien a las flechas.
+
 ## 0.6.0
 
 ### Minor Changes

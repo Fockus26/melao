@@ -83,6 +83,11 @@ const SAMPLES = [
     text: "Practicar · canciones con datos de ejemplo: lista, con filtros, favoritas, sin favoritas, sin resultados, estilo sin canciones, sin estilos, cargando y error.",
   },
   {
+    href: "/layouts/profile",
+    title: "Perfil",
+    text: "El Perfil de /app/profile sin escribir nada: con y sin suscripción, sin calibrar, 3 estilos (fila con Sheet), nombre y correo largos, correo por confirmar y los avisos del enlace de cambio de correo.",
+  },
+  {
     href: "/layouts/status",
     title: "Pantallas de estado",
     text: "404 con y sin sesión, error inesperado con y sin código, sin conexión y mantenimiento con y sin hora de vuelta.",

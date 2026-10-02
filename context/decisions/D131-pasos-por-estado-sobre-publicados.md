@@ -1,0 +1,5 @@
+# D131 · Producto · Pasos por estado de Progreso: `step_status_counts` sobre los pasos publicados del estilo; sin fila = no lo sé · Implementado
+
+**Decisión:** `public.step_status_counts(style)` devuelve una fila con `unknown_count`, `learning_count`, `known_count` y `total` sobre los pasos publicados del estilo, según `user_steps.status` del alumno (`auth.uid()`); un paso sin fila cuenta como "no lo sé". La card de Pasos muestra las 3 cifras con StepStatus (forma + texto) y "N pasos publicados".
+**Por qué:** el estado lo cambia el alumno en el detalle (ola 2) y solo existe fila para los pasos que tocó; contar sobre el catálogo publicado hace que las tres cifras sumen lo que el alumno ve en Pasos. Filtrar por `auth.uid()` evita que el admin (que por RLS lee todo) vea sumas de todos.
+**Alternativa descartada:** contar solo filas de `user_steps` (los nunca tocados desaparecen y "no lo sé" queda casi siempre en 0); derivar el estado de `srs_cards.state` (mezcla el FSRS con lo que el alumno declara).

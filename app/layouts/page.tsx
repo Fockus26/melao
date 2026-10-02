@@ -73,6 +73,11 @@ const SAMPLES = [
     text: "El configurador de /app/practice con canciones de prueba y un plan-session falso: lista para empezar, sin suscripción, sin pasos, canción no lista, sin conexión, cargando y sin estilos.",
   },
   {
+    href: "/layouts/practice-result",
+    title: "Practicar · resultado",
+    text: "El resultado de /app/practice/result con un review-steps falso: por calificar con vencidos y opcionales plegados, ninguno vence hoy, ya calificada, error al guardar y título largo.",
+  },
+  {
     href: "/layouts/songs",
     title: "Canciones · estados",
     text: "Practicar · canciones con datos de ejemplo: lista, con filtros, favoritas, sin favoritas, sin resultados, estilo sin canciones, sin estilos, cargando y error.",

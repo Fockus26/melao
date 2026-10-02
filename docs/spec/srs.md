@@ -55,8 +55,9 @@ sesión) y actualiza la tarjeta.
 
 - "Para hoy" = tarjetas con `due_at ≤ ahora`.
 - El generador prioriza vencidos y los de mayor `difficulty` (ver `combinaciones.md`).
-- Al terminar una sesión se califica cada paso distinto que apareció; los que no estaban
-  vencidos se pueden saltar (no generan repaso).
+- Al terminar una sesión se califica cada paso distinto que apareció (`review-steps`, context
+  `practice`): los vencidos son obligatorios; los que no estaban vencidos son opcionales y, sin
+  calificar, no generan repaso. Una sesión se califica una vez (D125–D126, `pantallas.md`).
 
 Vectores: `vectors/srs-*.json` (07a). Cada uno es una secuencia `entrada.pasos` de operaciones
 (`markLearning`, `markKnown`, `review` con `rating` y opcionalmente `card`, `isDue`) sobre la

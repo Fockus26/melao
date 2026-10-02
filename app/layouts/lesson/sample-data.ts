@@ -79,6 +79,7 @@ export const SAMPLE_LESSON: LessonData = {
     "vuelta-derecha": { slug: "vuelta-derecha", name: "Vuelta a la derecha" },
     enchufla: { slug: "enchufla", name: "Enchufla" },
   },
+  latencyOffsetMs: null,
   next: {
     id: "d2000000-0000-4000-8000-000000000121",
     number: 4,

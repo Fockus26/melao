@@ -92,6 +92,8 @@ function samplePorts(unavailable: boolean): LessonPorts {
         })),
       },
     }),
+    // Nada se escribe: la sesión de la muestra no existe.
+    completeSession: async () => {},
   };
 }
 

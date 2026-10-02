@@ -56,6 +56,8 @@ export type LessonData = {
   steps: LessonStep[];
   /** Nombre y slug de los pasos del estilo: el plan también usa los ya enseñados y la base. */
   stepNames: Record<string, { slug: string; name: string }>;
+  /** Calibración web del alumno (ms); `null` → la latencia del navegador (D124, D145). */
+  latencyOffsetMs: number | null;
   /** Siguiente lección del camino (`course_path`); `null` si es la última. */
   next: { id: string; number: number; title: string } | null;
 };

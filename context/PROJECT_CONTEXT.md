@@ -82,6 +82,25 @@ un juego infantil con mascota.
 - Despliegue: Vercel (web) + Supabase Cloud
 - Dominio: **PENDIENTE**
 
+## Repo y despliegue
+
+- Repo: https://github.com/Fockus26/melao (modo `pr`, `main` protegida con el check `ci`,
+  borra ramas al mergear)
+- Vercel: proyecto `melao` en la cuenta de César, enlazado al repo
+- Producción: https://melao-two.vercel.app · Previews: uno por PR
+- DNS gestionado por: — (sin dominio propio aún)
+- Mantenimiento: sí, por `MAINTENANCE_MODE` / `MAINTENANCE_UNTIL` (D111, `lib/maintenance.ts`)
+
+## Assets de marca
+
+| Pieza | Estado | Dónde / nota |
+|---|---|---|
+| Logo | creado en el diseño (C1, Gala) | `design/HANDOFF.md` |
+| Icono / isotipo | creado | `app/icon.svg` |
+| Favicon | generado | `app/favicon.ico` (`bun run brand:assets`, D087) |
+| Apple touch icon | generado | `app/apple-icon.png`; PWA en `public/icons/` |
+| Imagen Open Graph | generada | `app/opengraph-image.png`, `twitter-image.png` |
+
 ## Alcance de páginas
 
 Detalle y secciones en `PAGE_INVENTORY.md` y `docs/spec/pantallas.md`.

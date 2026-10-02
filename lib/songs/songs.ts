@@ -1,4 +1,13 @@
-import { DIFFICULTY_LEVELS } from "@/components/indicators/difficulty";
+import { type DifficultyLevel, isDifficultyLevel } from "@/lib/difficulty";
+
+// Nombres y niveles viven en el módulo común; se reexportan aquí para no romper a quien ya
+// importa de Canciones.
+export {
+  DIFFICULTY_NAMES,
+  DIFFICULTY_OPTIONS,
+  type DifficultyLevel,
+  difficultyName,
+} from "@/lib/difficulty";
 
 /**
  * Canciones para practicar (`/app/practice/songs`): tipos, filtros y formato. Sin reglas de
@@ -22,8 +31,6 @@ export type PracticeSong = {
   ready: boolean;
 };
 
-export type DifficultyLevel = 1 | 2 | 3 | 4 | 5;
-
 /** Filtros de la lista; viven en la URL (`?q=&difficulty=2,3&favorites=1`). */
 export type SongFilters = {
   q: string;
@@ -36,24 +43,6 @@ export const EMPTY_FILTERS: SongFilters = {
   difficulty: [],
   favorites: false,
 };
-
-// Copy provisional (CONTENT_CHECKLIST fila 65): nombres de los niveles, los mismos que la
-// muestra del Slider de primitivas.
-export const DIFFICULTY_NAMES: Record<DifficultyLevel, string> = {
-  1: "Muy fácil",
-  2: "Fácil",
-  3: "Media",
-  4: "Difícil",
-  5: "Muy difícil",
-};
-
-export const DIFFICULTY_OPTIONS = Array.from(
-  { length: DIFFICULTY_LEVELS },
-  (_, i) => (i + 1) as DifficultyLevel,
-);
-
-const isLevel = (n: number): n is DifficultyLevel =>
-  Number.isInteger(n) && n >= 1 && n <= DIFFICULTY_LEVELS;
 
 /** Minúsculas y sin acentos ni diéresis: "Pío" y "pio" son la misma búsqueda. */
 export function normalizeText(text: string): string {
@@ -101,7 +90,7 @@ export function parseFilters(params: RawParams): SongFilters {
   const levels = (first(params.difficulty) ?? "")
     .split(",")
     .map(Number)
-    .filter(isLevel);
+    .filter(isDifficultyLevel);
   return {
     q: (first(params.q) ?? "").slice(0, 120),
     difficulty: [...new Set(levels)].sort((a, b) => a - b),
@@ -178,9 +167,6 @@ export function formatDuration(ms: number): string {
   const s = total % 60;
   return `${Math.floor(total / 60)}:${String(s).padStart(2, "0")}`;
 }
-
-export const difficultyName = (level: number) =>
-  isLevel(level) ? DIFFICULTY_NAMES[level] : null;
 
 /**
  * Datos de la fila, "184 BPM · 4:05" (la dificultad va aparte, con sus barras). Lo que falta se

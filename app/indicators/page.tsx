@@ -5,6 +5,7 @@ import { LessonProgress } from "@/components/indicators/lesson-progress";
 import { PathNode } from "@/components/indicators/path-node";
 import { StepStatus } from "@/components/indicators/step-status";
 import { ThemeSwitch } from "@/components/theme/theme-switch";
+import { DIFFICULTY_NAMES, DIFFICULTY_OPTIONS } from "@/lib/difficulty";
 import { BeatRowDemo, RatingDemo } from "./demos";
 
 /**
@@ -55,14 +56,6 @@ function Demo({
   );
 }
 
-const DIFFICULTY_NAMES = [
-  "Muy fácil",
-  "Fácil",
-  "Media",
-  "Difícil",
-  "Muy difícil",
-];
-
 export default function IndicadoresPage() {
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-5 py-12 sm:px-8 lg:px-12">
@@ -90,9 +83,9 @@ export default function IndicadoresPage() {
           </Demo>
           <Demo title="Con nombre (lista de canciones)">
             <ul className="flex flex-col gap-2">
-              {DIFFICULTY_NAMES.map((name, i) => (
-                <li key={name}>
-                  <Difficulty level={i + 1} label={name} />
+              {DIFFICULTY_OPTIONS.map((level) => (
+                <li key={level}>
+                  <Difficulty level={level} label={DIFFICULTY_NAMES[level]} />
                 </li>
               ))}
             </ul>

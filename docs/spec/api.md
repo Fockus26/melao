@@ -209,6 +209,20 @@ si el estilo no tiene roles (D051).
 | `public.due_steps(p_style_id)` | `step_id, slug, name, due_at` de las tarjetas con `due_at ≤ now()`, las más atrasadas primero |
 | `public.hardest_steps(p_style_id, p_limit = 3)` | `step_id, slug, name, difficulty` (del paso, 1–5), `last_rating, last_reviewed_at, lapses`: tarjetas cuya última calificación fue 1–2 o con `lapses > 0`, por última calificación ↑, `lapses` ↓, dificultad FSRS ↓, más reciente primero (D093). Límite máx. 20 |
 
+Progreso (`20261002130000_progress.sql`): `security invoker`; cuentan solo los datos de
+`auth.uid()` (el admin, que por RLS lee los de todos, ve aquí los suyos). Mismo rol de tarjeta
+que arriba (D051).
+
+| Función | Devuelve |
+|---|---|
+| `public.review_forecast(p_style_id, p_days = 7, p_tz = 'UTC')` | una fila por **día de calendario en la zona `p_tz`** (IANA; el cliente manda la del dispositivo, `Intl…timeZone` / `TimeZone.current` / `ZoneId.systemDefault()`), de hoy a hoy + `p_days` − 1, también los vacíos: `day` (date), `due_count` (tarjetas del rol en pasos publicados del estilo que vencen ese día; **hoy incluye las ya vencidas**). `p_days` se acota a 1…14. Zona desconocida → error `22023` (D130) |
+| `public.step_status_counts(p_style_id)` | una fila: `unknown_count, learning_count, known_count, total` sobre los pasos **publicados** del estilo según `user_steps.status` (sin fila = no lo sé). Ceros si el estilo no tiene pasos (D131) |
+
+Sesiones recientes (Progreso, D132): lectura directa de `practice_sessions` con
+`user_id = auth.uid()` (filtro explícito: RLS deja al admin leer las de todos), orden
+`created_at` ↓, límite 5, con `dance_styles(name)`, `songs(title)` (null si ya no es visible)
+y `lessons(title)`.
+
 Estilo por defecto: el alumno escribe `profiles.default_style_id` directo (grant de columna,
 RLS: su fila); el cliente filtra por su `id`.
 

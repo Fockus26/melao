@@ -1,5 +1,6 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { type NextRequest, NextResponse } from "next/server";
+import { resolveEmailChange } from "@/lib/auth/email-change";
 import {
   type CallbackErrorReason,
   callbackErrorReason,
@@ -7,6 +8,8 @@ import {
 import {
   AUTH_ROUTES,
   callbackFailurePath,
+  emailChangeResultPath,
+  isEmailChangeCallback,
   isRecoveryCallback,
   safeNext,
 } from "@/lib/auth/redirect";
@@ -26,14 +29,18 @@ function isOtpType(value: string | null): value is EmailOtpType {
 }
 
 /**
- * Vuelta de Google y de los enlaces de correo (confirmación y recuperación). Intercambia el
- * código PKCE (`?code=`) o verifica el token del correo (`?token_hash=&type=`), deja la sesión
- * en cookies y manda a `next` (solo rutas internas). Si algo falla, a `/login?error=<motivo>`
- * (o a `/forgot-password` si venía de recuperar la contraseña), nunca a una página en blanco.
+ * Vuelta de Google y de los enlaces de correo (confirmación, recuperación y cambio de correo).
+ * Intercambia el código PKCE (`?code=`) o verifica el token del correo (`?token_hash=&type=`),
+ * deja la sesión en cookies y manda a `next` (solo rutas internas). Si algo falla, a
+ * `/login?error=<motivo>` (o a `/forgot-password` si venía de recuperar la contraseña), nunca a
+ * una página en blanco. El cambio de correo (`type=email_change`) termina siempre en Perfil con
+ * el resultado en `?email=` (D134).
  */
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const type = params.get("type");
+  if (isEmailChangeCallback(type)) return emailChange(request);
+
   const next =
     type === "recovery" ? AUTH_ROUTES.reset : safeNext(params.get("next"));
   // El tipo de enlace decide el motivo (D101): recuperación o confirmación del correo.
@@ -61,4 +68,15 @@ export async function GET(request: NextRequest) {
   if (error) return fail(callbackErrorReason(error.code, { recovering }));
 
   return NextResponse.redirect(new URL(next, request.url));
+}
+
+/** Cambio de correo: siempre a Perfil con el resultado en `?email=` (D134). */
+async function emailChange(request: NextRequest) {
+  const result = await resolveEmailChange(
+    request.nextUrl.searchParams,
+    async () => (await createClient()).auth,
+  );
+  return NextResponse.redirect(
+    new URL(emailChangeResultPath(result), request.url),
+  );
 }

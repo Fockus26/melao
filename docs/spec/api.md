@@ -34,7 +34,7 @@ Ninguna regla vive solo en el cliente: la contraseña la valida Supabase y los p
   aparece tras 600 ms sin teclear, al salir del campo o al enviar; nunca mientras se escribe.
   Quitarlo es inmediato en cuanto el valor es válido o se vacía. "Escribe tu correo" solo al
   enviar. Igual en Entrar, Registro y Recuperar.
-- **Correos (D078):** confirmación y recuperación en español, en `supabase/templates/` (el
+- **Correos (D078):** confirmación, recuperación y cambio de correo en español, en `supabase/templates/` (el
   proyecto real los recibe pegados en Supabase › Auth › Emails). El enlace es
   `{{ .ConfirmationURL }}` y termina en `/auth/callback`.
 - **Entrar:** `signInWithPassword` o `signInWithOAuth({ provider: "google" })`.
@@ -56,6 +56,15 @@ Ninguna regla vive solo en el cliente: la contraseña la valida Supabase y los p
   enlace sale de `type=recovery` o de `next=/reset-password`; lo demás cuenta como confirmación
   (D101). `other-browser` queda como alias de `other-browser-signup` para los enlaces ya
   enviados. Las nativas usan deep link al mismo flujo.
+- **Cambio de correo (Perfil, D134):** `updateUser({ email }, emailRedirectTo = callback?type=email_change)`
+  con "Secure email change" (Supabase › Auth › Email: llega un enlace al correo actual y otro al
+  nuevo; el cambio aplica al confirmar los dos). Mientras tanto `user.new_email` trae el pendiente.
+  La vuelta termina siempre en Perfil `/app/profile?email=<resultado>`: `changed` (con `code` o
+  `token_hash` confirmado) · `confirm-other` (vuelve sin código y con `message`: falta abrir el
+  otro enlace) · `link-expired` · `other-browser` (PKCE sin verificador: Supabase ya aplicó el
+  cambio, falta la sesión) · `access-failed`. Errores de `updateUser`: los de la tabla general, salvo
+  correo en uso ("usa otro", sin mandar a entrar) y `email_address_not_authorized` (el SMTP por
+  defecto solo envía a direcciones autorizadas). Lógica pura en `lib/auth/email-change.ts`.
 - **`next`:** solo rutas internas (`/…`, nunca `//`, `\`, esquemas ni las propias
   pantallas de auth); cualquier otra cosa cae en Inicio (`/app`). Sin open redirect.
 - **Rutas protegidas:** todo `/app/**` exige sesión; `/admin/**` además `app_role = admin`,
@@ -225,6 +234,15 @@ y `lessons(title)`.
 
 Estilo por defecto: el alumno escribe `profiles.default_style_id` directo (grant de columna,
 RLS: su fila); el cliente filtra por su `id`.
+
+Perfil (`20261002140000_profile.sql`): las preferencias (`display_name`, `dance_role`,
+`default_style_id`, `theme`, `coach_voice_volume`, `coach_spoken_count`) se escriben directo,
+una a la vez al cambiarlas (grant de columna, RLS: su fila); la latencia se lee de
+`audio_latency` (la web más reciente, D124). `theme` manda al cargar la app con sesión (D136).
+
+| Función | Devuelve |
+|---|---|
+| `public.my_subscription()` | `security invoker`, de `auth.uid()` (también el admin, solo la suya). A lo sumo una fila: la vigente o, si no hay, la de período más reciente: `plan_name, price_cents, currency, billing_interval` (null si el plan ya no es legible: inactivo), `status, current_period_end, canceled_at`, `state` (`active` = la condición de `has_active_subscription()` · `past_due` · `canceled` · `expired`, que incluye `active` con el período vencido). Sin suscripción, ninguna fila (D135) |
 
 Práctica libre (`20261001130000_practice_songs.sql`): `security invoker`; los favoritos son
 siempre los de `auth.uid()` (aunque un admin lea los de todos por RLS).

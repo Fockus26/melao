@@ -1166,6 +1166,19 @@ export type Database = {
         }[]
       }
       has_active_subscription: { Args: never; Returns: boolean }
+      my_subscription: {
+        Args: never
+        Returns: {
+          billing_interval: string | null
+          canceled_at: string | null
+          currency: string | null
+          current_period_end: string
+          plan_name: string | null
+          price_cents: number | null
+          state: string
+          status: Database["public"]["Enums"]["subscription_status"]
+        }[]
+      }
       practice_songs: {
         Args: { p_style: string }
         Returns: {

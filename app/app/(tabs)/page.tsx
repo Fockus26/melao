@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { HomeView } from "@/components/app/home-view";
-import { SignOutButton } from "@/components/auth/sign-out-button";
 import { getOwnProfile, requireOnboardedUser } from "@/lib/auth/session";
 import { pickCurrentStyle, summarizeCourse } from "@/lib/course/path";
 import {
@@ -49,18 +48,6 @@ export default async function AppHomePage() {
       course={path ? summarizeCourse(path) : null}
       due={due}
       hardest={hardest}
-      // Cerrar sesión vive aquí hasta que exista Perfil (pantallas.md).
-      footer={
-        <div className="flex flex-col items-start gap-3 border-t border-divider pt-6">
-          {user.email ? (
-            <p className="type-small text-text-secondary">
-              Sesión iniciada como{" "}
-              <strong className="font-medium text-text">{user.email}</strong>
-            </p>
-          ) : null}
-          <SignOutButton />
-        </div>
-      }
     />
   );
 }

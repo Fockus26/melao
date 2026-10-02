@@ -130,3 +130,45 @@ export function callbackFailurePath(
   const base = recovering ? AUTH_ROUTES.forgot : AUTH_ROUTES.signIn;
   return `${base}?error=${encodeURIComponent(reason)}`;
 }
+
+/** Perfil: ahí vuelve el enlace de cambio de correo, con el resultado en `?email=`. */
+export const PROFILE_PATH = "/app/profile";
+
+/**
+ * URL de vuelta del cambio de correo (`updateUser({ email }, { emailRedirectTo })`): el
+ * callback reconoce el tipo por `type=email_change` y termina siempre en Perfil (D134).
+ */
+export function emailChangeCallbackUrl(origin: string): string {
+  const url = new URL(AUTH_ROUTES.callback, origin);
+  url.searchParams.set("type", "email_change");
+  return url.toString();
+}
+
+export function isEmailChangeCallback(type: string | null | undefined) {
+  return type === "email_change";
+}
+
+/**
+ * Resultados del enlace de cambio de correo, estables y cortos (van en la URL y los comparten
+ * las tres plataformas): `changed` (confirmado), `confirm-other` (con el cambio seguro falta
+ * abrir el enlace del otro correo) y los motivos de error del callback.
+ */
+export const EMAIL_CHANGE_RESULTS = [
+  "changed",
+  "confirm-other",
+  "link-expired",
+  "other-browser",
+  "access-failed",
+] as const;
+export type EmailChangeResult = (typeof EMAIL_CHANGE_RESULTS)[number];
+
+export function isEmailChangeResult(
+  value: unknown,
+): value is EmailChangeResult {
+  return EMAIL_CHANGE_RESULTS.includes(value as EmailChangeResult);
+}
+
+/** `/app/profile?email=<resultado>`. */
+export function emailChangeResultPath(result: EmailChangeResult): string {
+  return `${PROFILE_PATH}?email=${result}`;
+}

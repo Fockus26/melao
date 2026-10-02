@@ -34,14 +34,15 @@ export async function requireUser(path: string): Promise<SessionUser> {
 
 /**
  * Perfil propio (RLS: el dueño lee su fila). `null` si aún no existe.
- * `experience_level` no va aquí: se lee solo en la Bienvenida, que es quien lo usa.
+ * `experience_level` no va aquí: se lee solo en la Bienvenida, que es quien lo usa. `theme`
+ * sí: la shell de la app lo aplica al cargar (D136).
  */
 export const getOwnProfile = cache(async (userId: string) => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("profiles")
     .select(
-      "display_name, app_role, dance_role, default_style_id, onboarded_at",
+      "display_name, app_role, dance_role, default_style_id, theme, onboarded_at",
     )
     .eq("id", userId)
     .maybeSingle();

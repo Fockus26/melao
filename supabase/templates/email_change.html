@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- Correo "Confirma el cambio de correo" (Supabase › Auth › Emails › Change email address). Asunto: ver config.toml.
+     Con "Secure email change" llega igual al correo actual y al nuevo: el texto sirve para los dos.
+     Colores copiados de design/tokens.json (color.light): los clientes de correo no leen variables CSS.
+     Copy provisional: CONTENT_CHECKLIST fila 76. -->
+<html lang="es">
+  <body style="margin:0;padding:0;background:#FAF8F4;font-family:Helvetica,Arial,sans-serif;color:#111111;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAF8F4;padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#FFFFFF;border:1px solid #E7E2D8;border-radius:12px;padding:32px 24px;">
+            <tr>
+              <td>
+                <p style="margin:0 0 24px;font-family:Georgia,'Times New Roman',serif;font-size:24px;line-height:32px;">Melao</p>
+                <h1 style="margin:0 0 12px;font-size:22px;line-height:28px;font-weight:600;">Confirma el cambio de correo</h1>
+                <p style="margin:0 0 24px;font-size:16px;line-height:24px;color:#5A5A5A;">
+                  Pediste cambiar el correo de tu cuenta de <strong style="color:#111111;">{{ .Email }}</strong> a <strong style="color:#111111;">{{ .NewEmail }}</strong>. Toca el botón para confirmarlo. Si te llegó otro enlace al otro correo, ábrelo también: el cambio se aplica cuando confirmes los dos.
+                </p>
+                <p style="margin:0 0 24px;">
+                  <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#111111;color:#FFFFFF;text-decoration:none;font-size:16px;font-weight:600;line-height:24px;padding:14px 24px;border-radius:12px;">Confirmar el cambio</a>
+                </p>
+                <p style="margin:0 0 8px;font-size:14px;line-height:20px;color:#686868;">
+                  Si el botón no funciona, copia este enlace en tu navegador:
+                </p>
+                <p style="margin:0 0 24px;font-size:14px;line-height:20px;word-break:break-all;">
+                  <a href="{{ .ConfirmationURL }}" style="color:#80621C;">{{ .ConfirmationURL }}</a>
+                </p>
+                <p style="margin:0;font-size:14px;line-height:20px;color:#686868;">
+                  El enlace vence en una hora; ábrelo en el mismo navegador donde pediste el cambio. Si no pediste este cambio, ignora este correo y tu cuenta sigue igual.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

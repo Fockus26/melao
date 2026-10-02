@@ -1,0 +1,62 @@
+{
+  "descripcion": "Calibración a oído (D142): 12 clics a 100 BPM, 4 toques de práctica y 8 medidos. Cada caso trae el desfase de cada toque con su clic (ms, en orden) y el resumen: estado, toques, promedio de los medidos redondeado a ms (en .5, hacia +∞ como Math.round), desvío muestral (n − 1) redondeado a 0.1. Prioridad: incomplete → irregular (desvío > 40) → out_of_range (fuera de −200…300). También el acotado y el paso del ajuste fino",
+  "entrada": {
+    "casos": [
+      {
+        "nombre": "parejos",
+        "desfases": [250, 120, 200, 190, 170, 185, 180, 175, 190, 182, 178, 180]
+      },
+      {
+        "nombre": "irregulares",
+        "desfases": [180, 180, 180, 180, 100, 200, 150, 250, 120, 180, 90, 230]
+      },
+      {
+        "nombre": "un clic tarde",
+        "desfases": [770, 790, 780, 775, 770, 790, 780, 775, 785, 780, 782, 778]
+      },
+      {
+        "nombre": "faltan toques",
+        "desfases": [180, 175, 182, 190, 170, 185, 180, 175, 190]
+      },
+      {
+        "nombre": "toques de más",
+        "desfases": [
+          250, 120, 200, 190, 170, 185, 180, 175, 190, 182, 178, 180, 999
+        ]
+      },
+      {
+        "nombre": "anticipa (altavoz)",
+        "desfases": [40, -30, 0, -10, -20, -10, -15, -5, -25, -10, -15, -20]
+      },
+      {
+        "nombre": "promedio en .5",
+        "desfases": [0, 0, 0, 0, 180, 181, 180, 181, 180, 181, 180, 181]
+      }
+    ],
+    "acotar": [350, -250, 183.4, 0, 300, -200],
+    "pasos": [
+      { "valor": 295, "direccion": 1 },
+      { "valor": -195, "direccion": -1 },
+      { "valor": 180, "direccion": 1 },
+      { "valor": 180, "direccion": -1 }
+    ]
+  },
+  "salida": {
+    "casos": [
+      { "estado": "ok", "toques": 12, "promedio": 180, "desvio": 6.1 },
+      { "estado": "irregular", "toques": 12, "promedio": 165, "desvio": 59.8 },
+      {
+        "estado": "out_of_range",
+        "toques": 12,
+        "promedio": 780,
+        "desvio": 6.1
+      },
+      { "estado": "incomplete", "toques": 9, "promedio": null, "desvio": null },
+      { "estado": "ok", "toques": 12, "promedio": 180, "desvio": 6.1 },
+      { "estado": "ok", "toques": 12, "promedio": -15, "desvio": 6.5 },
+      { "estado": "ok", "toques": 12, "promedio": 181, "desvio": 0.5 }
+    ],
+    "acotar": [300, -200, 183, 0, 300, -200],
+    "pasos": [300, -200, 190, 170]
+  }
+}

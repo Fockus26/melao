@@ -20,7 +20,10 @@ import { SALSA_CASINO } from "@/supabase/functions/_shared/core/style";
 import { buildTimeline } from "@/supabase/functions/_shared/core/timeline";
 
 // El componente usa `useRouter` (refresh al guardar): fuera del App Router, uno falso.
+// `mock.module` es global en bun: se conserva el resto del módulo real para no romper otros tests.
+const navigation = await import("next/navigation");
 mock.module("next/navigation", () => ({
+  ...navigation,
   useRouter: () => ({ refresh() {}, push() {}, replace() {} }),
 }));
 const { PracticeResult } = await import(

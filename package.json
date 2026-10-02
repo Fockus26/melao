@@ -18,7 +18,8 @@
     "tokens": "bun scripts/tokens.ts",
     "typecheck": "next typegen && tsc --noEmit",
     "smoke:ef": "bun scripts/smoke-ef.ts",
-    "brand:assets": "node scripts/brand-assets.ts"
+    "brand:assets": "node scripts/brand-assets.ts",
+    "qa:local": "node scripts/qa-local.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

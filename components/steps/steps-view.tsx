@@ -372,7 +372,11 @@ export function StepsView({
                 hasActiveStepFilters(filters) ? (
                   <Button
                     variant="outline"
-                    onClick={() => applyFilters(EMPTY_STEP_FILTERS)}
+                    onClick={() => {
+                      applyFilters(EMPTY_STEP_FILTERS);
+                      // El botón desaparece: el foco vuelve a la búsqueda.
+                      document.getElementById(ids.search)?.focus();
+                    }}
                   >
                     {COPY.clearFilters}
                   </Button>

@@ -259,6 +259,14 @@ favorito y tarjeta son siempre los de `auth.uid()` (aunque un admin lea los de t
 |---|---|
 | `public.step_catalog(p_style_id)` | una fila por paso **publicado** del estilo (también para el admin), por categoría en el orden del enum (`base, vuelta, entrada, salida, figura, variacion, libre`) y dentro por `sort_order` y nombre (D128): `step_id, slug, name, category, difficulty` (1–5), `status` (`unknown` sin fila en `user_steps`), `favorite` (false sin fila), `due_at` (la tarjeta del rol del perfil, o `leader` si el estilo no tiene roles; null sin tarjeta). La usa el catálogo `/app/steps`; búsqueda y filtros, en el cliente |
 
+Detalle de un paso (`20261002160000_step_detail.sql`, D138–D140): `security invoker`; estado,
+favorito, tarjeta e historial son siempre los de `auth.uid()` (aunque un admin lea los de todos
+por RLS). Cambiar el estado: `review-steps` con `context: "catalog"` y `status` (abajo).
+
+| Función | Devuelve |
+|---|---|
+| `public.step_detail(p_style_id, p_slug)` | a lo sumo una fila: el paso **publicado** de un estilo publicado con ese slug (también para el admin); si el slug se repite, el de `p_style_id` y, si no lo tiene, el del primer estilo por `sort_order`. `step_id, style_id, slug, name, description` (null), `category, difficulty` (1–5), `phrases`, `beat_notes` (jsonb `[{ beat, note }]`), `free` (`category = 'libre'` o estilo sin roles: un video, sin segmentado, D016), `start_position, end_position` (nombres), `videos` (jsonb `[{ role, duration_ms, aspect, video_path, poster_path }]`, `[]` sin videos), `role` (el de la tarjeta: `dance_role` del perfil, `leader` si el estilo no tiene roles, null si el perfil no tiene), `status` (`unknown` sin fila), `favorite`, `due_at` (tarjeta de `role`; null sin tarjeta), `related` (jsonb `[{ step_id, slug, name, category, relation }]`, D139: `prerequisite` = sus prerequisitos, `base` = el paso del que es variación, `variation` = sus variaciones; solo publicados del mismo estilo, un paso una vez con la primera relación en ese orden, dentro por `sort_order` y nombre), `history` (jsonb `[{ reviewed_at, rating, context, role }]`, D140: los últimos 10 `step_reviews` propios del paso, todos los roles, del más reciente). Sin fila → 404 |
+
 Favorito de un paso desde el cliente (D129): `update user_steps set favorite` de la fila propia;
 si no había fila y se marca, `insert (user_id, step_id, favorite)`; si el insert choca (23505,
 otra pestaña), `update` otra vez. Sin upsert: su `do update` reescribiría `user_id` y `step_id`,

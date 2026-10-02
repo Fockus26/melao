@@ -1231,6 +1231,30 @@ export type Database = {
           step_id: string
         }[]
       }
+      step_detail: {
+        Args: { p_slug: string; p_style_id: string }
+        Returns: {
+          beat_notes: Json
+          category: Database["public"]["Enums"]["step_category"]
+          description: string
+          difficulty: number
+          due_at: string
+          end_position: string
+          favorite: boolean
+          free: boolean
+          history: Json
+          name: string
+          phrases: number
+          related: Json
+          role: Database["public"]["Enums"]["dance_role"]
+          slug: string
+          start_position: string
+          status: Database["public"]["Enums"]["step_status"]
+          step_id: string
+          style_id: string
+          videos: Json
+        }[]
+      }
       step_popularity: {
         Args: { style: string }
         Returns: {

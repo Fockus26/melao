@@ -315,6 +315,55 @@ describe("lo que el cliente sí hace", () => {
     });
     expect(others).toBe(0);
   });
+
+  test("la marca de fin del cliente es idempotente y respeta created_at (D147)", async () => {
+    const MARK =
+      "update public.practice_sessions set completed_at = $2 where id = $1 and completed_at is null";
+    const READ =
+      "select created_at, completed_at from public.practice_sessions where id = $1";
+    type Row = { created_at: Date; completed_at: Date | null };
+    const { created, n1, n2, kept } = await asUser(db, ana, async (tx) => {
+      const before = (await tx.query<Row>(READ, [ids.sesionAna])).rows[0];
+      const at = new Date(before.created_at.getTime() + 60_000);
+      const n1 = (await tx.query(MARK, [ids.sesionAna, at.toISOString()]))
+        .affectedRows;
+      // Otra vez (Terminar tras el fin, reintento): no cambia la primera hora.
+      const n2 = (
+        await tx.query(MARK, [
+          ids.sesionAna,
+          new Date(at.getTime() + 60_000).toISOString(),
+        ])
+      ).affectedRows;
+      const after = (await tx.query<Row>(READ, [ids.sesionAna])).rows[0];
+      return {
+        created: before.created_at,
+        n1,
+        n2,
+        kept: after.completed_at?.getTime() === at.getTime(),
+      };
+    });
+    expect([n1, n2, kept]).toEqual([1, 0, true]);
+
+    // Reloj del dispositivo atrasado: el check lo rechaza (23514)…
+    let code: string | undefined;
+    try {
+      await asUser(db, ana, (tx) =>
+        tx.query(MARK, [ids.sesionAna, "2000-01-01T00:00:00Z"]),
+      );
+    } catch (e) {
+      code = (e as { code?: string }).code;
+    }
+    expect(code).toBe("23514");
+    // …y con created_at (lo que hace el cliente al reintentar) entra.
+    const n = await asUser(
+      db,
+      ana,
+      async (tx) =>
+        (await tx.query(MARK, [ids.sesionAna, created.toISOString()]))
+          .affectedRows,
+    );
+    expect(n).toBe(1);
+  });
 });
 
 describe("popularidad (últimos 30 días)", () => {

@@ -78,6 +78,11 @@ const SAMPLES = [
     text: "El resultado de /app/practice/result con un review-steps falso: por calificar con vencidos y opcionales plegados, ninguno vence hoy, ya calificada, error al guardar y título largo.",
   },
   {
+    href: "/layouts/progress",
+    title: "Progreso · estados",
+    text: "Progreso con datos de ejemplo: con datos, primer día, sin repasos en 7 días, sin sesiones, cargando y error de los próximos repasos.",
+  },
+  {
     href: "/layouts/songs",
     title: "Canciones · estados",
     text: "Practicar · canciones con datos de ejemplo: lista, con filtros, favoritas, sin favoritas, sin resultados, estilo sin canciones, sin estilos, cargando y error.",

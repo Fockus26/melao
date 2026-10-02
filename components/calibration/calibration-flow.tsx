@@ -92,15 +92,14 @@ export function CalibrationFlow({
   const frame = useRef(0);
   const heading = useRef<HTMLHeadingElement>(null);
   const tapButton = useRef<HTMLButtonElement>(null);
-  const mounted = useRef(false);
+  const shownKind = useRef(initialPhase.kind);
 
   // Al cambiar de estado, el foco va a su título; al medir, al botón de toque (Espacio y Enter
-  // también cuentan). Al cargar la página no se mueve.
+  // también cuentan). Al cargar la página no se mueve (por el estado ya mostrado y no por "ya
+  // montado": en desarrollo el efecto corre dos veces al montar).
   useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true;
-      return;
-    }
+    if (shownKind.current === phase.kind) return;
+    shownKind.current = phase.kind;
     (phase.kind === "listen" ? tapButton : heading).current?.focus();
   }, [phase.kind]);
 

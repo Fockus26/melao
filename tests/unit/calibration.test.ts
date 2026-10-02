@@ -153,8 +153,8 @@ describe("pantalla", () => {
     const html = render({ initialPhase: { kind: "speaker" } });
     expect(html).toContain("Audífonos Bluetooth · Android");
     expect(html).toContain("En uso");
-    expect(
-      render({ initialPhase: { kind: "speaker" }, saved: [] }),
-    ).toContain("Todavía no guardaste ningún ajuste.");
+    expect(render({ initialPhase: { kind: "speaker" }, saved: [] })).toContain(
+      "Todavía no guardaste ningún ajuste.",
+    );
   });
 });

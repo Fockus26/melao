@@ -190,3 +190,75 @@ export function callbackErrorReason(
     return "google";
   return "access-failed";
 }
+
+// ── Cambio de correo (Perfil, D134) ──────────────────────────────────────────
+
+/** Resultado del enlace de cambio de correo a partir del código de error del callback. */
+export function emailChangeErrorResult(
+  code: string | null | undefined,
+): "link-expired" | "other-browser" | "access-failed" {
+  const reason = callbackErrorReason(code);
+  if (reason === "link-expired") return "link-expired";
+  if (reason === "other-browser-signup") return "other-browser";
+  return "access-failed";
+}
+
+/**
+ * Aviso de Perfil para cada resultado de `/app/profile?email=…`. Copy provisional
+ * (CONTENT_CHECKLIST fila 75).
+ */
+export const EMAIL_CHANGE_NOTICES = {
+  changed: {
+    tone: "success",
+    title: "Correo actualizado",
+    text: "Desde ahora entras con tu correo nuevo.",
+  },
+  "confirm-other": {
+    tone: "info",
+    title: "Falta un paso",
+    text: "Confirmaste uno de los dos enlaces. Abre el que te enviamos al otro correo para terminar el cambio.",
+  },
+  "link-expired": {
+    tone: "error",
+    title: "El enlace venció o ya se usó",
+    text: "Tu correo no cambió. Vuelve a pedir el cambio y abre el enlace en este mismo navegador.",
+  },
+  // PKCE sin verificador: Supabase ya aplicó el cambio antes de volver; solo falta la sesión.
+  "other-browser": {
+    tone: "info",
+    title: "Abriste el enlace en otro navegador",
+    text: "El cambio quedó confirmado. Si aquí todavía ves el correo anterior, sal y entra con el nuevo.",
+  },
+  "access-failed": {
+    tone: "error",
+    title: "No pudimos confirmar el cambio",
+    text: "Tu correo no cambió. Inténtalo de nuevo en un momento.",
+  },
+} as const;
+
+/**
+ * Error de `updateUser({ email })` en español. Parte de la tabla general y cambia lo que allí
+ * habla de entrar o recuperar la contraseña (aquí ya hay sesión). Copy provisional
+ * (CONTENT_CHECKLIST fila 75).
+ */
+export function emailChangeErrorCopy(
+  error: AuthErrorLike | null | undefined,
+): AuthErrorCopy {
+  switch (error?.code) {
+    case "email_exists":
+    case "user_already_exists":
+      return {
+        message: "Ya hay una cuenta con ese correo. Usa otro.",
+        field: "email",
+      };
+    // El correo de Supabase por defecto solo envía a direcciones autorizadas.
+    case "email_address_not_authorized":
+      return {
+        message:
+          "Por ahora no podemos enviar correos a esa dirección. Prueba con otra o inténtalo más tarde.",
+        field: "email",
+      };
+    default:
+      return authErrorCopy(error);
+  }
+}

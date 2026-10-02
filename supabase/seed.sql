@@ -34,7 +34,22 @@ insert into public.dance_styles (
    '{1,2,3,4,5,6,7,8}', 5, 2, 1, true, 'a2000000-0000-4000-8000-000000000001', true, 2)
 on conflict (id) do nothing;
 
--- ── Posiciones (D053) ────────────────────────────────────────────────────────────────
+-- ── Bandas de dificultad por BPM (D137) — PROPUESTA para César (CONTENT_CHECKLIST fila 77)
+-- Tope de BPM de cada nivel, ascendente (`private.song_difficulty`): nivel n = primer tope con
+-- BPM ≤ tope; por encima del último, nivel 5. Salsa casino se baila de ~150 a ~220 BPM (timba
+-- rápida arriba); merengue de ~110 a ~170. Se ponen solo si el estilo no tiene bandas (null o
+-- vacías): nunca pisan las que César haya editado, y una segunda corrida no cambia nada.
+
+update public.dance_styles d
+set difficulty_bpm_bands = v.bands::smallint[]
+from (values
+  ('a0000000-0000-4000-8000-000000000001', '{170,185,200,215}'), -- salsa casino
+  ('a0000000-0000-4000-8000-000000000002', '{125,140,155,170}')  -- merengue
+) as v (id, bands)
+where d.id = v.id::uuid
+  and coalesce(cardinality(d.difficulty_bpm_bands), 0) = 0;
+
+-- ── Posiciones (D053)────────────────────────────────────────────────────────────────
 -- Salsa: guapea (inicial, abierta frente a frente con una o dos manos), cerrada y abierta
 -- (separados tras el abanico). Merengue: cerrada (inicial) y abierta.
 

@@ -139,7 +139,7 @@ vencida; en el curso, curso y estilo publicados.
 
 | Tabla | Campos |
 |---|---|
-| `dance_styles` | `slug` · `name` · `beats_per_phrase` · `spoken_beats` · `call_beat` · `call_span_beats` · `lead_in_phrases` (motor-de-ritmo §1) · `has_roles` · `difficulty_bpm_bands` (tope de BPM por nivel, ascendente; PENDIENTE) · `start_position_id` · `published` · `sort_order` |
+| `dance_styles` | `slug` · `name` · `beats_per_phrase` · `spoken_beats` · `call_beat` · `call_span_beats` · `lead_in_phrases` (motor-de-ritmo §1) · `has_roles` · `difficulty_bpm_bands` (tope de BPM por nivel, ascendente; hasta 4 topes → niveles 1–5; null o vacío = canciones sin dificultad salvo override; provisionales en el seed, D137) · `start_position_id` · `published` · `sort_order` |
 | `positions` | `style_id` · `slug` · `name` |
 | `steps` | `style_id` · `slug` (nombra el clip `step.<slug>`) · `name` · `description` · `beat_notes` (`[{beat, note}]`) · `category` (`base\|vuelta\|entrada\|salida\|figura\|variacion\|libre`) · `difficulty` (1–5) · `start_position_id` · `end_position_id` · `phrases` · `can_start` · `can_end` · `repeatable` · `variation_of` · `voice_clip_path` · `published` · `sort_order` |
 | `step_prerequisites` | `step_id` · `requires_step_id` |
@@ -385,6 +385,7 @@ orden del curso. Lo aplica `supabase db reset` y, a mano, el proyecto real. Es i
 | Qué | Contenido |
 |---|---|
 | Estilos | `salsa-casino` y `merengue`, publicados, con los valores del core (`style.ts`) |
+| Bandas de dificultad | **propuesta** (D137): casino `{170,185,200,215}`, merengue `{125,140,155,170}`. Solo se ponen si el estilo no tiene bandas (null o vacías): no pisan las editadas |
 | Posiciones | salsa: `guapea` (inicial), `cerrada`, `abierta` · merengue: `cerrada` (inicial), `abierta` |
 | Pasos | 20 de casino y 11 de merengue, publicados; pasan `validateCatalog`. Base: `guapea`, `basico-cerrada` (salsa) · `basico`, `basico-abierta` (merengue) |
 | Canciones | 5 pistas de prueba **sin audio ni licencia, sin publicar** (D009), con rejilla de 2–3 anclas y `dance_end_ms` |

@@ -38,6 +38,7 @@ import { SwitchField } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { difficultyName } from "@/lib/difficulty";
 
 /*
  * Demostraciones con estado de /primitives. Todo el texto es de ejemplo (placeholder realista,
@@ -135,12 +136,10 @@ export function SwitchDemo() {
   );
 }
 
-const LEVEL_NAMES = ["Muy fácil", "Fácil", "Media", "Difícil", "Muy difícil"];
-
 export function SliderDemo() {
   const id = useId();
   const [value, setValue] = useState([3]);
-  const text = (v: number) => `${v} de 5 · ${LEVEL_NAMES[v - 1]}`;
+  const text = (v: number) => `${v} de 5 · ${difficultyName(v)}`;
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between gap-4">

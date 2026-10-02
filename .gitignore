@@ -48,6 +48,7 @@ next-env.d.ts
 # estado local de context/ (web-agent-kit, D020): se lee en la carpeta principal, no va al repo
 context/CURRENT_PHASE.md
 context/CONTENT_CHECKLIST.md
+context/KIT_FEEDBACK.md
 context/PAGE_INVENTORY.md
 context/SECTION_INVENTORY.md
 context/COMPONENTS_INVENTORY.md

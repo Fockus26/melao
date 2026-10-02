@@ -1196,6 +1196,13 @@ export type Database = {
           title: string
         }[]
       }
+      review_forecast: {
+        Args: { p_days?: number; p_style_id: string; p_tz?: string }
+        Returns: {
+          day: string
+          due_count: number
+        }[]
+      }
       set_app_role: {
         Args: {
           new_role: Database["public"]["Enums"]["app_role"]
@@ -1211,12 +1218,34 @@ export type Database = {
           song_id: string
         }[]
       }
+      step_catalog: {
+        Args: { p_style_id: string }
+        Returns: {
+          category: Database["public"]["Enums"]["step_category"]
+          difficulty: number
+          due_at: string
+          favorite: boolean
+          name: string
+          slug: string
+          status: Database["public"]["Enums"]["step_status"]
+          step_id: string
+        }[]
+      }
       step_popularity: {
         Args: { style: string }
         Returns: {
           appearances_30d: number
           percentile: number
           step_id: string
+        }[]
+      }
+      step_status_counts: {
+        Args: { p_style_id: string }
+        Returns: {
+          known_count: number
+          learning_count: number
+          total: number
+          unknown_count: number
         }[]
       }
       style_progress: {

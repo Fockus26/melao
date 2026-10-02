@@ -257,4 +257,56 @@ describe("seed", () => {
       );
     }
   });
+
+  // D137: bandas provisionales (fila 77) para que Practicar y Canciones tengan dificultad.
+  test("cada estilo tiene 4 topes de BPM ascendentes y las canciones salen con dificultad", async () => {
+    const { rows: styles } = await db.query<{ bands: number[] }>(
+      "select difficulty_bpm_bands as bands from public.dance_styles",
+    );
+    for (const { bands } of styles) {
+      expect(bands).toHaveLength(4);
+      expect([...bands].sort((a, b) => a - b)).toEqual(bands);
+      expect(new Set(bands).size).toBe(4);
+    }
+    const { rows } = await db.query<{ title: string; level: number | null }>(
+      `select s.title, private.song_difficulty(s.difficulty_override, s.bpm, d.difficulty_bpm_bands) as level
+       from public.songs s
+       join public.song_styles ss on ss.song_id = s.id
+       join public.dance_styles d on d.id = ss.style_id
+       order by s.title`,
+    );
+    // Lento, medio y rápido de cada estilo caen en niveles distintos.
+    expect(rows.map((r) => r.level)).toEqual([1, 2, 3, 1, 3]);
+  });
+
+  test("pone bandas al estilo que no las tiene y no pisa las editadas", async () => {
+    const SALSA = "a0000000-0000-4000-8000-000000000001";
+    const MERENGUE = "a0000000-0000-4000-8000-000000000002";
+    const bands = async (id: string) =>
+      (
+        await db.query<{ b: number[] | null }>(
+          "select difficulty_bpm_bands as b from public.dance_styles where id = $1",
+          [id],
+        )
+      ).rows[0].b;
+    const seeded = await bands(MERENGUE);
+    await db.query(
+      "update public.dance_styles set difficulty_bpm_bands = null where id = $1",
+      [MERENGUE],
+    );
+    await db.query(
+      "update public.dance_styles set difficulty_bpm_bands = '{160,175,190,210}' where id = $1",
+      [SALSA],
+    );
+    await applySeed(db);
+    expect(await bands(MERENGUE)).toEqual(seeded);
+    expect(await bands(SALSA)).toEqual([160, 175, 190, 210]);
+    // Vacías cuentan como sin bandas (`song_difficulty` devuelve null con `{}`).
+    await db.query(
+      "update public.dance_styles set difficulty_bpm_bands = '{}' where id = $1",
+      [SALSA],
+    );
+    await applySeed(db);
+    expect(await bands(SALSA)).toEqual([170, 185, 200, 215]);
+  });
 });

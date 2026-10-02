@@ -148,7 +148,7 @@ vencida; en el curso, curso y estilo publicados.
 
 | Tabla | Campos |
 |---|---|
-| `dance_styles` | `slug` · `name` · `beats_per_phrase` · `spoken_beats` · `call_beat` · `call_span_beats` · `lead_in_phrases` (motor-de-ritmo §1) · `has_roles` · `difficulty_bpm_bands` (tope de BPM por nivel, ascendente; PENDIENTE) · `start_position_id` · `published` · `sort_order` |
+| `dance_styles` | `slug` · `name` · `beats_per_phrase` · `spoken_beats` · `call_beat` · `call_span_beats` · `lead_in_phrases` (motor-de-ritmo §1) · `has_roles` · `difficulty_bpm_bands` (tope de BPM por nivel, ascendente; hasta 4 topes → niveles 1–5; null o vacío = canciones sin dificultad salvo override; provisionales en el seed, D137) · `start_position_id` · `published` · `sort_order` |
 | `positions` | `style_id` · `slug` · `name` |
 | `steps` | `style_id` · `slug` (nombra el clip `step.<slug>`) · `name` · `description` · `beat_notes` (`[{beat, note}]`) · `category` (`base\|vuelta\|entrada\|salida\|figura\|variacion\|libre`) · `difficulty` (1–5) · `start_position_id` · `end_position_id` · `phrases` · `can_start` · `can_end` · `repeatable` · `variation_of` · `voice_clip_path` · `published` · `sort_order` |
 | `step_prerequisites` | `step_id` · `requires_step_id` |
@@ -218,6 +218,20 @@ si el estilo no tiene roles (D051).
 | `public.due_steps(p_style_id)` | `step_id, slug, name, due_at` de las tarjetas con `due_at ≤ now()`, las más atrasadas primero |
 | `public.hardest_steps(p_style_id, p_limit = 3)` | `step_id, slug, name, difficulty` (del paso, 1–5), `last_rating, last_reviewed_at, lapses`: tarjetas cuya última calificación fue 1–2 o con `lapses > 0`, por última calificación ↑, `lapses` ↓, dificultad FSRS ↓, más reciente primero (D093). Límite máx. 20 |
 
+Progreso (`20261002130000_progress.sql`): `security invoker`; cuentan solo los datos de
+`auth.uid()` (el admin, que por RLS lee los de todos, ve aquí los suyos). Mismo rol de tarjeta
+que arriba (D051).
+
+| Función | Devuelve |
+|---|---|
+| `public.review_forecast(p_style_id, p_days = 7, p_tz = 'UTC')` | una fila por **día de calendario en la zona `p_tz`** (IANA; el cliente manda la del dispositivo, `Intl…timeZone` / `TimeZone.current` / `ZoneId.systemDefault()`), de hoy a hoy + `p_days` − 1, también los vacíos: `day` (date), `due_count` (tarjetas del rol en pasos publicados del estilo que vencen ese día; **hoy incluye las ya vencidas**). `p_days` se acota a 1…14. Zona desconocida → error `22023` (D130) |
+| `public.step_status_counts(p_style_id)` | una fila: `unknown_count, learning_count, known_count, total` sobre los pasos **publicados** del estilo según `user_steps.status` (sin fila = no lo sé). Ceros si el estilo no tiene pasos (D131) |
+
+Sesiones recientes (Progreso, D132): lectura directa de `practice_sessions` con
+`user_id = auth.uid()` (filtro explícito: RLS deja al admin leer las de todos), orden
+`created_at` ↓, límite 5, con `dance_styles(name)`, `songs(title)` (null si ya no es visible)
+y `lessons(title)`.
+
 Estilo por defecto: el alumno escribe `profiles.default_style_id` directo (grant de columna,
 RLS: su fila); el cliente filtra por su `id`.
 
@@ -237,6 +251,18 @@ siempre los de `auth.uid()` (aunque un admin lea los de todos por RLS).
 |---|---|
 | `public.practice_songs(p_style)` | una fila por canción **visible** del estilo (publicada con licencia vigente; un admin ve también las sin publicar), por título: `song_id, title, artist, bpm, duration_ms, dance_end_ms, beat_grid, difficulty` (1–5 o null), `favorite` (de quien llama), `sessions_30d, popularity` (percentil 0–1, de `song_popularity()`), `ready` (rejilla ≥ 2 anclas y `dance_end_ms`: lo que `plan-session` exige). La usan el configurador y Canciones; el modo de canción (D117) se aplica sobre esta lista |
 | `private.song_difficulty(override, bpm, bands)` | `difficulty_override` si la hay; si no, por `dance_styles.difficulty_bpm_bands`: el primer tope con BPM ≤ tope (nivel 1…), por encima del último el siguiente nivel (máx. 5); sin bandas o sin BPM, null |
+
+Catálogo de pasos (`20261002120000_step_catalog.sql`, D127): `security invoker`; estado,
+favorito y tarjeta son siempre los de `auth.uid()` (aunque un admin lea los de todos por RLS).
+
+| Función | Devuelve |
+|---|---|
+| `public.step_catalog(p_style_id)` | una fila por paso **publicado** del estilo (también para el admin), por categoría en el orden del enum (`base, vuelta, entrada, salida, figura, variacion, libre`) y dentro por `sort_order` y nombre (D128): `step_id, slug, name, category, difficulty` (1–5), `status` (`unknown` sin fila en `user_steps`), `favorite` (false sin fila), `due_at` (la tarjeta del rol del perfil, o `leader` si el estilo no tiene roles; null sin tarjeta). La usa el catálogo `/app/steps`; búsqueda y filtros, en el cliente |
+
+Favorito de un paso desde el cliente (D129): `update user_steps set favorite` de la fila propia;
+si no había fila y se marca, `insert (user_id, step_id, favorite)`; si el insert choca (23505,
+otra pestaña), `update` otra vez. Sin upsert: su `do update` reescribiría `user_id` y `step_id`,
+que no tienen grant de update. Desmarcar sin fila no escribe nada.
 
 ## Edge Functions
 
@@ -403,6 +429,7 @@ orden del curso. Lo aplica `supabase db reset` y, a mano, el proyecto real. Es i
 | Qué | Contenido |
 |---|---|
 | Estilos | `salsa-casino` y `merengue`, publicados, con los valores del core (`style.ts`) |
+| Bandas de dificultad | **propuesta** (D137): casino `{170,185,200,215}`, merengue `{125,140,155,170}`. Solo se ponen si el estilo no tiene bandas (null o vacías): no pisan las editadas |
 | Posiciones | salsa: `guapea` (inicial), `cerrada`, `abierta` · merengue: `cerrada` (inicial), `abierta` |
 | Pasos | 20 de casino y 11 de merengue, publicados; pasan `validateCatalog`. Base: `guapea`, `basico-cerrada` (salsa) · `basico`, `basico-abierta` (merengue) |
 | Canciones | 5 pistas de prueba **sin audio ni licencia, sin publicar** (D009), con rejilla de 2–3 anclas y `dance_end_ms` |

@@ -1205,6 +1205,19 @@ export type Database = {
           song_id: string
         }[]
       }
+      step_catalog: {
+        Args: { p_style_id: string }
+        Returns: {
+          category: Database["public"]["Enums"]["step_category"]
+          difficulty: number
+          due_at: string
+          favorite: boolean
+          name: string
+          slug: string
+          status: Database["public"]["Enums"]["step_status"]
+          step_id: string
+        }[]
+      }
       step_popularity: {
         Args: { style: string }
         Returns: {

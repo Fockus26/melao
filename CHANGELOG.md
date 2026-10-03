@@ -1,5 +1,18 @@
 # melao
 
+## 0.8.0
+
+### Minor Changes
+
+- 24d1b67: Pantalla de Progreso: lecciones, pasos por estado, próximos repasos y sesiones recientes.
+- e5bd067: Catálogo de pasos con búsqueda, filtros por categoría y estado, y favoritos.
+- c510c7c: Al terminar una práctica calificas cada paso y se programa su próximo repaso.
+- 2d3f90c: Pantalla de Perfil: nombre y correo, rol y estilo, coach, tema y suscripción.
+
+### Patch Changes
+
+- ff3ab29: Las canciones de ejemplo tienen dificultad: Practicar "Por dificultad" y los chips de nivel de Canciones ya muestran algo útil
+
 ## 0.7.0
 
 ### Minor Changes

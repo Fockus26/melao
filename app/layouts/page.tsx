@@ -127,6 +127,11 @@ const SAMPLES = [
     title: "Admin · Usuarios",
     text: "/admin/users en solo lectura con 60 usuarios de ejemplo: búsqueda, chips de estado con contador, tabla y páginas sobre la URL; sin resultados, sin usuarios, error y cargando.",
   },
+  {
+    href: "/layouts/admin-course",
+    title: "Admin, camino",
+    text: "El Constructor del camino de /admin/course sin escribir nada: unidades y lecciones que se reordenan arrastrando o con el menú, lección válida, aviso de secuencia, lección sin canción, estilo sin curso, error al guardar y al cargar.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

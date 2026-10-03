@@ -113,6 +113,11 @@ const SAMPLES = [
     text: "El detalle de /app/steps/[slug] sin escribir nada: con historial y relacionados, con video, paso libre, sin historial ni relacionados, sin suscripción, perfil sin rol, error al guardar el estado y nombre largo.",
   },
   {
+    href: "/layouts/admin-summary",
+    title: "Admin · Resumen",
+    text: "El Resumen de /admin sin sesión: con avisos y pendientes (y “Ver n más”), sin avisos, sin contenido, error al leer con Reintentar y cargando.",
+  },
+  {
     href: "/layouts/admin-users",
     title: "Admin · Usuarios",
     text: "/admin/users en solo lectura con 60 usuarios de ejemplo: búsqueda, chips de estado con contador, tabla y páginas sobre la URL; sin resultados, sin usuarios, error y cargando.",

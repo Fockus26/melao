@@ -1091,6 +1091,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_summary: { Args: never; Returns: Json }
       admin_user_counts: {
         Args: { p_query?: string }
         Returns: {

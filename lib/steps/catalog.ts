@@ -52,7 +52,7 @@ export const CATEGORY_NAMES: Record<StepCategory, string> = {
  * Valores de `?category=` en inglés (D077: los valores de la URL van en inglés; el enum de la
  * base es un identificador de código y no se toca).
  */
-const CATEGORY_PARAM: Record<StepCategory, string> = {
+export const CATEGORY_PARAM: Record<StepCategory, string> = {
   base: "base",
   vuelta: "turn",
   entrada: "entry",
@@ -61,7 +61,7 @@ const CATEGORY_PARAM: Record<StepCategory, string> = {
   variacion: "variation",
   libre: "free",
 };
-const CATEGORY_FROM_PARAM = Object.fromEntries(
+export const CATEGORY_FROM_PARAM = Object.fromEntries(
   Object.entries(CATEGORY_PARAM).map(([k, v]) => [v, k as StepCategory]),
 ) as Record<string, StepCategory>;
 

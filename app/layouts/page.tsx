@@ -122,6 +122,11 @@ const SAMPLES = [
     title: "Admin, pasos",
     text: "La lista + editor de /admin/steps sin escribir nada: lista con filtros, paso completo, paso nuevo, publicar bloqueado por videos, error al guardar, subida en curso y error al cargar.",
   },
+  {
+    href: "/layouts/admin-users",
+    title: "Admin · Usuarios",
+    text: "/admin/users en solo lectura con 60 usuarios de ejemplo: búsqueda, chips de estado con contador, tabla y páginas sobre la URL; sin resultados, sin usuarios, error y cargando.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

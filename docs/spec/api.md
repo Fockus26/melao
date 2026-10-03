@@ -291,7 +291,7 @@ una a la vez al cambiarlas (grant de columna, RLS: su fila); la latencia se lee 
 
 | Función | Devuelve |
 |---|---|
-| `public.my_subscription()` | `security invoker`, de `auth.uid()` (también el admin, solo la suya). A lo sumo una fila: la vigente o, si no hay, la de período más reciente: `plan_name, price_cents, currency, billing_interval` (null si el plan ya no es legible: inactivo), `status, current_period_end, canceled_at`, `state` (`active` = la condición de `has_active_subscription()` · `past_due` · `canceled` · `expired`, que incluye `active` con el período vencido). Sin suscripción, ninguna fila (D135) |
+| `public.my_subscription()` | `security invoker`, de `auth.uid()` (también el admin, solo la suya). A lo sumo una fila: la vigente o, si no hay, la de período más reciente: `plan_name, price_cents, currency, billing_interval` (null si el plan ya no es legible: inactivo), `status, current_period_end, canceled_at`, `state` (`active` = la condición de `has_active_subscription()` · `past_due` · `canceled` · `expired`, que incluye `active` con el período vencido; regla compartida `private.subscription_state`, la misma de Admin · Usuarios). Sin suscripción, ninguna fila (D135) |
 
 Calibrar audífonos (`20261002170000_calibration.sql`, D142–D144): la pantalla lee los ajustes
 propios de `audio_latency` (`user_id = auth.uid()`, `platform`, orden `measured_at` ↓) y guarda
@@ -337,6 +337,27 @@ todo por RLS); quien no es admin recibe `42501` y anónimo no puede llamarla.
 | Función | Devuelve |
 |---|---|
 | `public.admin_summary()` | jsonb `{ styles, totals, warnings, pending }`. `styles`: todos los estilos por `sort_order` y nombre, `{ id, slug, name, published, steps_published, steps_total, songs_published, songs_total, lessons_published, lessons_total }` (una canción cuenta en cada estilo de `song_styles`; `lessons_published` = lecciones del curso si curso y estilo están publicados). `totals`: los mismos contadores sin repetir (incluye canciones sin estilo) + `students` (`app_role = 'student'`) y `students_active` (suscripción `active` con `current_period_end > now()`, como `has_active_subscription()`). `warnings` y `pending`: `[{ kind, id, name, style, reasons, expires_on? }]`, `style` = slug (en una canción, el primero de sus estilos; null sin estilo), `reasons` = códigos. **Avisos** (D155): `step` publicado sin video completo (`both`, o `leader` y `follower`) → `missing_video`; `song` publicada con licencia vencida → `license_expired` o que vence en ≤ 30 días → `license_expiring` (+ `expires_on`); `lesson` de curso visible → `step_unpublished` · `song_unavailable` (práctica o final no visible) · `missing_song` (ninguna). **Pendientes**: `step` sin publicar → `missing_video` o `[]` (listo); `song` sin publicar → `missing_audio` · `missing_grid` · `missing_dance_end` · `missing_license` (`songs_publish_requirements`); `style` sin publicar → `missing_start_position` o `[]`. Orden: por tipo (step, song, lesson / step, song, style), estilo y nombre (lecciones, en el orden del curso) |
+
+### Admin · Usuarios (`20261003140000_admin_users.sql`, D156–D157)
+
+Solo lectura. `security definer` (el correo y el último acceso están en `auth.users`, que la
+RLS no da): cada función comprueba `private.is_admin()` antes de leer (si no, `42501`); anónimo
+sin permiso. Un usuario por perfil (admins y teachers incluidos, con su `app_role`).
+La suscripción que cuenta es la misma de `my_subscription()` (la vigente o, si no hay, la de
+período más reciente) y su estado sale de la misma regla, `private.subscription_state(status,
+current_period_end)`, que usan las dos; sin suscripción, `none`. El plan se nombra aunque esté
+inactivo. Búsqueda (`p_query`, se corta a 120): cada palabra tiene que estar en el nombre o en
+el correo, sin acentos ni mayúsculas (`private.search_text`, con `translate`: las migraciones no
+activan `unaccent`); texto literal, sin comodines; vacía o en blanco = todos.
+
+| Función | Devuelve |
+|---|---|
+| `public.admin_users(p_query = null, p_state = null, p_limit = 25, p_offset = 0)` | una página, **alta más reciente primero** (`profiles.created_at` ↓, `id` desempata): `user_id, display_name` (null), `email, app_role, dance_role` (null), `created_at` (alta), `last_sign_in_at` (null), `plan_name` (null sin suscripción), `state` (`active · past_due · canceled · expired · none`), `current_period_end` (null sin suscripción), `total_count` (filas con los filtros, antes de cortar la página). `p_state` vacío o null = todos; otro valor fuera de la lista → `22023`. `p_limit` se acota a 1…100 y `p_offset` a ≥ 0 |
+| `public.admin_user_counts(p_query = null)` | una fila con la búsqueda y **sin** el filtro de estado: `all_count, active_count, past_due_count, canceled_count, expired_count, none_count`. Los contadores de los chips, que se ven aunque la página filtrada venga vacía (D157) |
+
+Web (`/admin/users`): pide la página y los contadores en paralelo (y, con búsqueda, los
+contadores sin ella para el total del encabezado); 25 por página; una página fuera de rango
+vuelve a la última.
 
 ## Edge Functions
 

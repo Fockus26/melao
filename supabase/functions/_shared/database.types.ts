@@ -1117,6 +1117,38 @@ export type Database = {
         }[]
       }
       admin_summary: { Args: never; Returns: Json }
+      admin_user_counts: {
+        Args: { p_query?: string }
+        Returns: {
+          active_count: number
+          all_count: number
+          canceled_count: number
+          expired_count: number
+          none_count: number
+          past_due_count: number
+        }[]
+      }
+      admin_users: {
+        Args: {
+          p_limit?: number
+          p_offset?: number
+          p_query?: string
+          p_state?: string
+        }
+        Returns: {
+          app_role: Database["public"]["Enums"]["app_role"]
+          created_at: string
+          current_period_end: string | null
+          dance_role: Database["public"]["Enums"]["dance_role"] | null
+          display_name: string | null
+          email: string
+          last_sign_in_at: string | null
+          plan_name: string | null
+          state: string
+          total_count: number
+          user_id: string
+        }[]
+      }
       complete_onboarding: {
         Args: {
           p_dance_role: Database["public"]["Enums"]["dance_role"]

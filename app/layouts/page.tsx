@@ -107,6 +107,11 @@ const SAMPLES = [
     title: "Calibrar audífonos · estados",
     text: "Los 6 estados de /app/profile/calibration: antes de empezar, escucha y toca (con clics reales), resultado, ajuste fino, toques irregulares y sin audífonos; guardar no escribe nada.",
   },
+  {
+    href: "/layouts/step-detail",
+    title: "Paso, detalle",
+    text: "El detalle de /app/steps/[slug] sin escribir nada: con historial y relacionados, con video, paso libre, sin historial ni relacionados, sin suscripción, perfil sin rol, error al guardar el estado y nombre largo.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

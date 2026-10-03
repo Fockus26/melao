@@ -1,5 +1,17 @@
 # melao
 
+## 0.9.0
+
+### Minor Changes
+
+- 7fda2c5: La Lección practica con el reloj real y las prácticas quedan marcadas como terminadas.
+- 6de6a48: Detalle del paso: video por rol, tu estado, por tiempos, posición, relacionados e historial.
+- d8698be: Calibrar audífonos: mide la latencia a oído y la guarda para el coach.
+
+### Patch Changes
+
+- 7525c57: Canciones devuelve el foco a la búsqueda al quitar filtros.
+
 ## 0.8.0
 
 ### Minor Changes

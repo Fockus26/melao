@@ -112,6 +112,11 @@ const SAMPLES = [
     title: "Paso, detalle",
     text: "El detalle de /app/steps/[slug] sin escribir nada: con historial y relacionados, con video, paso libre, sin historial ni relacionados, sin suscripción, perfil sin rol, error al guardar el estado y nombre largo.",
   },
+  {
+    href: "/layouts/admin-summary",
+    title: "Admin · Resumen",
+    text: "El Resumen de /admin sin sesión: con avisos y pendientes (y “Ver n más”), sin avisos, sin contenido, error al leer con Reintentar y cargando.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

@@ -1091,6 +1091,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_summary: { Args: never; Returns: Json }
       complete_onboarding: {
         Args: {
           p_dance_role: Database["public"]["Enums"]["dance_role"]

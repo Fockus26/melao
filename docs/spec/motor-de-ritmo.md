@@ -102,14 +102,38 @@ Reglas:
   (`outputLatency + baseLatency` en web). En altavoz basta; con Bluetooth el navegador la
   subestima (~150 ms reportados vs. ~340 ms reales en Android): el reproductor ofrece
   calibrar al detectar audífonos o si el usuario lo pide desde el Perfil.
-- Calibrar: ≥ 16 toques sobre la pista sola, descartando los 2 primeros y los atípicos;
-  si la desviación supera ~60 ms, se pide repetir.
+- **Calibrar** (`/app/profile/calibration`, D142; reglas en el core
+  `supabase/functions/_shared/core/calibration.ts`, vector `calibracion-evaluar.json`):
+  - 12 clics a 100 BPM (cada 600 ms) programados en el reloj de audio con `start(when)`, el
+    primero a ~1.2 s del toque en *Empezar*, que crea o reanuda el contexto (D122). Sin ninguna
+    señal visual del clic: se toca por oído.
+  - Cada toque (puntero, Espacio o Enter) se pasa al reloj de programación
+    (`currentTime − (performance.now() − event.timeStamp)`) y se compara con **su** clic: el
+    n-ésimo toque con el n-ésimo clic, nunca con el más cercano (con Bluetooth la latencia
+    pasa de medio tiempo). Toques antes de 250 ms del primer clic se ignoran; los de más,
+    también. Si a 1.2 s del último clic faltan toques, la medición termina incompleta.
+  - Los 4 primeros son de práctica. Con los 8 medidos: **promedio** redondeado a ms (en .5,
+    hacia +∞) y **desvío** muestral (n − 1) redondeado a 0.1 ms. Avisos, en este orden:
+    faltan toques → **irregulares** (desvío > 40 ms) → **fuera de rango** (promedio fuera de
+    −200…+300 ms). Con cualquiera se pide repetir o ajustar a mano.
+  - Ajuste fino: pasos de 10 ms (−/+ y slider) dentro de −200…+300 ms. "Probar con la cuenta":
+    8 clics y un número que cambia cuando el reloj llega a `clic + ajuste`, lo mismo que hace
+    la sesión.
+  - Guardar: `save_audio_latency()` (`docs/spec/api.md`), upsert por (alumno, plataforma,
+    `device_key`) con `measured_at` del servidor. En web, `device_key` = `<salida>:<sistema>`
+    (D143): la salida la elige el alumno (`bluetooth` o `speaker`, altavoz o cable: la web
+    no puede saber cuál está activa) y el sistema sale del user agent (`android`, `ios`,
+    `windows`, `mac`, `chromeos`, `linux`, `other`), sin versión ni modelo. Android/iOS
+    usan el identificador de la salida de audio que da el sistema.
+  - Altavoz o cable: no hace falta calibrar (la latencia reportada basta); se muestran los
+    ajustes guardados y se puede calibrar igual.
 - Pausa, reanudar y salir sin desfasar la cuenta. App en segundo plano (pestaña oculta) o
   audio interrumpido por el sistema (llamada, otra app) → pausa en la posición exacta del
   reloj; se reanuda a mano.
 - La calibración guardada que se usa es la del alumno en esa plataforma (`audio_latency`,
   `platform`), la más reciente (D124); mientras no se distinga el dispositivo de salida, no se
-  filtra por `device_key`.
+  filtra por `device_key`: en web manda la última que se guardó o repitió, sea de la salida
+  que sea (D143).
 - La UI (número grande, paso actual, siguiente, fila de tiempos) se actualiza con el mismo
   reloj; el tiempo activo se marca con color **y** subrayado.
 - Pantalla encendida durante la sesión (Wake Lock o equivalente); se vuelve a pedir al

@@ -22,7 +22,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
-import { type ReactNode, useState, useSyncExternalStore } from "react";
+import { type ReactNode, useId, useState, useSyncExternalStore } from "react";
 import { ICON_STROKE } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
@@ -110,6 +110,8 @@ export function SortableList<T>({
   disabled?: boolean;
 }) {
   const reduced = useReducedMotion();
+  // Ids estables de dnd-kit (su contador global no coincide entre servidor y cliente).
+  const contextId = useId();
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(
     // 4 px antes de arrastrar: un clic en el asa no mueve nada.
@@ -131,7 +133,7 @@ export function SortableList<T>({
     onDragStart: ({ active }) =>
       DND_COPY.start(nameOf(active.id), posOf(active.id), total),
     onDragOver: ({ active, over }) =>
-      over
+      over && over.id !== active.id
         ? DND_COPY.over(nameOf(active.id), posOf(over.id), total)
         : undefined,
     onDragEnd: ({ active, over }) =>
@@ -157,6 +159,7 @@ export function SortableList<T>({
 
   return (
     <DndContext
+      id={contextId}
       sensors={sensors}
       collisionDetection={closestCenter}
       accessibility={{

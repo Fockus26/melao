@@ -210,6 +210,11 @@ describe("admin", () => {
 
   test("crea y publica contenido", async () => {
     const n = await asUser(db, cesar, async (tx) => {
+      // Publicar exige video de cada rol (20261003120000_admin_steps.sql): falta el seguidor.
+      await tx.query(
+        "insert into public.step_videos (step_id, role, video_path) values ($1, 'follower', 'salsa/borrador-follower.mp4')",
+        [ids.borrador],
+      );
       await tx.query("update public.steps set published = true where id = $1", [
         ids.borrador,
       ]);

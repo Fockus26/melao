@@ -117,6 +117,11 @@ const SAMPLES = [
     title: "Admin · Resumen",
     text: "El Resumen de /admin sin sesión: con avisos y pendientes (y “Ver n más”), sin avisos, sin contenido, error al leer con Reintentar y cargando.",
   },
+  {
+    href: "/layouts/admin-steps",
+    title: "Admin, pasos",
+    text: "La lista + editor de /admin/steps sin escribir nada: lista con filtros, paso completo, paso nuevo, publicar bloqueado por videos, error al guardar, subida en curso y error al cargar.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

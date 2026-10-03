@@ -1091,6 +1091,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_save_step: {
+        Args: {
+          p_prerequisites: string[]
+          p_step: Json
+          p_step_id: string | null
+          p_style_id: string
+        }
+        Returns: string
+      }
+      admin_step_issues: { Args: { p_step_id: string }; Returns: string[] }
+      admin_steps: {
+        Args: { p_style_id: string }
+        Returns: {
+          category: Database["public"]["Enums"]["step_category"]
+          difficulty: number
+          has_voice_clip: boolean
+          id: string
+          lesson_count: number
+          name: string
+          published: boolean
+          slug: string
+          sort_order: number
+          videos_complete: boolean
+        }[]
+      }
       admin_summary: { Args: never; Returns: Json }
       complete_onboarding: {
         Args: {

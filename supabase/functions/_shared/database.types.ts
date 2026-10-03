@@ -1116,6 +1116,7 @@ export type Database = {
           videos_complete: boolean
         }[]
       }
+      admin_summary: { Args: never; Returns: Json }
       complete_onboarding: {
         Args: {
           p_dance_role: Database["public"]["Enums"]["dance_role"]

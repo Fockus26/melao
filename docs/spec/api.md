@@ -329,6 +329,15 @@ si no había fila y se marca, `insert (user_id, step_id, favorite)`; si el inser
 otra pestaña), `update` otra vez. Sin upsert: su `do update` reescribiría `user_id` y `step_id`,
 que no tienen grant de update. Desmarcar sin fila no escribe nada.
 
+### Funciones del admin
+
+Resumen (`20261003130000_admin_summary.sql`, D154–D155): `security invoker` (el admin lee
+todo por RLS); quien no es admin recibe `42501` y anónimo no puede llamarla.
+
+| Función | Devuelve |
+|---|---|
+| `public.admin_summary()` | jsonb `{ styles, totals, warnings, pending }`. `styles`: todos los estilos por `sort_order` y nombre, `{ id, slug, name, published, steps_published, steps_total, songs_published, songs_total, lessons_published, lessons_total }` (una canción cuenta en cada estilo de `song_styles`; `lessons_published` = lecciones del curso si curso y estilo están publicados). `totals`: los mismos contadores sin repetir (incluye canciones sin estilo) + `students` (`app_role = 'student'`) y `students_active` (suscripción `active` con `current_period_end > now()`, como `has_active_subscription()`). `warnings` y `pending`: `[{ kind, id, name, style, reasons, expires_on? }]`, `style` = slug (en una canción, el primero de sus estilos; null sin estilo), `reasons` = códigos. **Avisos** (D155): `step` publicado sin video completo (`both`, o `leader` y `follower`) → `missing_video`; `song` publicada con licencia vencida → `license_expired` o que vence en ≤ 30 días → `license_expiring` (+ `expires_on`); `lesson` de curso visible → `step_unpublished` · `song_unavailable` (práctica o final no visible) · `missing_song` (ninguna). **Pendientes**: `step` sin publicar → `missing_video` o `[]` (listo); `song` sin publicar → `missing_audio` · `missing_grid` · `missing_dance_end` · `missing_license` (`songs_publish_requirements`); `style` sin publicar → `missing_start_position` o `[]`. Orden: por tipo (step, song, lesson / step, song, style), estilo y nombre (lecciones, en el orden del curso) |
+
 ## Edge Functions
 
 Código en `supabase/functions/` (Deno en Supabase). Contrato común a todas:

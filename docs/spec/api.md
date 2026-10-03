@@ -359,6 +359,38 @@ Web (`/admin/users`): pide la página y los contadores en paralelo (y, con búsq
 contadores sin ella para el total del encabezado); 25 por página; una página fuera de rango
 vuelve a la última.
 
+### Admin · Camino (`20261003170000_admin_course.sql`, D168–D173)
+
+Solo admin (`private.is_admin()`; si no, `42501`; anónimo sin permiso). `security invoker`: las
+escrituras pasan por la RLS de contenido. Las reglas valen para la API; el seed y las migraciones
+quedan fuera.
+
+- **Estilo del curso** (D169): los pasos de una lección son del estilo del curso (`MS021`); su
+  canción de mini práctica y su canción final tienen ese estilo en `song_styles` (`MS022`, solo la
+  que cambia); una lección no se mueve a una unidad de otro curso (`MS024`).
+- **Publicar el curso** (D170): `private.course_issues(course)` = `no_lessons` ·
+  `lesson_without_steps` · `lesson_without_song` (en ese orden; `{}` = se puede); publicar (insert
+  publicado o false → true) con alguno → `MS025`. No revalida un curso ya publicado.
+- **Borrar** (D171): una lección con `lesson_progress`, o una unidad con alguna lección así →
+  `MS023`. Sin progreso, el borrado va directo por RLS y cae en cascada (lecciones, `lesson_steps`).
+- **Orden** (D172): `unique (…, position) deferrable initially deferred`; las funciones de mover
+  renumeran 1…n en una transacción. Las posiciones pueden quedar con huecos tras borrar (el alumno
+  numera por orden).
+
+| Función | Devuelve |
+|---|---|
+| `admin_course(p_style_id)` | jsonb (null si el estilo no existe): `style { id, slug, name, published, start_position_id, beats_per_phrase, spoken_beats, call_beat, call_span_beats, lead_in_phrases }` · `positions [{ id, name }]` por nombre · `steps [{ id, slug, name, category, published, phrases, start_position_id, end_position_id, can_start, can_end, repeatable }]` (todos, en orden de catálogo) · `songs [{ id, title, artist, published, visible, in_style, duration_ms, dance_end_ms, beat_grid, bpm }]` (las del estilo y las que usan sus lecciones; `visible` = publicada con licencia vigente) · `course { id, title, description, published, issues }` o null · `units [{ id, position, title, lessons: [{ id, position, title, intro, practice_song_id, practice_phrases, final_song_id, progress_count, step_ids (en orden), issues }] }]` en orden; `issues` de la lección: `missing_song` · `song_unavailable` (los del Resumen) |
+| `admin_add_unit(p_course_id, p_title)` | uuid de la unidad nueva, al final (`P0002` curso inexistente; `23514` título vacío o > 120) |
+| `admin_add_lesson(p_unit_id, p_title)` | uuid de la lección nueva, al final de la unidad, sin pasos ni canciones |
+| `admin_move_unit(p_unit_id, p_position)` | void. La unidad pasa a `p_position` (1-based, acotada) y el curso se renumera |
+| `admin_move_lesson(p_lesson_id, p_unit_id, p_position)` | void. La lección pasa a `p_unit_id` (del mismo curso; si no, `22023`) en `p_position`; las dos unidades se renumeran |
+| `admin_save_lesson(p_lesson_id, p_lesson, p_steps)` | void. `p_lesson`: `title`, `intro`, `practice_song_id`, `practice_phrases` (1–32; null sin canción), `final_song_id`; `p_steps` reemplaza los pasos en ese orden (un paso repetido → `22023`). Todo o nada |
+
+Lo demás va directo por RLS: `courses` (insert para crear el curso; update de `title`,
+`description` y `published`), `course_units.title`, y `delete` de `course_units` y `lessons`.
+Web (`/admin/course`): tras cada escritura vuelve a pedir `admin_course`; si la secuencia de una
+lección se puede bailar lo calcula el cliente con `validateLesson` del core (D173).
+
 ## Edge Functions
 
 Código en `supabase/functions/` (Deno en Supabase). Contrato común a todas:

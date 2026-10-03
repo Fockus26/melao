@@ -600,10 +600,7 @@ export function validateLesson(input: {
       steps: pool,
       startPosition: start,
     })) {
-      if (
-        issue.code === "no_base_reachable" &&
-        relevant.has(issue.position)
-      ) {
+      if (issue.code === "no_base_reachable" && relevant.has(issue.position)) {
         issues.push({ code: "no_base_reachable", position: issue.position });
       }
     }

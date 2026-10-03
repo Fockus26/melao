@@ -4,9 +4,9 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import type { PGlite, Transaction } from "@electric-sql/pglite";
 import {
+  applySeed,
   asAnon,
   asUser,
-  applySeed,
   createDb,
   createUser,
   DB_BOOT_TIMEOUT_MS,
@@ -376,9 +376,7 @@ describe("admin_save_lesson", () => {
 
   test("la alumna no guarda lecciones", async () => {
     expect(
-      await codeOf(() =>
-        asUser(db, ana, (tx) => saveLesson(tx, L112, {}, [])),
-      ),
+      await codeOf(() => asUser(db, ana, (tx) => saveLesson(tx, L112, {}, []))),
     ).toBe("42501");
   });
 });
@@ -386,9 +384,10 @@ describe("admin_save_lesson", () => {
 describe("publicar el curso", () => {
   test("con una lección sin pasos ni canción: motivos y MS025 al publicar", async () => {
     const got = await asUser(db, cesar, async (tx) => {
-      await tx.query("update public.courses set published = false where id = $1", [
-        SALSA_COURSE,
-      ]);
+      await tx.query(
+        "update public.courses set published = false where id = $1",
+        [SALSA_COURSE],
+      );
       await tx.query("select public.admin_add_lesson($1, 'Vacía')", [UNIT_2]);
       const data = await read(tx);
       const code = await codeOf(() =>

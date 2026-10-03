@@ -7,8 +7,8 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   type CatalogStep,
-  type LessonCatalogStep,
   generatePlan,
+  type LessonCatalogStep,
   PlanError,
   type PlanInput,
   type PlanOrder,

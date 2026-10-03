@@ -83,8 +83,6 @@ export type HomeViewProps = {
   course: CourseSummary | null;
   due: readonly DueStep[];
   hardest: readonly HardStep[];
-  /** Al pie (cerrar sesión hasta que exista Perfil). */
-  footer?: React.ReactNode;
 };
 
 /**
@@ -93,8 +91,7 @@ export type HomeViewProps = {
  * resueltos por las funciones SQL (D003). La usan `/app` y la muestra `/layouts/home`.
  */
 export function HomeView(props: HomeViewProps) {
-  const { name, date, styles, currentStyle, role, userId, mode, footer } =
-    props;
+  const { name, date, styles, currentStyle, role, userId, mode } = props;
   return (
     <div className="flex flex-col gap-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
@@ -123,8 +120,6 @@ export function HomeView(props: HomeViewProps) {
       </div>
 
       <HardestSection hardest={props.hardest} now={props.now} />
-
-      {footer}
     </div>
   );
 }

@@ -244,6 +244,14 @@ una a la vez al cambiarlas (grant de columna, RLS: su fila); la latencia se lee 
 |---|---|
 | `public.my_subscription()` | `security invoker`, de `auth.uid()` (también el admin, solo la suya). A lo sumo una fila: la vigente o, si no hay, la de período más reciente: `plan_name, price_cents, currency, billing_interval` (null si el plan ya no es legible: inactivo), `status, current_period_end, canceled_at`, `state` (`active` = la condición de `has_active_subscription()` · `past_due` · `canceled` · `expired`, que incluye `active` con el período vencido). Sin suscripción, ninguna fila (D135) |
 
+Calibrar audífonos (`20261002170000_calibration.sql`, D142–D144): la pantalla lee los ajustes
+propios de `audio_latency` (`user_id = auth.uid()`, `platform`, orden `measured_at` ↓) y guarda
+con una función; las reglas de la medición están en el core (`calibration.ts`).
+
+| Función | Devuelve |
+|---|---|
+| `public.save_audio_latency(p_platform, p_device_key, p_device_label, p_offset_ms, p_sd_ms = null, p_taps = null)` | `security invoker`, siempre la fila de `auth.uid()` (también el admin). Upsert por (alumno, plataforma, `device_key`) con `measured_at = now()` también al repetir (la sesión usa la más reciente, D124). `p_offset_ms` fuera de −200…300 → error `22023` (el rango del ajuste, más angosto que el check de la tabla); sin sesión → `42501`. Devuelve la fila guardada |
+
 Práctica libre (`20261001130000_practice_songs.sql`): `security invoker`; los favoritos son
 siempre los de `auth.uid()` (aunque un admin lea los de todos por RLS).
 

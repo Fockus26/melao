@@ -103,6 +103,11 @@ const SAMPLES = [
     text: "404 con y sin sesión, error inesperado con y sin código, sin conexión y mantenimiento con y sin hora de vuelta.",
   },
   {
+    href: "/layouts/calibration",
+    title: "Calibrar audífonos · estados",
+    text: "Los 6 estados de /app/profile/calibration: antes de empezar, escucha y toca (con clics reales), resultado, ajuste fino, toques irregulares y sin audífonos; guardar no escribe nada.",
+  },
+  {
     href: "/layouts/step-detail",
     title: "Paso, detalle",
     text: "El detalle de /app/steps/[slug] sin escribir nada: con historial y relacionados, con video, paso libre, sin historial ni relacionados, sin suscripción, perfil sin rol, error al guardar el estado y nombre largo.",

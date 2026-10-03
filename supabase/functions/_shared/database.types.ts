@@ -1203,6 +1203,27 @@ export type Database = {
           due_count: number
         }[]
       }
+      save_audio_latency: {
+        Args: {
+          p_device_key: string
+          p_device_label: string | null
+          p_offset_ms: number
+          p_platform: Database["public"]["Enums"]["client_platform"]
+          p_sd_ms?: number | null
+          p_taps?: number | null
+        }
+        Returns: {
+          device_key: string
+          device_label: string | null
+          id: string
+          measured_at: string
+          offset_ms: number
+          platform: Database["public"]["Enums"]["client_platform"]
+          sd_ms: number | null
+          taps: number | null
+          user_id: string
+        }
+      }
       set_app_role: {
         Args: {
           new_role: Database["public"]["Enums"]["app_role"]

@@ -1,5 +1,13 @@
 # melao
 
+## 0.10.0
+
+### Minor Changes
+
+- 5581958: El admin ya puede ver a los usuarios: buscarlos por nombre o correo, filtrarlos por estado de suscripción con su contador y recorrer la lista por páginas, en solo lectura.
+- c60b1bf: Admin · Pasos (`/admin/steps`): lista con búsqueda y filtros y editor completo del paso (datos, posiciones, por tiempos, variación, prerequisitos), subida de videos por rol y clip de voz (máx. 50 MB, tipos fijos) y publicar solo con el video de cada rol.
+- afa683e: El panel del admin abre con un Resumen real: cuántos pasos, canciones y lecciones están publicados (en total y por estilo), cuántos alumnos hay y cuántos tienen suscripción activa, los avisos de lo publicado que necesita arreglo (pasos sin video, licencias vencidas o por vencer, lecciones con contenido no disponible) y los pendientes con lo que les falta para publicarse.
+
 ## 0.9.0
 
 ### Minor Changes

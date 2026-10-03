@@ -16,7 +16,7 @@ import type { DanceRole } from "@/lib/course/path";
 import { billingInterval, formatPricePer } from "@/lib/plans/format";
 import { isThemePreference, type ThemePreference } from "@/lib/theme";
 
-/** Destinos de Perfil. Calibrar llega en la ola 2 (404 hasta entonces). */
+/** Destinos de Perfil. */
 export const PROFILE_LINKS = {
   calibration: "/app/profile/calibration",
   plans: "/plans",

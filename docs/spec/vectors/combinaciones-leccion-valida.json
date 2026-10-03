@@ -1,0 +1,98 @@
+{
+  "descripcion": "Lección bailable: la enchufla sale de cerrada y Dile que sí, de una lección anterior, lleva ahí; se termina en guapea",
+  "entrada": {
+    "leccion": {
+      "startPosition": "guapea",
+      "lessonStepIds": [
+        "enchufla"
+      ],
+      "previousStepIds": [
+        "guapea",
+        "dile-que-si",
+        "dile-que-no"
+      ],
+      "catalog": [
+        {
+          "id": "guapea",
+          "startPosition": "guapea",
+          "endPosition": "guapea",
+          "phrases": 1,
+          "canStart": true,
+          "canEnd": true,
+          "repeatable": true,
+          "category": "base",
+          "published": true
+        },
+        {
+          "id": "basico-cerrada",
+          "startPosition": "cerrada",
+          "endPosition": "cerrada",
+          "phrases": 1,
+          "canStart": false,
+          "canEnd": true,
+          "repeatable": true,
+          "category": "base",
+          "published": true
+        },
+        {
+          "id": "dile-que-si",
+          "startPosition": "guapea",
+          "endPosition": "cerrada",
+          "phrases": 1,
+          "canStart": true,
+          "canEnd": false,
+          "repeatable": false,
+          "category": "entrada",
+          "published": true
+        },
+        {
+          "id": "dile-que-no",
+          "startPosition": "cerrada",
+          "endPosition": "guapea",
+          "phrases": 1,
+          "canStart": false,
+          "canEnd": true,
+          "repeatable": false,
+          "category": "salida",
+          "published": true
+        },
+        {
+          "id": "enchufla",
+          "startPosition": "cerrada",
+          "endPosition": "guapea",
+          "phrases": 1,
+          "canStart": false,
+          "canEnd": true,
+          "repeatable": false,
+          "category": "salida",
+          "published": true
+        },
+        {
+          "id": "abanico",
+          "startPosition": "cerrada",
+          "endPosition": "abierta",
+          "phrases": 1,
+          "canStart": false,
+          "canEnd": false,
+          "repeatable": false,
+          "category": "figura",
+          "published": true
+        },
+        {
+          "id": "sombrero",
+          "startPosition": "cerrada",
+          "endPosition": "cerrada",
+          "phrases": 1,
+          "canStart": false,
+          "canEnd": false,
+          "repeatable": false,
+          "category": "figura",
+          "published": false
+        }
+      ]
+    }
+  },
+  "salida": {
+    "problemas": []
+  }
+}

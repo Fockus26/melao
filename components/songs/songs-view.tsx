@@ -215,13 +215,13 @@ export function SongsView({
                     href={`${basePath}${songsSearch({ style: s.id, mode, song }, filters)}`}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-pill px-4 type-small font-medium text-text",
+                      "relative inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-pill px-4 type-small",
                       "transition-colors duration-state ease-standard motion-reduce:transition-none",
                       // Zona táctil de 48: cubre el padding del contenedor.
                       "before:absolute before:inset-x-0 before:-inset-y-1 before:content-['']",
                       active
                         ? "bg-primary font-semibold text-on-primary"
-                        : "hover:bg-hover",
+                        : "font-medium text-text hover:bg-hover",
                     )}
                   >
                     {s.name}
@@ -375,7 +375,11 @@ export function SongsView({
                 hasActiveFilters(filters) ? (
                   <Button
                     variant="outline"
-                    onClick={() => applyFilters(EMPTY_FILTERS)}
+                    onClick={() => {
+                      applyFilters(EMPTY_FILTERS);
+                      // El botón desaparece: el foco vuelve a la búsqueda.
+                      document.getElementById(ids.search)?.focus();
+                    }}
                   >
                     {COPY.clearFilters}
                   </Button>

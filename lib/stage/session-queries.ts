@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { isUuid } from "@/lib/lesson/queries";
 import { createClient } from "@/lib/supabase/server";
+import { getWebLatencyMs } from "./latency-queries";
 import {
   gridBpm,
   type PracticeSessionData,
@@ -42,25 +43,14 @@ export const getPracticeSession = cache(
       throw new Error("practice_sessions: plan o rejilla inválidos");
     }
 
-    const [steps, latency] = await Promise.all([
+    const [steps, latencyOffsetMs] = await Promise.all([
       supabase
         .from("steps")
         .select("id, slug, name")
         .eq("style_id", session.style_id),
-      supabase
-        .from("audio_latency")
-        .select("offset_ms")
-        // El admin lee las de todos (RLS): solo las suyas.
-        .eq("user_id", userId)
-        .eq("platform", "web")
-        .order("measured_at", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
+      getWebLatencyMs(userId),
     ]);
     if (steps.error) throw new Error(`steps: ${steps.error.message}`);
-    if (latency.error) {
-      throw new Error(`audio_latency: ${latency.error.message}`);
-    }
 
     const { style, song } = session;
     return {
@@ -81,7 +71,7 @@ export const getPracticeSession = cache(
       ),
       beatGrid,
       songDurationMs: song.duration_ms,
-      latencyOffsetMs: latency.data?.offset_ms ?? null,
+      latencyOffsetMs,
     };
   },
 );

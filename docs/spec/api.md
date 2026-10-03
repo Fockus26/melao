@@ -232,6 +232,15 @@ Sesiones recientes (Progreso, D132): lectura directa de `practice_sessions` con
 `created_at` ↓, límite 5, con `dance_styles(name)`, `songs(title)` (null si ya no es visible)
 y `lessons(title)`.
 
+Marca de fin de una práctica (D146–D147): el cliente pone `practice_sessions.completed_at`
+(grant de columna, RLS: solo las suyas) en la práctica libre y en la de la Lección, **al acabar
+la canción** o al tocar **Terminar / Continuar después de haber sonado** (la X, o Continuar sin
+haber empezado, no la marcan). Idempotente:
+`update practice_sessions set completed_at = <ahora del dispositivo> where id = <sessionId> and completed_at is null`.
+Si el reloj del dispositivo va atrasado y choca con `check (completed_at >= created_at)`
+(`23514`), se lee `created_at` y se usa el mayor de los dos. Si falla, se reintenta una vez y
+se deja, sin aviso y sin bloquear la navegación. Web: `lib/stage/completion.ts`.
+
 Estilo por defecto: el alumno escribe `profiles.default_style_id` directo (grant de columna,
 RLS: su fila); el cliente filtra por su `id`.
 

@@ -148,7 +148,8 @@ Reglas:
   en el `beatsPerPhrase/2 + 1` (suave), programados en la ventana del bucle como los clips.
   Sin clips de voz, `count.<n>` suena como un tono por número y `step.<slug>` como dos tonos
   de ~2 tiempos. La duración es la de la sesión del escenario (hasta 1.5 s después de `end`).
-  Web: `lib/player/` (`TrackSource`: hoy `SyntheticTrack`; `FileTrack` cuando haya audio).
+  Web: `lib/player/` (`TrackSource`: hoy `SyntheticTrack`; `FileTrack` cuando haya audio). La
+  práctica libre y la de la Lección usan la misma fuente (`createSyntheticStageSource`, D145).
 
 ### 6.1 Vista del escenario (qué pinta la UI)
 

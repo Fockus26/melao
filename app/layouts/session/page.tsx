@@ -20,6 +20,7 @@ export default function SessionSamplePage() {
     <>
       <PracticeSession
         data={SAMPLE_SESSION}
+        saveCompletion={false}
         exitHref="/layouts"
         resultHref="/layouts"
       />

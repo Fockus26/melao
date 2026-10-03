@@ -57,8 +57,9 @@ export default async function LessonSamplePage(
             Etapas de la lección
           </h2>
           <p className="type-small text-text-secondary">
-            Backend falso: la práctica usa el motor falso (sin audio) con un
-            plan fijo y calificar no guarda nada.
+            Backend falso: la práctica suena con el reproductor real y la pista
+            de prueba, con un plan fijo; ni terminarla ni calificar guardan
+            nada.
           </p>
           <ul className="flex flex-col gap-1">
             {(Object.keys(STAGES) as Stage[]).map((id) => (

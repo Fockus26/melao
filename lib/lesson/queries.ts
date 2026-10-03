@@ -1,6 +1,7 @@
 import { cache } from "react";
 import type { CoursePath, DanceRole } from "@/lib/course/path";
 import { getCoursePath } from "@/lib/course/queries";
+import { getWebLatencyMs } from "@/lib/stage/latency-queries";
 import { createClient } from "@/lib/supabase/server";
 import type { Anchor } from "@/supabase/functions/_shared/core/grid";
 import type {
@@ -122,7 +123,7 @@ export const getLessonPage = cache(
     // Estilo sin roles: una tarjeta por paso con rol `leader` (D051).
     const cardRole: DanceRole | null = style.has_roles ? profileRole : "leader";
 
-    const [songs, cards, names] = await Promise.all([
+    const [songs, cards, names, latencyOffsetMs] = await Promise.all([
       songIds.length > 0
         ? supabase
             .from("songs")
@@ -139,6 +140,7 @@ export const getLessonPage = cache(
             .eq("role", cardRole)
         : Promise.resolve({ data: [], error: null }),
       supabase.from("steps").select("id, slug, name").eq("style_id", styleId),
+      getWebLatencyMs(userId),
     ]);
     if (songs.error) throw new Error(`songs: ${songs.error.message}`);
     if (cards.error) throw new Error(`srs_cards: ${cards.error.message}`);
@@ -192,6 +194,7 @@ export const getLessonPage = cache(
         stepNames: Object.fromEntries(
           (names.data ?? []).map((s) => [s.id, { slug: s.slug, name: s.name }]),
         ),
+        latencyOffsetMs,
         next: nextInPath(path, lessonId),
       },
     };

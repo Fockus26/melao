@@ -3,6 +3,8 @@ import {
   FunctionsHttpError,
   FunctionsRelayError,
 } from "@supabase/supabase-js";
+import type { MarkCompleted } from "@/lib/stage/completion";
+import { browserMarkCompleted } from "@/lib/stage/completion-client";
 import { createClient } from "@/lib/supabase/client";
 import type { InvokeResult, PlanSessionRequest, ReviewRequest } from "./lesson";
 
@@ -36,9 +38,12 @@ export async function invoke(
 export interface LessonPorts {
   planSession(input: PlanSessionRequest): Promise<InvokeResult>;
   reviewSteps(input: ReviewRequest): Promise<InvokeResult>;
+  /** Marca de fin de la práctica (`completed_at`, D146); la muestra no escribe. */
+  completeSession: MarkCompleted;
 }
 
 export const edgeLessonPorts: LessonPorts = {
   planSession: (input) => invoke("plan-session", input),
   reviewSteps: (input) => invoke("review-steps", input),
+  completeSession: browserMarkCompleted,
 };

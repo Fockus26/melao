@@ -1,9 +1,8 @@
 /**
  * Adaptador sesión → escenario: arma la línea de tiempo del escenario (`StageTimeline`) con la
- * respuesta de `plan-session` (plan + eventos) y la canción, para moverla con el motor FALSO
- * (`createFakeStageSource({ session })`) mientras no hay audio (canciones del seed sin audio ni
- * licencia, D009). Cuando llegue el reproductor real, la misma sesión irá al reloj de Web Audio
- * (D030); lo que se hace aquí —la rejilla, los nombres y la ventana que se muestra— le sirve igual.
+ * respuesta de `plan-session` (plan + eventos) y la canción. La Lección la mueve con el reloj de
+ * Web Audio y la pista sintética (`createSyntheticStageSource`, D030, D121, D145); las muestras
+ * y los tests, también con el motor falso (`createFakeStageSource({ session })`).
  */
 
 import {

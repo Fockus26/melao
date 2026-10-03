@@ -12,6 +12,7 @@ import {
   START_DELAY_S,
   type WakeLockLike,
 } from "@/lib/player/player";
+import { createSyntheticStageSource } from "@/lib/player/synthetic-stage";
 import {
   createSyntheticTrack,
   firstHitFrom,
@@ -453,5 +454,48 @@ describe("pista sintética (D121)", () => {
     const hits = syntheticHits(anchors, 8, 5000);
     expect(firstHitFrom(hits, 1200)).toBe(3);
     expect(firstHitFrom(hits, 9000)).toBe(hits.length);
+  });
+});
+
+describe("fuente compartida de sesión y Lección (D145)", () => {
+  test("la sesión del escenario suena con la pista sintética y la latencia guardada", async () => {
+    const ctx = new FakeContext();
+    let interval = null as (() => void) | null;
+    const stage = { session, startMs: 2000 };
+    const source = createSyntheticStageSource({
+      stage,
+      bpm: BPM,
+      latencyOffsetMs: 100,
+      deps: {
+        createContext: () => ctx as unknown as AudioContext,
+        setInterval: (fn) => {
+          interval = fn;
+          return 1;
+        },
+        clearInterval: () => {
+          interval = null;
+        },
+        requestFrame: () => 1,
+        cancelFrame: () => {},
+        requestWakeLock: () => Promise.resolve(null),
+        onHidden: () => () => {},
+      },
+    });
+    const detach = source.attach();
+    await source.prepare();
+    expect(source.getSnapshot().status.kind).toBe("blocked");
+    expect(source.getSnapshot().view.positionMs).toBe(2000 - 100);
+    source.play();
+    expect(source.getSnapshot().status.kind).toBe("playing");
+    for (let t = 0; t < 1; t += 0.025) {
+      ctx.currentTime = t;
+      interval?.();
+    }
+    // La pista son osciladores programados contra el reloj de audio.
+    expect(ctx.sources.some((s) => s.kind === "osc" && s.when !== null)).toBe(
+      true,
+    );
+    detach();
+    expect(ctx.state).toBe("closed");
   });
 });

@@ -1100,7 +1100,39 @@ export type Database = {
         }
         Returns: string
       }
+      admin_save_style: {
+        Args: {
+          p_start_position?: Json | null
+          p_style: Json
+          p_style_id: string | null
+        }
+        Returns: string
+      }
       admin_step_issues: { Args: { p_step_id: string }; Returns: string[] }
+      admin_style_issues: { Args: { p_style_id: string }; Returns: string[] }
+      admin_styles: {
+        Args: never
+        Returns: {
+          beats_per_phrase: number
+          call_beat: number
+          call_span_beats: number
+          difficulty_bpm_bands: number[] | null
+          has_course: boolean
+          has_roles: boolean
+          id: string
+          lead_in_phrases: number
+          name: string
+          positions: Json
+          published: boolean
+          slug: string
+          song_count: number
+          sort_order: number
+          spoken_beats: number[]
+          start_position_id: string | null
+          step_count: number
+          steps_published: number
+        }[]
+      }
       admin_steps: {
         Args: { p_style_id: string }
         Returns: {

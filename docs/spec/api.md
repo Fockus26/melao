@@ -176,6 +176,46 @@ Reglas que impone la base:
 | `step-videos` · `songs` · `voice-clips` | alumno con suscripción activa, admin | admin |
 | `song-licenses` | admin | admin |
 
+Límites por bucket (`20261003120000_admin_steps.sql`, D150): **50 MB** por archivo y tipos fijos
+(sin transcodificar en v1). El cliente valida lo mismo antes de subir y manda siempre el tipo
+canónico de la extensión.
+
+| Bucket | Tipos (extensión → tipo) |
+|---|---|
+| `step-videos` | mp4 → `video/mp4` · webm → `video/webm` |
+| `songs` · `voice-clips` | mp3 → `audio/mpeg` · m4a → `audio/mp4` · wav → `audio/wav` |
+| `song-licenses` | pdf → `application/pdf` · jpg → `image/jpeg` · png → `image/png` |
+
+Nombres de objeto (D150): uno nuevo en cada subida, nunca se reescribe (sin caché vieja); el
+anterior se borra después de apuntar la fila al nuevo. Videos de un paso:
+`step-videos/<step_id>/<rol>-<marca>.<ext>`; clip de voz del paso (`step.<slug>`):
+`voice-clips/steps/<step_id>-<marca>.<ext>`.
+
+### Admin · Pasos (`20261003120000_admin_steps.sql`)
+
+Solo admin (`private.is_admin()`); para el resto, ninguna fila o `42501`. Las escrituras siguen
+pasando por la RLS de contenido. Las reglas valen para la API (`anon`, `authenticated`,
+`service_role`); el seed y las migraciones quedan fuera.
+
+- **Video completo** (D149): un video `both`, o uno `leader` y uno `follower`
+  (`private.step_videos_complete(step_id)`). **Publicar** un paso (insert publicado o
+  false → true) lo exige; un paso publicado no puede quedarse sin video completo (borrar un video
+  o cambiarle el rol o el paso). Los ya publicados no se revalidan en otros cambios.
+- **Borrar** (D152): solo borradores que ninguna lección usa; un publicado se despublica antes.
+- **Prerequisitos** (D151): del mismo estilo y sin círculo directo (A → B → A).
+- Errores propios: `MS001` video incompleto · `MS002` prerequisito en círculo · `MS003`
+  prerequisito de otro estilo · `MS004` borrar un publicado · `MS005` borrar un paso en una lección.
+
+| Función | Devuelve |
+|---|---|
+| `admin_steps(p_style_id)` | Todos los pasos del estilo por `sort_order` y nombre: `id` · `slug` · `name` · `category` · `difficulty` · `published` · `sort_order` · `videos_complete` · `has_voice_clip` · `lesson_count` |
+| `admin_step_issues(p_step_id)` | Motivos que bloquean publicar, en orden: `missing_video_leader` · `missing_video_follower` (estilo con roles) o `missing_video_both` (paso libre o estilo sin roles); `{}` = se puede publicar |
+| `admin_save_step(p_step_id, p_style_id, p_step, p_prerequisites)` | Crea (`p_step_id` null, sin publicar) o edita el paso con sus prerequisitos en una transacción y devuelve el id. `p_step`: los campos editables (sin `published` ni medios); `p_prerequisites` reemplaza la lista (D153) |
+
+Lo demás va directo por RLS: `steps.published` (publicar y despublicar), `delete from steps`,
+`step_videos` (reemplazar = update de `video_path`, `duration_ms` y `aspect` de la fila del rol,
+nunca del rol; si no hay fila, insert) y `steps.voice_clip_path`.
+
 ### Datos del alumno (`20260927180000_progreso.sql`)
 
 Cada alumno lee **solo lo suyo**; el admin lee todo; anónimo, nada. Las reglas de negocio

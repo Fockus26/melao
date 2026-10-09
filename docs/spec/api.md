@@ -190,6 +190,8 @@ Nombres de objeto (D150): uno nuevo en cada subida, nunca se reescribe (sin cach
 anterior se borra después de apuntar la fila al nuevo. Videos de un paso:
 `step-videos/<step_id>/<rol>-<marca>.<ext>`; clip de voz del paso (`step.<slug>`):
 `voice-clips/steps/<step_id>-<marca>.<ext>`.
+Audio de una canción: `songs/<song_id>/audio-<marca>.<ext>`; documento de su licencia:
+`song-licenses/<song_id>/licencia-<marca>.<ext>`.
 
 ### Admin · Pasos (`20261003120000_admin_steps.sql`)
 
@@ -215,6 +217,32 @@ pasando por la RLS de contenido. Las reglas valen para la API (`anon`, `authenti
 Lo demás va directo por RLS: `steps.published` (publicar y despublicar), `delete from steps`,
 `step_videos` (reemplazar = update de `video_path`, `duration_ms` y `aspect` de la fila del rol,
 nunca del rol; si no hay fila, insert) y `steps.voice_clip_path`.
+
+### Admin · Canciones (`20261003150000_admin_songs.sql`, D158–D162)
+
+Solo admin (`private.is_admin()`); para el resto, ninguna fila o `42501`. Las escrituras siguen
+pasando por la RLS de contenido; las reglas valen para la API (el seed y las migraciones quedan
+fuera). El check `songs_publish_requirements` se queda como última defensa.
+
+- **Publicar** (insert publicada o false → true) exige que `admin_song_issues` venga vacío
+  (D158): audio y duración, rejilla (≥ 2 anclas), fin de baile, al menos un estilo (D160), fuente
+  y documento de la licencia, licencia sin vencer. Las ya publicadas no se revalidan en otros
+  cambios; solo se cuida lo que el cambio quita.
+- Una **publicada** no pierde audio, duración, fuente ni documento de licencia, rejilla, fin de
+  baile ni su último estilo (despublicar antes).
+- **Borrar** (D161): solo borradores que ninguna lección usa (`practice_song_id`, `final_song_id`).
+- Errores propios: `MS201` publicar con algo pendiente (`detail` = los códigos, separados por
+  coma) · `MS202` quitarle a una publicada algo que necesita · `MS203` borrar una publicada ·
+  `MS204` borrar una que usa una lección.
+
+| Función | Devuelve |
+|---|---|
+| `admin_songs()` | Todas las canciones por título y artista: `id` · `title` · `artist` · `published` · `style_slugs` (por `sort_order` del estilo) · `ready` (audio + duración + ≥ 2 anclas + fin de baile) · `has_audio` · `bpm` · `duration_ms` · `license_source` · `has_license_document` · `license_expires_at` · `license_status` (`expired` vencida · `expiring` vence en ≤ 30 días · `ok`) · `lesson_count` (lecciones que la usan como práctica o final) · `difficulty_override` · `auto_difficulty` (bandas de BPM del primer estilo, `private.song_difficulty`) · `difficulty` (la efectiva) |
+| `admin_song_issues(p_song_id)` | Motivos que bloquean publicar, en orden: `missing_audio` · `missing_grid` · `missing_dance_end` · `missing_style` · `missing_license_source` · `missing_license_document` · `license_expired`; `{}` = se puede publicar (el Resumen junta fuente y documento en `missing_license`) |
+| `admin_save_song(p_song_id, p_song, p_style_ids)` | Crea (`p_song_id` null, sin publicar) o edita la canción con sus estilos en una transacción y devuelve el id (D162). `p_song`: `title`, `artist`, `difficulty_override` (null = automática), `license_source`, `license_notes`, `license_expires_at` (vacío = sin vencimiento); `p_style_ids` reemplaza la lista (agrega antes de quitar). No toca `published`, archivos ni el ritmo (`bpm`, `beat_grid`, `dance_end_ms`: del analizador) |
+
+Lo demás va directo por RLS: `songs.published` (publicar y despublicar), `delete from songs`,
+`songs.audio_path` + `duration_ms` (subir o quitar el audio) y `songs.license_document_path`.
 
 ### Datos del alumno (`20260927180000_progreso.sql`)
 
@@ -332,7 +360,9 @@ que no tienen grant de update. Desmarcar sin fila no escribe nada.
 ### Funciones del admin
 
 Resumen (`20261003130000_admin_summary.sql`, D154–D155): `security invoker` (el admin lee
-todo por RLS); quien no es admin recibe `42501` y anónimo no puede llamarla.
+todo por RLS); quien no es admin recibe `42501` y anónimo no puede llamarla. Desde
+`20261003150000_admin_songs.sql` el video completo de un paso sale de
+`private.step_videos_complete` (la misma regla que publicar, sin repetirla; mismo resultado).
 
 | Función | Devuelve |
 |---|---|

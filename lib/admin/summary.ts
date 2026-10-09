@@ -57,20 +57,31 @@ export type SummaryState =
 export const SUMMARY_VISIBLE_ITEMS = 8;
 
 /**
- * Entradas al editor de pasos (contrato con `/admin/steps`, orquestación 2026-10-03): abre el
- * paso seleccionado en la lista de su estilo. Canciones, estilos y lecciones aún no tienen
- * pantalla (ola B): sin enlace.
+ * Entradas a los editores (contrato de la orquestación 2026-10-03b): el paso en la lista de su
+ * estilo, la canción (`/admin/songs`), el estilo (`/admin/styles`) y la lección en el camino de
+ * su estilo (`/admin/course`).
  */
 export const ADMIN_SUMMARY_LINKS = {
   step: (styleSlug: string, stepId: string) =>
     `/admin/steps?style=${encodeURIComponent(styleSlug)}&step=${encodeURIComponent(stepId)}`,
+  song: (songId: string) => `/admin/songs?song=${encodeURIComponent(songId)}`,
+  style: (styleSlug: string) =>
+    `/admin/styles?style=${encodeURIComponent(styleSlug)}`,
+  lesson: (styleSlug: string, lessonId: string) =>
+    `/admin/course?style=${encodeURIComponent(styleSlug)}&lesson=${encodeURIComponent(lessonId)}`,
 } as const;
 
-/** Enlace de un aviso o pendiente, o null si su pantalla todavía no existe. */
+/**
+ * Enlace de un aviso o pendiente. La canción no necesita estilo; paso, estilo y lección sí (sin
+ * estilo, null).
+ */
 export function itemHref(item: SummaryItem): string | null {
-  if (item.kind === "step" && item.style)
+  if (item.kind === "song") return ADMIN_SUMMARY_LINKS.song(item.id);
+  if (!item.style) return null;
+  if (item.kind === "step")
     return ADMIN_SUMMARY_LINKS.step(item.style, item.id);
-  return null;
+  if (item.kind === "style") return ADMIN_SUMMARY_LINKS.style(item.style);
+  return ADMIN_SUMMARY_LINKS.lesson(item.style, item.id);
 }
 
 type Raw = Record<string, unknown>;

@@ -1091,6 +1091,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_save_song: {
+        Args: {
+          p_song: Json
+          p_song_id: string | null
+          p_style_ids: string[]
+        }
+        Returns: string
+      }
       admin_save_step: {
         Args: {
           p_prerequisites: string[]
@@ -1099,6 +1107,29 @@ export type Database = {
           p_style_id: string
         }
         Returns: string
+      }
+      admin_song_issues: { Args: { p_song_id: string }; Returns: string[] }
+      admin_songs: {
+        Args: never
+        Returns: {
+          artist: string
+          auto_difficulty: number | null
+          bpm: number | null
+          difficulty: number | null
+          difficulty_override: number | null
+          duration_ms: number | null
+          has_audio: boolean
+          has_license_document: boolean
+          id: string
+          lesson_count: number
+          license_expires_at: string | null
+          license_source: string | null
+          license_status: string
+          published: boolean
+          ready: boolean
+          style_slugs: string[]
+          title: string
+        }[]
       }
       admin_step_issues: { Args: { p_step_id: string }; Returns: string[] }
       admin_steps: {

@@ -101,14 +101,24 @@ describe("toAdminSummary", () => {
 });
 
 describe("enlaces", () => {
-  test("solo los pasos enlazan, al editor con estilo y paso (contrato con /admin/steps)", () => {
+  test("pasos, canciones, estilos y lecciones enlazan a su editor (contrato 2026-10-03b)", () => {
     const step = toAdminSummary(RAW).pending[0];
     expect(itemHref(step)).toBe("/admin/steps?style=salsa-casino&step=b1");
     expect(ADMIN_SUMMARY_LINKS.step("salsa-casino", "b1")).toBe(
       "/admin/steps?style=salsa-casino&step=b1",
     );
-    expect(itemHref(toAdminSummary(RAW).warnings[0])).toBeNull();
+    const song = toAdminSummary(RAW).warnings[0];
+    expect(itemHref(song)).toBe("/admin/songs?song=c1");
+    // La canción no necesita estilo para abrirse.
+    expect(itemHref({ ...song, style: null })).toBe("/admin/songs?song=c1");
+    expect(itemHref({ ...step, kind: "style", id: "a1" })).toBe(
+      "/admin/styles?style=salsa-casino",
+    );
+    expect(itemHref({ ...step, kind: "lesson", id: "l1" })).toBe(
+      "/admin/course?style=salsa-casino&lesson=l1",
+    );
     expect(itemHref({ ...step, style: null })).toBeNull();
+    expect(itemHref({ ...step, kind: "lesson", style: null })).toBeNull();
   });
 });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { FileAudio, FileVideo, Upload } from "lucide-react";
+import { FileAudio, FileText, FileVideo, Upload } from "lucide-react";
 import { type ReactNode, useId, useRef, useState } from "react";
 import {
   AlertDialog,
@@ -33,7 +33,8 @@ import { objectFileName, readMediaDurationMs } from "@/lib/admin/upload";
  * `lib/admin/upload.ts`) y devuelve el error en texto o `null`.
  *
  * API:
- * - `label` (nombre del archivo: "Video del rol líder"), `bucket`, `kind` (`video` | `audio`).
+ * - `label` (nombre del archivo: "Video del rol líder"), `bucket`, `kind` (`video` | `audio` |
+ *   `document`: un documento —pdf o imagen— sin duración que se abre en otra pestaña).
  * - `current`: `{ path, details? }` del archivo actual (detalles: "0:04 · 16:9") o `null`.
  * - `disabledReason`: si está, no se puede subir y se dice por qué.
  * - `storage`: el puerto (firma la vista previa).
@@ -43,7 +44,11 @@ import { objectFileName, readMediaDurationMs } from "@/lib/admin/upload";
 
 // Copy provisional (CONTENT_CHECKLIST fila 82).
 const COPY = {
-  upload: { video: "Subir video", audio: "Subir audio" },
+  upload: {
+    video: "Subir video",
+    audio: "Subir audio",
+    document: "Subir archivo",
+  },
   replace: "Reemplazar",
   remove: "Quitar",
   uploading: "Subiendo…",
@@ -51,7 +56,12 @@ const COPY = {
   preview: "Vista previa",
   hidePreview: "Ocultar vista previa",
   previewError: "No pudimos cargar la vista previa. Inténtalo de nuevo.",
-  empty: { video: "Sin video todavía.", audio: "Sin audio todavía." },
+  empty: {
+    video: "Sin video todavía.",
+    audio: "Sin audio todavía.",
+    document: "Sin documento todavía.",
+  },
+  openDocument: "Abrir el documento (pestaña nueva)",
   help: (bucket: AdminBucket) =>
     `${extensionsLabel(bucket)}, hasta ${formatMegabytes(UPLOAD_MAX_BYTES)}.`,
   tooLarge: (size: number) =>
@@ -73,7 +83,7 @@ type Busy = "idle" | "uploading" | "removing";
 export type MediaUploadProps = {
   label: string;
   bucket: AdminBucket;
-  kind: "video" | "audio";
+  kind: "video" | "audio" | "document";
   current: { path: string; details?: string } | null;
   disabledReason?: string;
   storage: StoragePort;
@@ -113,7 +123,8 @@ export function MediaUpload({
   const [confirming, setConfirming] = useState(false);
 
   const disabled = Boolean(disabledReason) || busy !== "idle";
-  const Icon = kind === "video" ? FileVideo : FileAudio;
+  const Icon =
+    kind === "video" ? FileVideo : kind === "audio" ? FileAudio : FileText;
   const showPreview = preview && current && preview.path === current.path;
 
   async function handleFile(file: File) {
@@ -132,7 +143,8 @@ export function MediaUpload({
     }
     setBusy("uploading");
     setMessage(null);
-    const durationMs = await readMediaDurationMs(file, kind);
+    const durationMs =
+      kind === "document" ? null : await readMediaDurationMs(file, kind);
     const error = await onUpload(file, {
       ext: check.ext,
       contentType: check.contentType,
@@ -209,7 +221,17 @@ export function MediaUpload({
       {children}
 
       {showPreview ? (
-        kind === "video" ? (
+        kind === "document" ? (
+          <a
+            href={preview.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-12 items-center self-start type-small text-text underline decoration-gold-500 underline-offset-4 hover:decoration-text"
+          >
+            {COPY.openDocument}
+            <span className="sr-only">{` · ${label}`}</span>
+          </a>
+        ) : kind === "video" ? (
           // biome-ignore lint/a11y/useMediaCaption: vista previa del admin de un video sin voz; los subtítulos no aplican.
           <video
             src={preview.url}

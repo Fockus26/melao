@@ -127,6 +127,11 @@ const SAMPLES = [
     title: "Admin · Usuarios",
     text: "/admin/users en solo lectura con 60 usuarios de ejemplo: búsqueda, chips de estado con contador, tabla y páginas sobre la URL; sin resultados, sin usuarios, error y cargando.",
   },
+  {
+    href: "/layouts/admin-songs",
+    title: "Admin, canciones",
+    text: "La lista + editor de /admin/songs sin escribir nada: 10 canciones de prueba con filtros de estado y estilo, canción completa, nueva, publicar bloqueado con motivos, error al guardar, subida en curso y error al cargar.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

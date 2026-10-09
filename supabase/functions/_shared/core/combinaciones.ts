@@ -473,3 +473,137 @@ export function validateCatalog(catalog: {
   }
   return issues;
 }
+
+// ── Validación de una lección (panel admin, D173) ───────────────────────────
+
+/** Paso del estilo tal como lo ve la validación de una lección. */
+export interface LessonCatalogStep extends CatalogStep {
+  published: boolean;
+}
+
+export type LessonIssueCode =
+  | "no_steps"
+  | "step_unpublished"
+  | "no_start_step"
+  | "step_unreachable"
+  | "step_no_end"
+  | "no_base_reachable";
+
+export interface LessonIssue {
+  code: LessonIssueCode;
+  /** El paso de la lección al que se refiere (`step_unpublished`, `step_unreachable`, `step_no_end`). */
+  stepId?: string;
+  /** La posición en juego (inicio del paso, fin del paso o la posición sin base). */
+  position?: string;
+}
+
+/**
+ * ¿Se puede bailar la lección? (combinaciones.md § Validación de una lección). Mira la secuencia
+ * con los pasos que usaría `plan-session` para un alumno nuevo (sin pasos `known`): los de la
+ * lección y los de las lecciones anteriores del curso, más los pasos base del estilo; todo solo
+ * si está publicado (lo que ve el alumno). Devuelve los problemas en orden fijo; vacío = se puede
+ * bailar. No mira la canción: si no cabe ninguna combinación en `N` frases, eso lo dice
+ * `generatePlan` (`no_plan`).
+ *
+ * - `no_steps`: la lección no tiene pasos (y no se revisa nada más).
+ * - `step_unpublished` (por paso de la lección, en su orden): el alumno no lo ve.
+ * - `no_start_step`: ningún paso del conjunto con `canStart` sale de la posición inicial.
+ * - `step_unreachable` (por paso publicado): desde la posición inicial no se llega a su
+ *   posición de entrada (como primer paso con `canStart`, o tras otros pasos del conjunto).
+ * - `step_no_end` (por paso publicado y alcanzable): después de él no se puede terminar (ni él
+ *   cierra ni se llega a un paso `canEnd`).
+ * - `no_base_reachable` (por posición alcanzable): desde ahí no se vuelve a una posición con
+ *   paso base (el relleno de la regla 5), la misma regla de `validateCatalog`.
+ */
+export function validateLesson(input: {
+  startPosition: string;
+  /** Pasos de la lección, en su orden. */
+  lessonStepIds: readonly string[];
+  /** Pasos de las lecciones anteriores del curso. */
+  previousStepIds: readonly string[];
+  /** Todos los pasos del estilo (publicados o no). */
+  catalog: readonly LessonCatalogStep[];
+}): LessonIssue[] {
+  const lessonIds = [...new Set(input.lessonStepIds)];
+  if (lessonIds.length === 0) return [{ code: "no_steps" }];
+  const byId = new Map(input.catalog.map((s) => [s.id, s]));
+  const issues: LessonIssue[] = [];
+  for (const id of lessonIds) {
+    if (!byId.get(id)?.published) {
+      issues.push({ code: "step_unpublished", stepId: id });
+    }
+  }
+
+  // Conjunto de `plan-session` para un alumno nuevo, solo lo publicado (en el orden del catálogo).
+  const wanted = new Set([...lessonIds, ...input.previousStepIds]);
+  const pool = input.catalog.filter(
+    (s) => s.published && (wanted.has(s.id) || isBaseStep(s)),
+  );
+  const start = input.startPosition;
+  const next = new Map<string, Set<string>>();
+  for (const s of pool) {
+    const out = next.get(s.startPosition) ?? new Set<string>();
+    out.add(s.endPosition);
+    next.set(s.startPosition, out);
+  }
+  const closure = (from: Iterable<string>): Set<string> => {
+    const seen = new Set(from);
+    const queue = [...seen];
+    while (queue.length > 0) {
+      const p = queue.shift() as string;
+      for (const q of next.get(p) ?? []) {
+        if (!seen.has(q)) {
+          seen.add(q);
+          queue.push(q);
+        }
+      }
+    }
+    return seen;
+  };
+
+  const openers = pool.filter((s) => s.canStart && s.startPosition === start);
+  if (openers.length === 0) {
+    issues.push({ code: "no_start_step", position: start });
+  }
+  // Posiciones donde se está tras al menos un paso.
+  const afterFirst = closure(openers.map((s) => s.endPosition));
+  const endFrom = new Set(
+    pool.filter((s) => s.canEnd).map((s) => s.startPosition),
+  );
+
+  for (const id of lessonIds) {
+    const s = byId.get(id);
+    if (!s?.published) continue;
+    const reachable =
+      (s.canStart && s.startPosition === start) ||
+      afterFirst.has(s.startPosition);
+    if (!reachable) {
+      issues.push({
+        code: "step_unreachable",
+        stepId: id,
+        position: s.startPosition,
+      });
+      continue;
+    }
+    const canFinish =
+      s.canEnd || [...closure([s.endPosition])].some((p) => endFrom.has(p));
+    if (!canFinish) {
+      issues.push({ code: "step_no_end", stepId: id, position: s.endPosition });
+    }
+  }
+
+  // Relleno: desde cada posición donde puede quedar el alumno, alguna con paso base.
+  if (openers.length > 0) {
+    const relevant = new Set([start, ...afterFirst]);
+    for (const issue of validateCatalog({
+      positions: [...relevant],
+      steps: pool,
+      startPosition: start,
+    })) {
+      if (issue.code === "no_base_reachable" && relevant.has(issue.position)) {
+        issues.push({ code: "no_base_reachable", position: issue.position });
+      }
+    }
+  }
+  return issues;
+}

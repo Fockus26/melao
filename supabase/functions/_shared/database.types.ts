@@ -1091,6 +1091,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_add_lesson: {
+        Args: { p_title: string; p_unit_id: string }
+        Returns: string
+      }
+      admin_add_unit: {
+        Args: { p_course_id: string; p_title: string }
+        Returns: string
+      }
+      admin_course: { Args: { p_style_id: string }; Returns: Json }
+      admin_move_lesson: {
+        Args: { p_lesson_id: string; p_position: number; p_unit_id: string }
+        Returns: undefined
+      }
+      admin_move_unit: {
+        Args: { p_position: number; p_unit_id: string }
+        Returns: undefined
+      }
+      admin_save_lesson: {
+        Args: { p_lesson: Json; p_lesson_id: string; p_steps: string[] }
+        Returns: undefined
+      }
       admin_save_step: {
         Args: {
           p_prerequisites: string[]

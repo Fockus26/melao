@@ -8,12 +8,14 @@ import { join } from "node:path";
 import {
   type CatalogStep,
   generatePlan,
+  type LessonCatalogStep,
   PlanError,
   type PlanInput,
   type PlanOrder,
   type StepWeightFactors,
   stepWeight,
   validateCatalog,
+  validateLesson,
 } from "@/supabase/functions/_shared/core/combinaciones.ts";
 import { mulberry32 } from "@/supabase/functions/_shared/core/random.ts";
 import { checkPlanInvariants } from "./core-combinaciones-invariants.ts";
@@ -55,6 +57,14 @@ describe("vectores combinaciones-*", () => {
           }),
         );
         expect(got).toEqual(v.salida.pesos);
+      } else if (e.leccion) {
+        const l = e.leccion as {
+          startPosition: string;
+          lessonStepIds: string[];
+          previousStepIds: string[];
+          catalog: LessonCatalogStep[];
+        };
+        expect(validateLesson(l)).toEqual(v.salida.problemas);
       } else if (e.catalogo) {
         const c = e.catalogo as {
           positions: string[];

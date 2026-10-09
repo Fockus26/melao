@@ -26,7 +26,7 @@ frases y `N` impar, o ningún paso `canStart` en la posición inicial) el genera
 `PlanError` `no_plan`; con una entrada mal formada, `invalid_input`. Nunca se cuelga.
 
 Implementación: `supabase/functions/_shared/core/combinaciones.ts` (`generatePlan`,
-`validateCatalog`, `stepWeight`, `isBaseStep`).
+`validateCatalog`, `validateLesson`, `stepWeight`, `isBaseStep`).
 
 ## Reglas
 
@@ -142,7 +142,34 @@ empieza y termina en la misma posición (`isBaseStep`). Un catálogo válido no 
 para todo `N` (p. ej. si todos los pasos duran 2 frases): ese caso lo reporta `generatePlan`
 con `no_plan`.
 
+### Validación de una lección (Constructor del camino, D173)
+
+`validateLesson({ startPosition, lessonStepIds, previousStepIds, catalog })` dice si la secuencia de
+una lección se puede bailar con los pasos que usaría `plan-session` (`mode: lesson`) para un
+alumno **nuevo** (sin pasos `known`): conjunto = pasos de la lección + pasos de las lecciones
+anteriores del curso + pasos base del estilo (`isBaseStep`), **solo los publicados** (lo que ve el
+alumno). `catalog` = todos los pasos del estilo con `published`. Devuelve los problemas en este
+orden (vacío = se puede bailar):
+
+1. `no_steps`: la lección no tiene pasos (no se revisa nada más).
+2. `step_unpublished` (`stepId`), por paso de la lección en su orden: el alumno no lo ve.
+3. `no_start_step` (`position` = inicial): ningún paso del conjunto con `canStart` sale de la
+   posición inicial.
+4. Por paso publicado de la lección, en su orden: `step_unreachable` (`stepId`, `position` = su
+   inicio) si no puede ir primero (`canStart` en la posición inicial) ni su inicio es alcanzable
+   tras un primer paso `canStart` desde la posición inicial; si es alcanzable, `step_no_end`
+   (`stepId`, `position` = su fin) si ni él es `canEnd` ni desde su fin se llega a una posición
+   de la que sale un paso `canEnd`.
+5. `no_base_reachable` (`position`): para la posición inicial y cada posición alcanzable, la regla
+   de `validateCatalog` sobre el conjunto (desde ahí no se vuelve a una posición con paso base). Solo
+   si hay paso de inicio.
+
+Alcanzable = cierre transitivo del grafo posición → posición de los pasos del conjunto. No mira la
+canción ni las frases: que no quepa ninguna combinación en `N` lo dice `generatePlan` (`no_plan`).
+En el panel es un aviso (no bloquea guardar ni publicar).
+Vectores: `vectors/combinaciones-leccion-*.json` (`entrada.leccion`, `salida.problemas`).
+
 Vectores: `vectors/combinaciones-*.json` (07a). Tipos de vector según la `entrada`: plan
-(`PlanInput`; `salida` = plan exacto o `{ error }`), `prng`, `casos` (pesos; `orden` opcional) y
-`catalogo`. Los `combinaciones-orden-*` fijan un plan por criterio con la misma semilla y los
+(`PlanInput`; `salida` = plan exacto o `{ error }`), `prng`, `casos` (pesos; `orden` opcional),
+`catalogo` y `leccion`. Los `combinaciones-orden-*` fijan un plan por criterio con la misma semilla y los
 pesos de cada criterio.

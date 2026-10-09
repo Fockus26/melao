@@ -3,13 +3,8 @@
   "entrada": {
     "leccion": {
       "startPosition": "guapea",
-      "lessonStepIds": [
-        "sombrero",
-        "dile-que-si"
-      ],
-      "previousStepIds": [
-        "guapea"
-      ],
+      "lessonStepIds": ["sombrero", "dile-que-si"],
+      "previousStepIds": ["guapea"],
       "catalog": [
         {
           "id": "guapea",

@@ -3,14 +3,8 @@
   "entrada": {
     "leccion": {
       "startPosition": "guapea",
-      "lessonStepIds": [
-        "enchufla"
-      ],
-      "previousStepIds": [
-        "guapea",
-        "dile-que-si",
-        "dile-que-no"
-      ],
+      "lessonStepIds": ["enchufla"],
+      "previousStepIds": ["guapea", "dile-que-si", "dile-que-no"],
       "catalog": [
         {
           "id": "guapea",

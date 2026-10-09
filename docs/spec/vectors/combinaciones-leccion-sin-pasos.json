@@ -4,9 +4,7 @@
     "leccion": {
       "startPosition": "guapea",
       "lessonStepIds": [],
-      "previousStepIds": [
-        "guapea"
-      ],
+      "previousStepIds": ["guapea"],
       "catalog": [
         {
           "id": "guapea",

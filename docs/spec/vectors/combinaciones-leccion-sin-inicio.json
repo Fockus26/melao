@@ -3,9 +3,7 @@
   "entrada": {
     "leccion": {
       "startPosition": "guapea",
-      "lessonStepIds": [
-        "dile-que-si"
-      ],
+      "lessonStepIds": ["dile-que-si"],
       "previousStepIds": [],
       "catalog": [
         {

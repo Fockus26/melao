@@ -148,7 +148,7 @@ vencida; en el curso, curso y estilo publicados.
 
 | Tabla | Campos |
 |---|---|
-| `dance_styles` | `slug` · `name` · `beats_per_phrase` · `spoken_beats` · `call_beat` · `call_span_beats` · `lead_in_phrases` (motor-de-ritmo §1) · `has_roles` · `difficulty_bpm_bands` (tope de BPM por nivel, ascendente; hasta 4 topes → niveles 1–5; null o vacío = canciones sin dificultad salvo override; provisionales en el seed, D137) · `start_position_id` · `published` · `sort_order` |
+| `dance_styles` | `slug` · `name` · `beats_per_phrase` · `spoken_beats` · `call_beat` · `call_span_beats` · `lead_in_phrases` (motor-de-ritmo §1) · `has_roles` · `difficulty_bpm_bands` (tope de BPM por nivel, ascendente; hasta 4 topes → niveles 1–5; null o vacío = canciones sin dificultad salvo override; provisionales en el seed, D137; enteros 40–300 estrictamente ascendentes, D163) · `start_position_id` · `published` · `sort_order` |
 | `positions` | `style_id` · `slug` · `name` |
 | `steps` | `style_id` · `slug` (nombra el clip `step.<slug>`) · `name` · `description` · `beat_notes` (`[{beat, note}]`) · `category` (`base\|vuelta\|entrada\|salida\|figura\|variacion\|libre`) · `difficulty` (1–5) · `start_position_id` · `end_position_id` · `phrases` · `can_start` · `can_end` · `repeatable` · `variation_of` · `voice_clip_path` · `published` · `sort_order` |
 | `step_prerequisites` | `step_id` · `requires_step_id` |
@@ -215,6 +215,32 @@ pasando por la RLS de contenido. Las reglas valen para la API (`anon`, `authenti
 Lo demás va directo por RLS: `steps.published` (publicar y despublicar), `delete from steps`,
 `step_videos` (reemplazar = update de `video_path`, `duration_ms` y `aspect` de la fila del rol,
 nunca del rol; si no hay fila, insert) y `steps.voice_clip_path`.
+
+### Admin · Estilos (`20261003160000_admin_styles.sql`, D163–D167)
+
+Solo admin (`private.is_admin()`); para el resto, ninguna fila o `42501`. Las escrituras siguen
+pasando por la RLS de contenido; las reglas de borrar y publicar valen para la API (el seed y las
+migraciones quedan fuera).
+
+- **Bandas** (D163): `dance_styles_bpm_bands_valid` — null o hasta 4 topes enteros en 40–300,
+  estrictamente ascendentes (niveles 1–4; el 5, por encima del último). El panel escribe 4 o null.
+- **Publicar** (D165): exige posición inicial (`ME008`, también al quitársela a uno publicado).
+- **Borrar un estilo** (D164): solo sin publicar y vacío — sin pasos, sin `song_styles`, sin
+  curso; sus posiciones se van en cascada.
+- **Borrar una posición** (D166): ni una que usa algún paso (entrada o salida) ni la inicial.
+- Errores propios: `ME001` tiempos hablados inválidos · `ME002` el anuncio no cabe en la frase ·
+  `ME003` bandas inválidas · `ME004` borrar un estilo publicado · `ME005` borrar un estilo con
+  contenido · `ME006` borrar una posición en uso · `ME007` borrar la posición inicial · `ME008`
+  publicar sin posición inicial.
+
+| Función | Devuelve |
+|---|---|
+| `admin_styles()` | Todos los estilos por `sort_order` y nombre con su configuración (`id, slug, name, published, sort_order, has_roles, beats_per_phrase, spoken_beats, call_beat, call_span_beats, lead_in_phrases, difficulty_bpm_bands, start_position_id`) y `step_count` · `steps_published` · `song_count` (`song_styles`) · `has_course` · `positions` (jsonb `[{ id, slug, name, step_count }]` por nombre; `step_count` = pasos que empiezan o terminan en ella) |
+| `admin_style_issues(p_style_id)` | Motivos que bloquean publicar: `missing_start_position` o `{}` |
+| `admin_save_style(p_style_id, p_style, p_start_position = null)` | Crea (`p_style_id` null, sin publicar) o edita el estilo en una transacción y devuelve el id. `p_style`: los campos de arriba sin `published` (bandas `[]` = null). `p_start_position` (`{ name, slug }`) crea una posición y la deja inicial. Errores: `ME001`–`ME003`, `ME008`, `23505` slug repetido, `23503` posición inicial de otro estilo, `P0002` inexistente, `23514` otro campo fuera de rango (D167) |
+
+Lo demás va directo por RLS: `dance_styles.published` (publicar y despublicar), `delete from
+dance_styles`, y `positions` (insert, update de `name`, delete).
 
 ### Datos del alumno (`20260927180000_progreso.sql`)
 

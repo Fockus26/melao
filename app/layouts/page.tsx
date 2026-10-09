@@ -127,6 +127,11 @@ const SAMPLES = [
     title: "Admin · Usuarios",
     text: "/admin/users en solo lectura con 60 usuarios de ejemplo: búsqueda, chips de estado con contador, tabla y páginas sobre la URL; sin resultados, sin usuarios, error y cargando.",
   },
+  {
+    href: "/layouts/admin-styles",
+    title: "Admin · Estilos",
+    text: "/admin/styles sin escribir nada: salsa casino completa, estilo nuevo, catálogo inválido, bandas vacías, estilo vacío que se puede borrar, error al guardar y error al cargar.",
+  },
 ] as const;
 
 export default function LayoutsPage() {

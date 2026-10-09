@@ -18,6 +18,10 @@ Valores iniciales según D011; editables por estilo en el panel. Límites (los m
 de `dance_styles`): `beatsPerPhrase` 2–16; `spokenBeats` entre 1 y `beatsPerPhrase` tiempos
 distintos, cada uno en `1…beatsPerPhrase`; `callBeat + callSpanBeats − 1 ≤ beatsPerPhrase`;
 `callSpanBeats` 1–4; `leadInPhrases` 0–4. Core: `_shared/core/style.ts`.
+El panel (`/admin/styles`) los valida antes de guardar con `admin_save_style` (códigos `ME001`
+los tiempos hablados, `ME002` el anuncio, D167). Bajar `beatsPerPhrase` no toca las notas por
+tiempo de los pasos (`beat_notes`): el panel avisa cuáles quedan fuera de la frase. "Se repite"
+(§6.1) es fijo del motor, no una opción del estilo.
 
 ## 2. Rejilla de beats de una canción
 

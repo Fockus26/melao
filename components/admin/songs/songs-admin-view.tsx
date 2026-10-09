@@ -347,7 +347,8 @@ function SongsAdminScreen({
                   .filter(Boolean)
                   .join(" · ")}
                 pills={
-                  <>
+                  // A 320 las pills se apilan para no empujar la fila fuera de la pantalla.
+                  <span className="flex max-w-32 flex-wrap justify-end gap-1 sm:max-w-none">
                     {row.licenseStatus === "expired" ? (
                       <Badge variant="error">{COPY.licenseExpired}</Badge>
                     ) : row.licenseStatus === "expiring" ? (
@@ -359,7 +360,7 @@ function SongsAdminScreen({
                     <Badge variant={row.published ? "ok" : "neutral"}>
                       {row.published ? COPY.published : COPY.draft}
                     </Badge>
-                  </>
+                  </span>
                 }
               />
             );

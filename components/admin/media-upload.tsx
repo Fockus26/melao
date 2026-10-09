@@ -47,7 +47,7 @@ const COPY = {
   upload: {
     video: "Subir video",
     audio: "Subir audio",
-    document: "Subir documento",
+    document: "Subir archivo",
   },
   replace: "Reemplazar",
   remove: "Quitar",
